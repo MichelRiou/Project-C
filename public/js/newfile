@@ -1,0 +1,29 @@
+API TECH DATA
+=============
+java.net.URL                        url  =   new java.net.URL( urlStr ); // urlStr is Tech Data's URL as a String
+java.net.HttpURLConnection  con =   ( java.net.HttpURLConnection )url.openConnection();
+
+con.setUseCaches( false );
+con.setDoOutput( true );
+con.setDoInput( true );
+con.setRequestProperty( "Content-Type",   "text/xml");
+// xmlDocAsStr is the submit XML document as a String
+con.setRequestProperty( "Content-Length", "" + xmlDocAsStr.getBytes().length );  
+
+PrintStream out = new PrintStream( con.getOutputStream() );
+out.print( sendText );                // send the submit xml document
+out.close();
+
+BufferedReader buffReader = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
+StringBuffer      sb              = new StringBuffer();
+
+String inputLine = null;
+while ( ( inputLine = buffReader.readLine() ) != null) {
+    sb.append( inputLine );    // receive the response xml document
+}
+// the response XML document is now in sb as a String
+
+out.close();    // ALWAYS close your connection !
+con = null;     // This cleanup is best performed in a 'finally' code block
+out = null;
+con = null;
