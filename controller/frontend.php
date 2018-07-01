@@ -5,6 +5,14 @@ require_once('model/PostManager.php');
 require_once('model/CommentManager.php');
 require_once('model/BUManager.php');
 require_once('model/DeviceAudioManager.php');
+require_once('model/HeaderRequestManager.php');
+
+function listHeaderRequest() {
+    $HeaderRequestManager = new \mr\fr\Model\HeaderRequestManager();
+    $HeaderRequest = $HeaderRequestManager->getHeaderRequest(2);
+
+    require('view/frontend/form1view.php');
+}
 
 function listDeviceAudio() {
     $DeviceAudioManager = new \mr\fr\Model\DeviceAudioManager();

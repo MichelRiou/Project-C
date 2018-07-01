@@ -30,7 +30,13 @@ try {
             }else{
                  throw new Exception('Aucun domaine envoyé');
             }
-        }
+        } elseif ($_GET['action'] == 'addHeaders'){
+           
+           
+            listHeaderRequest();
+            }else{
+                 throw new Exception('Aucun controleur');
+            }
     } else {
         //listPosts();
         listBUs();

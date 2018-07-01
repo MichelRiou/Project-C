@@ -24,7 +24,9 @@
         $('#BU_select').on('change', function () {
             var id = $(this).val(); // get selected value
             if (id === "AUDIOVISUEL") {
-                window.location = "/view/frontend/form1view.php";
+                //controleur a faire
+                window.location ="index.php?action=addHeaders";
+                //window.location = "/view/frontend/form1view.php";
                 //alert();
             }
 
