@@ -1,6 +1,7 @@
 <?php $title = 'Recherche'; ?>
 <!-- <input type="radio" name="typeDevicetott" value="true" checked="checked" /> -->
 <?php ob_start(); ?>
+<?php print_r($HeaderRequest); ?>
 <div class="container-fluid">
     <div class="form-group row">
         <div class="col-md-6 offset-md-5" >
