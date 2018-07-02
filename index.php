@@ -25,8 +25,13 @@ try {
                 throw new Exception('Aucun identifiant de billet envoyé');
             }
         } elseif ($_GET['action'] == 'addSelection') {
+            // phpinfo();
             if (isset ($_GET['domaine'])&& isset ($_GET['queryparam'])){
-            listDeviceAudio();
+                $params = explode('-',$_GET['queryparam']);
+                echo $_GET['queryparam'];
+                //echo $_GET['domaine'] ;
+                // print_r($params);
+            listDeviceAudio($params);
             }else{
                  throw new Exception('Aucun domaine envoyé');
             }

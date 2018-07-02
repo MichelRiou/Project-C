@@ -1,7 +1,6 @@
 <?php $title = 'Recherche'; ?>
 <!-- <input type="radio" name="typeDevicetott" value="true" checked="checked" /> -->
 <?php ob_start(); ?>
-<?php print_r($HeaderRequest); ?>
 <div class="container-fluid">
     <div class="form-group row">
         <div class="col-md-6 offset-md-5" >
@@ -117,18 +116,21 @@
 
 </div>
 <script>
+    var lsdomaine;
+    var lsroomType;
+    var lsluxType;
+    var lsheightType;
+    var lsuseType;
+    var lsimportant1Type;
+    var lsimportant2Type;
+    var lsparams;
+    var lsplaceType;
+    var lsautonome;
+    var form;
+    var selects;
 
     $(document).ready(function () {
-        var lsdomaine;
-        var lsroomType;
-        var lsluxType;
-        var lsheightType;
-        var lsuseType;
-        var lsimportant1Type;
-        var lsimportant2Type;
-        var lsparams;
-        var lsplaceType;
-        var lsautonome;
+
         $('.mobile').hide();
         $('.fixe').show();
         //document.getElementById('deviceFixe').checked;
@@ -151,6 +153,16 @@
                 $('.mobile').hide();
                 $('.fixe').show();
             }
+            //document.getElementById('monselect').selectedIndex=2
+            $('select').each(function () {
+                console.log(this);
+                this.selectedIndex = "0";
+                $("#formChoice").trigger("change");
+                //if ($(this).is(':visible')) {
+                //  lsparams = lsparams + $(this).val() + '-';
+                // }
+            });
+            // document.getElementById("heightType").selectedIndex = "4";
             //var lsPlaceType  = document.getElementById('placeType').value;
             //alert(lsPlaceType);
             return false;
@@ -159,27 +171,45 @@
 
     $(function () {
         $('#formChoice').on('change', function () {
+            //form = document.getElementById("formChoice");
+            //selects = form.getElementsByTagName("select");
+            //selects = form.querySelector("select:visible");
+            // for (var i = 0; i < selects.length; i++) {
+            //    if (selects[i].is(':visible')==true) {
+            //      lsparams = lsparams+'#'+selects[i].value;
+            //  }
+            // }
+            lsparams = '';
+            $('select').each(function () {
+                if ($(this).is(':visible')) {
+                    lsparams = lsparams + $(this).val() + '-';
+                }
+            });
+            //lsparams=len(params,-1);
+            lsparams = lsparams.substring(0, lsparams.lastIndexOf("-"));
 
             if (document.getElementById('deviceFixe').checked) {
                 lsdomaine = "1";
-                lsroomType = document.getElementById('roomType').value;
-                lsluxType = document.getElementById('luxType').value;
-                lsheightType = document.getElementById('heightType').value;
-                lsuseType = document.getElementById('useType').value;
-                lsimportant1Type = document.getElementById('important1Type').value;
-                lsimportant2Type = document.getElementById('important2Type').value;
-                lsparams = lsroomType + lsluxType + lsheightType + lsuseType + lsimportant1Type + lsimportant2Type;
+                /*   lsroomType = document.getElementById('roomType').value;
+                 lsluxType = document.getElementById('luxType').value;
+                 lsheightType = document.getElementById('heightType').value;
+                 lsuseType = document.getElementById('useType').value;
+                 lsimportant1Type = document.getElementById('important1Type').value;
+                 lsimportant2Type = document.getElementById('important2Type').value;
+                 lsparams = lsroomType + lsluxType + lsheightType + lsuseType + lsimportant1Type + lsimportant2Type; */
             } else {
                 lsdomaine = "2";
-                lsplaceType = document.getElementById('placeType').value;
-                // lsautonome = document.getElementById('autonome').checked == true ? "1" : "0";
-                lsautonome = document.getElementById('autonome').value;
-                lsparams = lsplaceType + lsautonome;
+                /*  lsplaceType = document.getElementById('placeType').value;
+                 // lsautonome = document.getElementById('autonome').checked == true ? "1" : "0";
+                 lsautonome = document.getElementById('autonome').value;
+                 lsparams = lsplaceType + lsautonome; */
             }
 
             $.ajax({
                 type: "POST",
-                url: '/index.php?action=addSelection&domaine=lsdomaine&queryparam=lsparams',
+                url: '/index.php?action=addSelection&domaine=' + lsdomaine + '&queryparam=' + lsparams,
+                //url: '/index.php',
+                //data: 'action=addSelection' + '&domaine=' + lsdomaine + '&queryparam=' + lsparams,
                 success: function (retour) {
                     $("#requete").html(retour);
                 },

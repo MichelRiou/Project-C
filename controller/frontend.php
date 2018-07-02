@@ -14,9 +14,9 @@ function listHeaderRequest() {
     require('view/frontend/form1view.php');
 }
 
-function listDeviceAudio() {
+function listDeviceAudio($params) {
     $DeviceAudioManager = new \mr\fr\Model\DeviceAudioManager();
-    $DeviceAudio = $DeviceAudioManager->getDeviceAudio();
+    $DeviceAudio = $DeviceAudioManager->getDeviceAudio($params);
 
     require('view/frontend/listDeviceAudioView.php');
 }
