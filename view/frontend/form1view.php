@@ -1,5 +1,4 @@
-<?php $title = 'Recherche'; ?>
-<!-- <input type="radio" name="typeDevicetott" value="true" checked="checked" /> -->
+<?php $title = 'ListRequest'; ?>
 <?php ob_start(); ?>
 <div class="container-fluid">
     <div class="form-group row">

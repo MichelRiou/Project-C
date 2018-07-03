@@ -6,6 +6,28 @@ require_once('model/CommentManager.php');
 require_once('model/BUManager.php');
 require_once('model/DeviceAudioManager.php');
 require_once('model/HeaderRequestManager.php');
+require_once('model/RequestManager.php');
+require_once('model/TagManager.php');
+
+function majOneRequest($pId) {
+
+    $RequestManager = new \mr\fr\Model\RequestManager();
+    $TagManager = new \mr\fr\Model\TagManager();
+    $id = $pId;
+    $request = $RequestManager->selectOneRequest($id);
+    $tags= $TagManager->selectAllTagsFromRequest($request);
+
+    require('view/frontend/majRequest.php');
+}
+
+function listRequest($pBU) {
+
+    $RequestManager = new \mr\fr\Model\RequestManager();
+    $bu = $pBU;
+    $requests = $RequestManager->selectAllRequestsFromBU($bu);
+
+    require('view/frontend/listRequest.php');
+}
 
 function listHeaderRequest() {
     $HeaderRequestManager = new \mr\fr\Model\HeaderRequestManager();
