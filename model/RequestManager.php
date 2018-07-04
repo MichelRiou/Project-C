@@ -16,6 +16,8 @@ class TagManager extends Manager {
         $req = $db->prepare('SELECT * FROM request_tags left outer join tags on request_tags.tag_id=tags.tag_id where request_id = ?');
         $req->execute(array($id));
         $T_tags = array();
+ 
+        
         $T_tags = $req->fetchAll();
         return $T_tags;
     }
