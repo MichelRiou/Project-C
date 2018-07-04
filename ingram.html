@@ -1,0 +1,120 @@
+<html>
+
+    <head>
+        <title>IM-XML Test Tool</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script language="JavaScript">
+            function sendXMLRequest(input) {
+                //var xmlHttpReq = new ActiveXObject("MSXML2.XMLHTTP.3.0");
+                var xmlHttpReq = new XMLHttpRequest();
+                try {
+                    xmlHttpReq.open("POST", "https://malibu.ingrammicro.com/im-xml", false);
+                    /*xmlHttpReq.setRequestHeader("Content-type", "text/xml;charset=iso-8859-1");*/
+                     xmlHttpReq.setRequestHeader("Content-type", "text/xml;charset=UTF-8"); 
+                    /* xmlHttpReq.setRequestHeader("SOAPAction", "sync"); */
+                    d1 = new Date;
+                    document.XMLTesterForm.ResponseField.value = "Request submitted:" + d1;
+                    xmlHttpReq.send(input);
+                    d2 = new Date;
+                    millis = d2.getTime() - d1.getTime();
+                    result = "Response received: " + d2 + " [Elapsed time: " + millis + " ms]\nHTTP Status:" + xmlHttpReq.status + " " + xmlHttpReq.statusText;
+                    result += "\n" + xmlHttpReq.responseText;
+                    document.XMLTesterForm.ResponseField.value = result;
+                } catch (e) {
+                    alert("EXCEPTION: " + e.name + " - " + e.description);
+                    /*   alert("EXCEPTION: " + e.name + " - " + e.description + "\n" + xmlHttpReq.responseText);  */
+                }
+            }
+
+
+
+
+
+            function sendXMLAjaxRequest(input) {
+
+
+
+               
+              
+                    $.ajax({
+                    type: "POST",
+                    url: 'https://malibu.ingrammicro.com/im-xml',
+                    contentType: "text/xml;charset=iso-8859-1",
+                    dataType: 'xml',
+                    //url: '/index.php',
+                    data: input,
+                    success: function (retour) {
+                        $("#response").html(retour);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                }); 
+               
+
+                
+                //alert(lsPlaceType);
+                return false;
+            }
+
+
+        </script>
+
+    </head>
+
+    <BR>
+    <div ALIGN="CENTER" STYLE="background-color: beige">
+        <!-- font face="Arial,'Times New Roman',System, Helvetica, sans-serif"></font -->
+        <!-- H4>XML Test Tool</H4><BR  -->
+        <!-- tr>
+          <td bgcolor="#EAE4EE">
+            <hr WIDTH="95%" ALIGN="center" SIZE=3 NOSHADE COLOR="#4444DD">
+          </td>
+        </tr -->
+
+        <form name="XMLTesterForm" onsubmit="login();
+                return false;">
+            <table cellpadding="0" cellspacing="0" border="0" STYLE="background-color: beige">
+                <!--  tr VALIGN="TOP">
+                  <th align="center">XML Test Tool</th>
+                </tr  -->
+                <tr>
+                    <td align="left">
+                        <b>Input - IM-XML Request</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"  align="center">
+                        <textarea WRAP="off" NAME="InputField"  ROWS="12" COLS="95" TABINDEX="1"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <input type="button" name="btn" value="Ajax Request"  TABINDEX="1" onclick="sendXMLAjaxRequest(document.XMLTesterForm.InputField.value);return false;">
+                    </td>
+                    <td align="center">
+                        <input type="button" name="btn" value="Submit Request"  TABINDEX="2" onclick="sendXMLRequest(document.XMLTesterForm.InputField.value);return false;">
+                    </td>
+                    <td align="left">
+                        <input type="button" name="rst" value="Reset Form"  TABINDEX="3" onclick="window.location.reload();return false;">
+                    </td>
+
+                    <!--  &nbsp;<a href="JavaScript:window.location.reload()"  TABINDEX="3">reset form</a>  -->
+                </tr>
+                <tr>
+                    <td align="left">
+                        <b>Output - IM-XML Response</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" align="center">
+                        <textarea WRAP="off" READONLY NAME="ResponseField"  ROWS="12" COLS="95" id ="response"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

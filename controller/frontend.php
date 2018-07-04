@@ -15,7 +15,7 @@ function majOneRequest($pId) {
     $TagManager = new \mr\fr\Model\TagManager();
     $id = $pId;
     $request = $RequestManager->selectOneRequest($id);
-    $tags= $TagManager->selectAllTagsFromRequest($request);
+    $tags= $TagManager->selectAllTagsFromRequest($id);
 
     require('view/frontend/majRequest.php');
 }

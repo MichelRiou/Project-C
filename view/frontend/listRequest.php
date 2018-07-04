@@ -273,10 +273,10 @@ ob_start();
             <thead>
                 <tr>
                     <th>
-                        <span class="custom-checkbox">
+                     <!-- <span class="custom-checkbox">
                             <input type="checkbox" id="selectAll">
                             <label for="selectAll"></label>
-                        </span>
+                        </span> -->
                     </th>
 
                     <th>Nom</th>
