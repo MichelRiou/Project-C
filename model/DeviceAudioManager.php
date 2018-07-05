@@ -3,6 +3,7 @@
 namespace mr\fr\Model;
 
 require_once("model/Manager.php");
+require_once("model/RequestManager.php");
 
 class DeviceAudioManager extends Manager
 {
@@ -10,6 +11,11 @@ class DeviceAudioManager extends Manager
     {
         $db = $this->dbConnect();
         
+        for ($i=0;$i<count($params);$i++){
+            
+            
+        }
+        // selectionner le request/tag
         print_r($params);
         
         

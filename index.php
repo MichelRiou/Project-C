@@ -15,7 +15,8 @@ try {
                 if (isset($_GET['domaine']) && isset($_GET['queryparam'])) {
                     $params = explode('-', $_GET['queryparam']);
                     // Sortir l'aspect Audio dédié
-                    listDeviceAudio($params);
+                    //listDeviceAudio($params);
+                    listProductsRequests($params);
                 } else {
                     throw new Exception('Erreur dans la requete');
                 }

@@ -7,6 +7,7 @@ require_once('model/BUManager.php');
 require_once('model/DeviceAudioManager.php');
 require_once('model/HeaderRequestManager.php');
 require_once('model/RequestManager.php');
+require_once('model/ProductManager.php');
 require_once('model/TagManager.php');
 
 function majOneRequest($pId) {
@@ -41,6 +42,13 @@ function listDeviceAudio($params) {
     $DeviceAudio = $DeviceAudioManager->getDeviceAudio($params);
 
     require('view/frontend/listDeviceAudioView.php');
+}
+
+function listProductsRequests($params) {
+    $ProductManager = new \mr\fr\Model\ProductManager();
+    $Products = $ProductManager->getProductsFromRequests($params);
+
+    require('view/frontend/listProductsRequest.php');
 }
 
 function listBUAudioParams() {
