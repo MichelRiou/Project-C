@@ -1,21 +1,43 @@
 <?php ob_start(); ?>
 <h2>Requete Ajax 2</h2>
-<?php
+<div class="table-wrapper">
+  
+    <table class="table table-striped ">
+        <thead>
+            <tr>
+                
+
+                <th>Builder</th>
+                <th>Modèle</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            foreach ($Products as $data) {
+                ?>
+            <tr>
+                <td>
+                    <?= nl2br(htmlspecialchars($data['product_builder'])) ?>
+                </td>
+                <td>
+                     <?= $data['product_model'] ?>   
+                </td>
+           
+            </tr>
+            <?php } ?>
+        </tbody>
+        </table>
+    </DIV>
+    <?php
 //print_r($Products);
-foreach ($Products as $data)
-{
-?>
-    <div class="news">
-        <p>
-            <?= nl2br(htmlspecialchars($data['product_builder'])) ?>
-            
-            <em><a href="index.php?action=post&amp;id=<?= $data['product_model'] ?>">C</a></em>
-        </p>
-    </div>
-<?php
-}
+
+
+   
+
 // A faire partout !!!!
 //$Products->closeCursor();
 ?>
-<?php $content = ob_get_clean(); 
-echo $content;?>
+<?php $content = ob_get_clean();
+echo $content;
+?>

@@ -12,12 +12,9 @@ class ProductManager extends Manager {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
             echo $requests;
-            $T_products = $db->query('SELECT products.product_id,products.product_builder,products.product_model,products.product_designation 
-                                        FROM `request_tags` 
-                                        LEFT OUTER JOIN product_tags on request_tags.tag_id = product_tags.tag_id 
-                                        LEFT OUTER JOIN products on product_tags.product_id=products.product_id
-                                        WHERE `request_id` in (' . $requests . ') and  product_tags.product_tag_numeric   <=  `request_tag_numeric`
-                                        GROUP BY products.product_id;');
+            $T_products = $db->query('select * from products left outer join '
+                    . '             (SELECT product_tags.product_id, count(*) as c FROM `request_tags` '
+                    . '             LEFT OUTER JOIN product_tags on request_tags.tag_id = product_tags.tag_id WHERE `request_id` IN ('.$requests.') and ((product_tags.product_tag_numeric <= `request_tag_numeric` AND `request_tag_value` IS NULL AND `request_tag_value` IS NULL) OR (`product_tag_boolean`= 1)) GROUP BY product_tags.product_id) as t on products.product_id=t.product_id ORDER BY t.c DESC, products.product_builder ASC');
             // $req->bind_param(1, $requests,PDO::PARAM_INT);
             //$req->execute(array($requests));
             //$T_products = array();

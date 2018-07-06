@@ -9,7 +9,7 @@ try {
         switch ($_GET['action']) {
             /**
              *  Route addSelection
-             *  Exécution de la requete de recherceh selon paramètre
+             *  Exécution de la requete de recherceh selon paramètres
              */
             case 'addSelection':
                 if (isset($_GET['domaine']) && isset($_GET['queryparam'])) {

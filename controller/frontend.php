@@ -1,5 +1,7 @@
 <?php
-
+/*spl_autoload_register(function ($class_name) {
+    include $class_name . '.php';
+});*/
 // Chargement des classes
 require_once('model/PostManager.php');
 require_once('model/CommentManager.php');
@@ -9,6 +11,7 @@ require_once('model/HeaderRequestManager.php');
 require_once('model/RequestManager.php');
 require_once('model/ProductManager.php');
 require_once('model/TagManager.php');
+
 
 function majOneRequest($pId) {
 
