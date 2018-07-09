@@ -206,7 +206,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '/index.php?action=addSelection&domaine=' + lsdomaine + '&queryparam=' + lsparams,
+                url: '/routes.php?action=addSelection&domaine=' + lsdomaine + '&queryparam=' + lsparams,
                 //url: '/index.php',
                 //data: 'action=addSelection' + '&domaine=' + lsdomaine + '&queryparam=' + lsparams,
                 success: function (retour) {
@@ -226,7 +226,7 @@
             //alert();
             $.ajax({
                 type: "POST",
-                url: '/index.php?action=addSelection',
+                url: '/routes.php?action=addSelection',
                 success: function (retour) {
                     $("#requete").html(retour);
                 },

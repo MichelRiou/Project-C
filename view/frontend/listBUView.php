@@ -25,7 +25,7 @@
             var id = $(this).val(); // get selected value
             if (id === "AUDIOVISUEL") {
                 //controleur a faire
-                window.location ="index.php?action=addHeaders";
+                window.location ="routes.php?action=addHeaders";
                 //window.location = "/view/frontend/form1view.php";
                 //alert();
             }

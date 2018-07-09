@@ -1,5 +1,7 @@
 <?php
-
+/*spl_autoload_register(function ($class_name) {
+    include $class_name . '.php';
+});*/
 // Chargement des classes
 require_once('model/PostManager.php');
 require_once('model/CommentManager.php');
@@ -7,17 +9,37 @@ require_once('model/BUManager.php');
 require_once('model/DeviceAudioManager.php');
 require_once('model/HeaderRequestManager.php');
 require_once('model/RequestManager.php');
-require_once('model/TagManager.php');
+require_once('model/ProductManager.php');
+require_once('model/TagDAO.php');
+require_once('model/TagRequestDAO.php');
+require_once('model/TagRequest.php');   
+
+
+function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean) {
+
+  
+    $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
+    $TagRequest = new \mr\fr\Model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean);
+    $result = $TagRequestDAO->insertTagFromRequest($TagRequest);
+    
+  echo $result;
+  //header('Location: routes.php?action=majOneRequest&id=' . $requestId);
+    
+  
+    //echo $TagRequest;
+// header('Location: routes.php?action=post&id=' . $postId);
+}
 
 function majOneRequest($pId) {
+   // function majOneRequest($pId,$pBU) {
 
     $RequestManager = new \mr\fr\Model\RequestManager();
-    $TagManager = new \mr\fr\Model\TagManager();
+    $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
     $id = $pId;
     $request = $RequestManager->selectOneRequest($id);
-    $tags= $TagManager->selectAllTagsFromRequest($id);
+    $tagsRequest= $TagRequestDAO->selectAllTagsFromRequest($id);
 
-    require('view/frontend/majRequest.php');
+    require('view/frontend/majOneRequest.php');
 }
 
 function listRequest($pBU) {
@@ -41,6 +63,13 @@ function listDeviceAudio($params) {
     $DeviceAudio = $DeviceAudioManager->getDeviceAudio($params);
 
     require('view/frontend/listDeviceAudioView.php');
+}
+
+function listProductsRequests($params) {
+    $ProductManager = new \mr\fr\Model\ProductManager();
+    $Products = $ProductManager->getProductsFromRequests($params);
+
+    require('view/frontend/listProductsRequest.php');
 }
 
 function listBUAudioParams() {
