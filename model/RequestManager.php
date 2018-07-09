@@ -4,29 +4,29 @@ namespace mr\fr\Model;
 
 require_once("model/Manager.php");
 
-class TagManager extends Manager {
+class RequestManager extends Manager {
     
     /**
      * 
-     * @param int $id
+     * @param int $bu
      * @return Array 
      */
-    public function selectAllTagsFromRequest($id) {
+    public function selectAllRequestsFromBU($bu) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM request_tags left outer join tags on request_tags.tag_id=tags.tag_id where request_id = ?');
-        $req->execute(array($id));
-        $T_tags = array();
-        $T_tags = $req->fetchAll();
-        return $T_tags;
+        $req = $db->prepare('SELECT * FROM request left outer join headers on header_id=request_header where header_bu = ? order by header_position asc');
+        $req->execute(array($bu));
+        $T_requests = array();
+        $T_requests = $req->fetchAll();
+        return $T_requests;
     }
     
-    public function selectOneTag($id) {
+    public function selectOneRequest($id) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM tags WHERE tag_id = ? ');
+        $req = $db->prepare('SELECT * FROM request WHERE request_id = ? ');
         $req->execute(array($id));
-        $T_tag = array();
-        $T_tag = $req->fetchAll();
-        return $T_tag;
+        $T_request = array();
+        $T_request = $req->fetchAll();
+        return $T_request;
     }
 
 }

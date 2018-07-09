@@ -10,18 +10,32 @@ require_once('model/DeviceAudioManager.php');
 require_once('model/HeaderRequestManager.php');
 require_once('model/RequestManager.php');
 require_once('model/ProductManager.php');
-require_once('model/TagManager.php');
+require_once('model/TagDAO.php');
+require_once('model/TagRequestDAO.php');
+require_once('model/TagRequest.php');   
 
 
-function majOneRequest($pId) {
+function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean) {
+
+  
+    $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
+    $TagRequest = new \mr\fr\Model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean);
+    $TagRequest = $TagRequestDAO->insertTagFromRequest($TagRequest);
+   // echo $TagRequest;
+   
+
+   // header('Location: routes.php?action=post&id=' . $postId);
+}
+
+function majOneRequest($pId,$pBU) {
 
     $RequestManager = new \mr\fr\Model\RequestManager();
-    $TagManager = new \mr\fr\Model\TagManager();
+    $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
     $id = $pId;
     $request = $RequestManager->selectOneRequest($id);
-    $tags= $TagManager->selectAllTagsFromRequest($id);
+    $tagsRequest= $TagRequestDAO->selectAllTagsFromRequest($id);
 
-    require('view/frontend/majRequest.php');
+    require('view/frontend/majOneRequest.php');
 }
 
 function listRequest($pBU) {

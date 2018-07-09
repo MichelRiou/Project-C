@@ -299,6 +299,7 @@ ob_start();
             </thead>
             <tbody>
                 <?php
+                //print_r($requests);
                 $request_save = '';
                 $index = 0;
                 foreach ($requests as $request) {
@@ -318,7 +319,7 @@ ob_start();
                     } ?>
                     <tr><td></td><td><?= $request['request_name'] ?></td><td><?= $request['request_libelle'] ?></td><td><?= $request['request_order'] ?></td>
                         <td>
-                            <a href="index.php?action=majOneRequest&id=<?= $request['request_id'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                            <a href="routes.php?action=majOneRequest&id=<?= $request['request_id'] ?>&bu=<?= $request['header_bu'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 
                             <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
