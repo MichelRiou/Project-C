@@ -227,39 +227,23 @@ ob_start();
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-        // Activate tooltip
+        // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
-
-        // Select/Deselect checkboxes
-        var checkbox = $('table tbody input[type="checkbox"]');
-        $("#selectAll").click(function () {
-            if (this.checked) {
-                checkbox.each(function () {
-                    this.checked = true;
-                });
-            } else {
-                checkbox.each(function () {
-                    this.checked = false;
-                });
-            }
+        // Activation de la fenêtre modale AJOUTER UN TAG
+        $("#addbutton").click(function () {
+            $("#message").html('');
+            $("#addTagModal").modal('show');
         });
+        // CheckBox version RadioButton 
+        var checkbox = $('table tbody input[type="checkbox"]');
         checkbox.click(function () {
             checkbox.each(function () {
                 this.checked = false;
             });
             this.checked = true;
-            /*   alert();
-             if (!this.checked) {
-             $("#selectAll").prop("checked", false);
-             }*/
         });
-        $("#add").on('click', (function () {
-            console.log('ok');
-            //alert();
-
-
-
-
+        // Requête AJAX pour validation
+        $("#addTag").on('click', (function () {
             $.ajax({
                 type: 'POST',
                 url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#selectOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val() + '&selectBoolean=' + $("#selectBoolean").val(),
@@ -269,13 +253,8 @@ ob_start();
                         $("#message").html("Erreur d\'insertion");
                     } else {
                         $('#cancel').trigger('click');
-                        //header('Location: routes.php?action=majOneRequest&id='+ $("#idRequest").val());
                         window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val();
-
                     }
-
-
-
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert(textStatus);
@@ -314,7 +293,7 @@ ob_start();
             </div>
         </div>
         <div class="col-sm-4 ">
-            <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></a>
+            <button id="addbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
           <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
         </div>
 
@@ -378,7 +357,7 @@ ob_start();
     </div>
 </div>
 <!-- Add Modal HTML -->
-<div id="addEmployeeModal" class="modal fade">
+<div id="addTagModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form >
@@ -393,11 +372,11 @@ ob_start();
                     <div class="form-group">
                         <label>Nom du Tag</label>
                         <select class="form-control" name="idTag" id="idTag">
-                            <option value="1">id1</option>
-                            <option value="2">id2</option>
+                            <?php for ($i = 0; $i < count($tags); $i++) { ?>
+                                <option value="<?= $tags[$i]->getTag_id() ?>"><?= $tags[$i]->getTag_name() ?></option>
+                            <?php } ?>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>Opérateur</label>
                         <select class="form-control" name="selectOperator" id="selectOperator">
@@ -424,10 +403,10 @@ ob_start();
                         </select>
                     </div>
                 </div>
-                <div id="message"></div>
+                <div id="message" class="text-warning align-center"></div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="cancel">
-                    <input type="button" class="btn btn-info" value="add" id="add">
+                    <input type="button" class="btn btn-info" value="add" id="addTag">
                 </div>
             </form>
         </div>
@@ -454,6 +433,7 @@ ob_start();
         </div>
     </div>
 </div>
+
 
 <?php $content = ob_get_clean(); ?>
 <?php require('template.php'); ?>

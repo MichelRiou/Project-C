@@ -21,24 +21,20 @@ function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue
     $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
     $TagRequest = new \mr\fr\Model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean);
     $result = $TagRequestDAO->insertTagFromRequest($TagRequest);
-    
   echo $result;
-  //header('Location: routes.php?action=majOneRequest&id=' . $requestId);
-    
-  
-    //echo $TagRequest;
-// header('Location: routes.php?action=post&id=' . $postId);
 }
 
-function majOneRequest($pId) {
-   // function majOneRequest($pId,$pBU) {
+function majOneRequest($pId,$pBU) {
 
     $RequestManager = new \mr\fr\Model\RequestManager();
     $TagRequestDAO = new \mr\fr\Model\TagRequestDAO();
+    $TagDAO = new \mr\fr\Model\TagDAO();
     $id = $pId;
+    $bu = $pBU;
     $request = $RequestManager->selectOneRequest($id);
     $tagsRequest= $TagRequestDAO->selectAllTagsFromRequest($id);
-
+    $tags=$TagDAO->selectAllTagsNotInRequestFromBU($id, $bu);
+    print_r($tags);
     require('view/frontend/majOneRequest.php');
 }
 

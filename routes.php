@@ -53,10 +53,11 @@ try {
              */
             case 'majOneRequest':
                 $id = filter_input(INPUT_GET, "id");
-                if ($id != null) {
-                    majOneRequest($id);
+                $bu = filter_input(INPUT_GET, "bu");
+                if ($id != null && $bu != null) {
+                    majOneRequest($id,$bu);
                 } else {
-                    throw new Exception('Aucun Id spécifié');
+                    throw new Exception('Aucun Id/BU spécifié');
                 }
                 break;
             /**
