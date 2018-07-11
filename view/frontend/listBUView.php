@@ -2,7 +2,6 @@
 
 <?php ob_start(); ?>
 <h1>Elément correspondant</h1>
-<p>Article</p>
 <div class="row align-items-center justify-content-center">
     <div>
         <select  id="BU_select" > 

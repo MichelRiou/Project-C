@@ -1,9 +1,9 @@
 <?php
 session_start();
-
 define('ROOT_PATH', dirname(__DIR__));
 function autoloader($class){
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; 
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; 
+    $classPath = ROOT_PATH . "\project-c\\${class}.php"; 
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -100,9 +100,8 @@ try {
                 $selectOperator = filter_input(INPUT_GET, "selectOperator");
                 $alphanumericValue = filter_input(INPUT_GET, "alphanumericValue");
                 $numericValue = filter_input(INPUT_GET, "numericValue");
-                $selectBoolean = filter_input(INPUT_GET, "selectBoolean");
-                if ($idRequest != null && $idTag != null && $selectOperator != null && $alphanumericValue != null && $numericValue != null && $selectBoolean != null) {
-                    addTagOnRequest($idRequest, $idTag, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean);
+                if ($idRequest != null && $idTag != null && $selectOperator != null && $alphanumericValue != null && $numericValue != null) {
+                    addTagOnRequest($idRequest, $idTag, $selectOperator, $alphanumericValue, $numericValue);
                 } else {
                     throw new Exception('Erreur d\'appel du controleur addTag');
                 }

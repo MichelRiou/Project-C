@@ -226,6 +226,35 @@ ob_start();
     }
 </style>
 <script type="text/javascript">
+    var idDelete;
+    var idEdit;
+    function refresh() {
+        $.ajax({
+            type: 'POST',
+            url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
+            success: function (data) {
+                $("#requete").html(data);
+                $('a[class="delete"]').click(function () {
+                    // event.preventDefault();
+                    //var t=this;
+                    idDelete = this.getAttribute('value');
+                    // page = ($(this).attr("href"));
+                    console.log(idDelete);
+                });
+                $('a[class="edit"]').click(function () {
+                    // event.preventDefault();
+                    //var t=this;
+                    idEdit = this.getAttribute('value');
+                    // page = ($(this).attr("href"));
+                    console.log(idEdit);
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(textStatus);
+                $("#retour").html("Erreur d\'envoi de la requête");
+            }
+        });
+    }
     $(document).ready(function () {
         // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
@@ -234,28 +263,43 @@ ob_start();
             $("#message").html('');
             $("#addTagModal").modal('show');
         });
-        // CheckBox version RadioButton 
-        var checkbox = $('table tbody input[type="checkbox"]');
-        checkbox.click(function () {
-            checkbox.each(function () {
-                this.checked = false;
-            });
-            this.checked = true;
+        $('a[class="delete"]').click(function () {
+            // event.preventDefault();
+            //var t=this;
+            idDelete = this.getAttribute('value');
+            // page = ($(this).attr("href"));
+            console.log(idDelete);
         });
+        $('a[class="edit"]').click(function () {
+            // event.preventDefault();
+            //var t=this;
+            idEdit = this.getAttribute('value');
+            // page = ($(this).attr("href"));
+            console.log(idEdit);
+        });
+        // CheckBox version RadioButton 
+        //var checkbox = $('table tbody input[type="checkbox"]');
+        //checkbox.click(function () {
+        //  checkbox.each(function () {
+        //    this.checked = false;
+        // });
+        // this.checked = true;
+        //});
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#selectOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val() + '&selectBoolean=' + $("#selectBoolean").val(),
+                url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#selectOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val(),
                 success: function (result) {
                     console.log('retour success' + result);
                     if (result != 1) {
                         $("#message").html("Erreur d\'insertion");
                     } else {
                         $('#cancel').trigger('click');
-                        console.log('maj');
+                        refresh();
+                        //console.log('maj');
                         //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
-                        $.ajax({
+                       /* $.ajax({
                             type: 'POST',
                             url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
                             success: function (data) {
@@ -265,7 +309,7 @@ ob_start();
                                 alert(textStatus);
                                 $("#retour").html("Erreur d\'envoi de la requête");
                             }
-                        });
+                        });*/
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -275,30 +319,47 @@ ob_start();
             });
             return false;
         }));
-        // AJAX
+        // AJAX 
         $("#deleteTag").on('click', (function () {
+            //alert();
+            // console.log(obj);
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val(),
+                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + idDelete,
                 success: function (data) {
-                  console.log('retour delete' + data +$("#idRequest").val()+$("#idTag").val());
+                    console.log('retour delete' + data + $("#idRequest").val() + idDelete);
                     if (data != 1) {
-                        $("#message").html("Erreur de suppression");
+                        $("#messageDelete").html("Erreur de suppression");
                     } else {
-                        $('#cancel').trigger('click');
+                        $('#cancelDelete').trigger('click');
+                        refresh();
                         //console.log('maj');
                         //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
-                        $.ajax({
+                        /*$.ajax({
                             type: 'POST',
                             url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
                             success: function (data) {
                                 $("#requete").html(data);
+                                $('a[class="delete"]').click(function () {
+                                    // event.preventDefault();
+                                    //var t=this;
+                                    idDelete = this.getAttribute('value');
+                                    // page = ($(this).attr("href"));
+                                    console.log(idDelete);
+                                });
+                                $('a[class="edit"]').click(function () {
+                                    // event.preventDefault();
+                                    //var t=this;
+                                    idEdit = this.getAttribute('value');
+                                    // page = ($(this).attr("href"));
+                                    console.log(idEdit);
+                                });
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert(textStatus);
                                 $("#retour").html("Erreur d\'envoi de la requête");
                             }
-                        });
+                        });*/
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -353,8 +414,8 @@ ob_start();
                         ?>
                         <tr><td><?= $tagRequest['tag_name'] ?></td><td><?= $tagRequest['tag_values'] ?></td><td><?= $tagRequest['request_tag_sign'] ?></td><td><?= $tagRequest['request_tag_value'] ?></td><td><?= $tagRequest['request_tag_numeric'] ?></td>
                             <td>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                <a href="#deleteTagModal" id="$tagRequest['tag_id'] ?>" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                <a href="#editTagModal" value="<?= $tagRequest['tag_id'] ?>" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a href="#deleteTagModal" value="<?= $tagRequest['tag_id'] ?>"  class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                             </td>
                         </tr>
                     <?php } ?> 
@@ -365,12 +426,12 @@ ob_start();
 </div>
 </div>
 <!-- Edit Modal HTML -->
-<div id="editEmployeeModal" class="modal fade">
+<div id="editTagModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Add Employee</h4>
+                    <h4 class="modal-title">Edit Tag</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
@@ -461,8 +522,9 @@ ob_start();
                     <p>Are you sure you want to delete these Records?</p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>
                 </div>
+                <div id="messageDelete" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="button" id="cancelDelete" class="btn btn-default" data-dismiss="modal" value="Cancel">
                     <input type="button" id="deleteTag" class="btn btn-danger" value="Delete">
                 </div>
             </form>

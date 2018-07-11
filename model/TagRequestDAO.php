@@ -44,7 +44,7 @@ class TagRequestDAO extends DAOManager {
         try {
             //print_r($objet);
             $db = $this->dbConnect();
-            $req = $db->prepare('DELETE request_tags WHERE request_id = ? AND tag_id = ?');
+            $req = $db->prepare('DELETE FROM request_tags WHERE request_id = ? AND tag_id = ?');
             $req->bindValue(1, $idRequest);
             $req->bindValue(2, $idTag);
             $req->execute();

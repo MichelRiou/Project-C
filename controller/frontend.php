@@ -17,11 +17,11 @@
   require_once('model/TagRequest.php'); */
 
 
-function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean) {
+function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue) {
 
 
     $TagRequestDAO = new \model\TagRequestDAO();
-    $TagRequest = new \model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue, $selectBoolean);
+    $TagRequest = new \model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue);
     //print_r($TagRequest); AJAX !!!!!
     $result = $TagRequestDAO->insertTagFromRequest($TagRequest);
     // Pour requête AJAX
