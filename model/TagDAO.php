@@ -1,6 +1,6 @@
 <?php
 
-namespace mr\fr\Model;
+namespace model;
 
 require_once("model/DAOManager.php");
 require_once("model/Tag.php");

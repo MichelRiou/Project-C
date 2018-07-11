@@ -1,6 +1,6 @@
 <?php
 
-namespace mr\fr\Model;
+namespace model;
 
 require_once("model/Manager.php");
 

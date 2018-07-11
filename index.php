@@ -5,8 +5,4 @@
  * 
  */
 
-
-
 header("location: routes.php");
-
-?>

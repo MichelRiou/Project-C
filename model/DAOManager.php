@@ -1,6 +1,6 @@
 <?php
 
-namespace mr\fr\Model;
+namespace model;
 
 class DAOManager
 {

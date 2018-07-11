@@ -248,12 +248,24 @@ ob_start();
                 type: 'POST',
                 url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#selectOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val() + '&selectBoolean=' + $("#selectBoolean").val(),
                 success: function (result) {
-                    console.log(result);
+                    console.log('retour success' + result);
                     if (result != 1) {
                         $("#message").html("Erreur d\'insertion");
                     } else {
                         $('#cancel').trigger('click');
-                        window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val();
+                        console.log('maj');
+                        //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
+                            success: function (data) {
+                                $("#requete").html(data);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                                $("#retour").html("Erreur d\'envoi de la requête");
+                            }
+                        });
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -263,6 +275,40 @@ ob_start();
             });
             return false;
         }));
+        // AJAX
+        $("#deleteTag").on('click', (function () {
+            $.ajax({
+                type: 'POST',
+                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val(),
+                success: function (data) {
+                  console.log('retour delete' + data +$("#idRequest").val()+$("#idTag").val());
+                    if (data != 1) {
+                        $("#message").html("Erreur de suppression");
+                    } else {
+                        $('#cancel').trigger('click');
+                        //console.log('maj');
+                        //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
+                            success: function (data) {
+                                $("#requete").html(data);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                                $("#retour").html("Erreur d\'envoi de la requête");
+                            }
+                        });
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                    $("#retour").html("Erreur d\'envoi de la requête");
+                }
+            });
+            return false;
+        }));
+        // AJAX
     });
 </script>
 
@@ -287,37 +333,34 @@ ob_start();
             </div>
             <div class="col-sm-2 form-group">
                 <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $request[0]['request_order'] ?>" readonly="readonly" />
-            </div>
-            <div class="col-sm-2 form-group">
-                <a href="#addEmployeeModal" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></a>
+            </div>        <div class="col-sm-3 ">
+                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
+              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
         </div>
-        <div class="col-sm-4 ">
-            <button id="addbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
-          <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
-        </div>
+        <div id="requete">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr><th>Nom du Tag</th><th>Libellé du Tag</th><th>Opérateur</th><th>Valeur Alphanum</th><th>Valeur numérique</th>
+                        <th>Actions
 
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr><th>Nom du Tag</th><th>Libellé du Tag</th><th>Opérateur</th><th>Valeur Alphanum</th><th>Valeur numérique</th>
-                    <th>Actions
-
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($tagsRequest as $tagRequest) {
-                    ?>
-                    <tr><td><?= $tagRequest['tag_name'] ?></td><td><?= $tagRequest['tag_values'] ?></td><td><?= $tagRequest['request_tag_sign'] ?></td><td><?= $tagRequest['request_tag_value'] ?></td><td><?= $tagRequest['request_tag_numeric'] ?></td>
-                        <td>
-                            <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                        </td>
+                        </th>
                     </tr>
-                <?php } ?> 
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($tagsRequest as $tagRequest) {
+                        ?>
+                        <tr><td><?= $tagRequest['tag_name'] ?></td><td><?= $tagRequest['tag_values'] ?></td><td><?= $tagRequest['request_tag_sign'] ?></td><td><?= $tagRequest['request_tag_value'] ?></td><td><?= $tagRequest['request_tag_numeric'] ?></td>
+                            <td>
+                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a href="#deleteTagModal" id="$tagRequest['tag_id'] ?>" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                    <?php } ?> 
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </div>
@@ -368,6 +411,7 @@ ob_start();
                 <div class="modal-body">
                     <div>
                         <input type="hidden" value="<?= $id ?>" name="idRequest" id="idRequest">
+                        <input type="hidden" value="<?= $bu ?>" name="idBu" id="idBu">
                     </div>
                     <div class="form-group">
                         <label>Nom du Tag</label>
@@ -383,8 +427,7 @@ ob_start();
                             <option value="=">=</option>
                             <option value=">">></option>
                             <option value="<"><</option>
-                            <option value=">=">>=</option>
-                            <option value="<="><=</option>
+                            <option value="EST">>=</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -394,13 +437,6 @@ ob_start();
                     <div class="form-group">
                         <label>Valeur numérique</label>
                         <input type="number" class="form-control" name="numericValue" id="numericValue">
-                    </div>
-                    <div class="form-group">
-                        <label>Oui/Non</label>
-                        <select class="form-control" name="selectBoolean" id="selectBoolean">
-                            <option value="oui">OUI</option>
-                            <option value="non">NON</option>
-                        </select>
                     </div>
                 </div>
                 <div id="message" class="text-warning align-center"></div>
@@ -413,7 +449,7 @@ ob_start();
     </div>
 </div>
 <!-- Delete Modal HTML -->
-<div id="deleteEmployeeModal" class="modal fade">
+<div id="deleteTagModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form>
@@ -427,13 +463,11 @@ ob_start();
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-danger" value="Delete">
+                    <input type="button" id="deleteTag" class="btn btn-danger" value="Delete">
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-
 <?php $content = ob_get_clean(); ?>
 <?php require('template.php'); ?>

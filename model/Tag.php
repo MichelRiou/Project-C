@@ -1,5 +1,5 @@
 <?php
-namespace mr\fr\Model;
+namespace model;
 /*
  * LE DTO DE LA TABLE [Article] DE LA BD [5Minutes]
  */

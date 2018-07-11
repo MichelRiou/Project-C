@@ -1,5 +1,5 @@
 <?php
-namespace mr\fr\Model;
+namespace model;
 /*
  * LE DTO DE LA TABLE [Article] DE LA BD [5Minutes]
  */
@@ -11,7 +11,6 @@ class TagRequest {
     private $request_tag_sign;
     private $request_tag_value;
     private $request_tag_numeric;
-    private $request_tag_boolean;
 
     /**
      * CONSTRUCTEUR
@@ -20,15 +19,13 @@ class TagRequest {
      * @param type varchar $request_tag_sign
      * @param type varchar $request_tag_value
      * @param type int $request_tag_numeric
-     * @param type mixte $request_tag_boolean
      */    
-    function __construct($request_id=0, $tag_id=0, $request_tag_sign="", $request_tag_value="", $request_tag_numeric=0, $request_tag_boolean=null) {
+    function __construct($request_id=0, $tag_id=0, $request_tag_sign="", $request_tag_value="", $request_tag_numeric=0) {
         $this->request_id = $request_id;
         $this->tag_id = $tag_id;
         $this->request_tag_sign = $request_tag_sign;
         $this->request_tag_value = $request_tag_value;
         $this->request_tag_numeric = $request_tag_numeric;     
-        $this->request_tag_boolean = $request_tag_boolean;
     }
 
     function getRequest_id() {
@@ -49,10 +46,6 @@ class TagRequest {
 
     function getRequest_tag_numeric() {
         return $this->request_tag_numeric;
-    }
-
-    function getRequest_tag_boolean() {
-        return $this->request_tag_boolean;
     }
 
     function setRequest_id($request_id) {
@@ -78,15 +71,5 @@ class TagRequest {
     function setRequest_tag_numeric($request_tag_numeric) {
         $this->request_tag_numeric = $request_tag_numeric;
         return $this;
-    }
-
-    function setRequest_tag_boolean($request_tag_boolean) {
-        $this->request_tag_boolean = $request_tag_boolean;
-        return $this;
-    }
-
-
-    
+    }   
 }
-
-?>
