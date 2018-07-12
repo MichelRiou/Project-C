@@ -29,6 +29,7 @@ ob_start();
     .table-title h2 {
         margin: 5px 0 0;
         font-size: 24px;
+        height: 30px;
     }
     .table-title .btn-group {
         float: right;
@@ -385,12 +386,12 @@ ob_start();
 </script>
 
 <div class="container">
-    <?php echo $id ?>
+   
     <div class="table-wrapper">
-        <div class="table-title">
+        <div class="table-title h2">
             <div class="row">
                 <div class="col-sm-8 form-group">
-                    <h4>Réponses</b></h4>
+                    <h2>Réponses</b></h2>
                 </div>
 
             </div>

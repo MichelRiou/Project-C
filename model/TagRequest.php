@@ -20,7 +20,7 @@ class TagRequest {
      * @param type varchar $request_tag_value
      * @param type int $request_tag_numeric
      */    
-    function __construct($request_id=0, $tag_id=0, $request_tag_sign="", $request_tag_value="", $request_tag_numeric=0) {
+    function __construct($request_id="", $tag_id="", $request_tag_sign="", $request_tag_value="", $request_tag_numeric="") {
         $this->request_id = $request_id;
         $this->tag_id = $tag_id;
         $this->request_tag_sign = $request_tag_sign;

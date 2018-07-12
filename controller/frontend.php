@@ -22,7 +22,7 @@ function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue
 
     $TagRequestDAO = new \model\TagRequestDAO();
     $TagRequest = new \model\TagRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue);
-    //print_r($TagRequest); AJAX !!!!!
+ // print_r($TagRequest);
     $result = $TagRequestDAO->insertTagFromRequest($TagRequest);
     // Pour requête AJAX
     echo $result;
@@ -57,12 +57,14 @@ function majOneRequest($pId, $pBU) {
     $RequestManager = new \model\RequestManager();
     $TagRequestDAO = new \model\TagRequestDAO();
     $TagDAO = new \model\TagDAO();
+    $SignDAO = new \model\SignDAO();
     $id = $pId;
     $bu = $pBU;
     $request = $RequestManager->selectOneRequest($id);
     $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
     $tags = $TagDAO->selectAllTagsNotInRequestFromBU($id, $bu);
-    //print_r($tags);
+    $signs = $SignDAO->selectAllSigns();
+   // print_r($signs);
     require('view/frontend/majOneRequest.php');
 }
 function listTagsRequest($pId) {

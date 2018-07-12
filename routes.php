@@ -1,15 +1,18 @@
 <?php
+
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
-function autoloader($class){
-    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; 
-    $classPath = ROOT_PATH . "\project-c\\${class}.php"; 
+
+function autoloader($class) {
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    //$classPath = ROOT_PATH . "\project-c\\${class}.php"; 
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
         throw new Exception("Classe inexistante");
     }
 }
+
 // Référencement de la fonction d'autochargement
 spl_autoload_register("autoloader");
 /*
@@ -67,14 +70,14 @@ try {
                 $id = filter_input(INPUT_GET, "id");
                 $bu = filter_input(INPUT_GET, "bu");
                 if ($id != null && $bu != null) {
-                    majOneRequest($id,$bu);
+                    majOneRequest($id, $bu);
                 } else {
                     throw new Exception('Aucun Id/BU spécifié');
                 }
                 break;
             case 'listTagsRequest':
                 $id = filter_input(INPUT_GET, "id");
-               
+
                 if ($id != null) {
                     listTagsRequest($id);
                 } else {
@@ -84,9 +87,9 @@ try {
             case 'deleteTagOnRequest':
                 $id = filter_input(INPUT_GET, "idRequest");
                 $tag = filter_input(INPUT_GET, "idTag");
-               
+
                 if ($id != null && $tag != null) {
-                    deleteTagOnRequest($id,$tag);
+                    deleteTagOnRequest($id, $tag);
                 } else {
                     throw new Exception('Aucun Id spécifié');
                 }
