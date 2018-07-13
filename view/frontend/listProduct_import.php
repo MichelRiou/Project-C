@@ -1,6 +1,7 @@
 <?php
 ob_start();
 ?>
+
 <script type="text/javascript">
     $(document).ready(function () {
         // Activate tooltip

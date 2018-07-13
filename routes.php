@@ -109,7 +109,14 @@ try {
                     throw new Exception('Erreur d\'appel du controleur addTag');
                 }
                 break;
+            case 'getProductsFile':
+                getProductsFile();
 
+                break;
+            case 'majProductsFile':
+                majProductsFile();
+
+                break;
             /**
              *  Traitement des routes non reconnues
              */

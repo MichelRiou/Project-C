@@ -66,14 +66,16 @@ if ($headerTECHDATA != $headerReaded) {
     $index = 0;
     foreach ($worksheet->getRowIterator() as $row) {
         if ($index != 0) {
-            $test = str_pad($row[0]->getCellIterator(), 10, '0', STR_PAD_LEFT);
+            $test = str_pad($row[1]->getCellIterator(), 10, '0', STR_PAD_LEFT);
             echo $test;
             foreach ($row->getCellIterator() as $cell) {
                 $cellule->getValue();
             }
         }
+        echo ('line');
     }
 }
+echo ('done');
 echo('</body></html>');
 
 ?>
