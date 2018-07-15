@@ -4,8 +4,8 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
-    //$classPath = ROOT_PATH . "\project-c\\${class}.php"; 
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    $classPath = ROOT_PATH . "\project-c\\${class}.php";
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -18,8 +18,11 @@ spl_autoload_register("autoloader");
 /*
  * routes.php
  */
-
+require('controller/authorization.php');
+           
 require('controller/frontend.php');
+
+ if (controlSession()){
 /**
  * CONTROLEUR FRONTAL
  */
@@ -129,4 +132,5 @@ try {
 } catch (Exception $e) {
     echo 'Erreur : ' . $e->getMessage();
 }
+ }
 ?>

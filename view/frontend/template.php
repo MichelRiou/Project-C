@@ -41,10 +41,46 @@
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Formulaire
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
+                            <a class="dropdown-item" href="#">Création</a>
+                            <a class="dropdown-item" href="#">Liste</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Nouvelle BU</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Produits
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            
+                            <a class="dropdown-item" href="#">Création</a>
+                            <a class="dropdown-item" href="#">Liste</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Nouvelle BU</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Utilisateurs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
+                            <a class="dropdown-item" href="#">Création</a>
+                            <a class="dropdown-item" href="#">Liste</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Nouvelle BU</a>
+                        </div>
+                    </li>
                 </ul> 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#">Admin</a>
+                        <a class="nav-link " href="#">Connecté en tant que : <?php $user=(isset($_SESSION['user'])?$_SESSION['user']:'personne')?><?=$user?></a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">

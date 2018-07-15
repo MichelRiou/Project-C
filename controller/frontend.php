@@ -81,7 +81,7 @@ function majProductsFile() {
          echo ('erreur');
     } else {
          echo ('erreur');
-        header('Location: routes.php?action=getProductsFile');
+        header('Location: routes.php');
     }
 }
     function getProductsFile() {
@@ -147,6 +147,14 @@ function majProductsFile() {
     }
 
     function listRequest($pBU) {
+
+        $RequestManager = new \model\RequestManager();
+        $bu = $pBU;
+        $requests = $RequestManager->selectAllRequestsFromBU($bu);
+
+        require('view/frontend/listRequest.php');
+    }
+    function manageQuestion($pBU) {
 
         $RequestManager = new \model\RequestManager();
         $bu = $pBU;

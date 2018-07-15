@@ -16,4 +16,15 @@ class DAOManager
        
         return $db;
     }
+    protected function dbClose($db)
+    {
+        try{
+            
+             
+        } catch (Exception $ex) {
+                echo $ex->getMessage();
+        }
+       
+        
+    }
 }

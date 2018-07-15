@@ -1,64 +1,50 @@
 <?php
-// session_start definie dans index.php
-// Importation des class
-//require "../src/user.php";
-// Si c'est POST alors le formulaire à été POSTE autrement c'est GET
-//var_dump($_POST);
-// Récupération méthode d'affichage de la page
-define('ROOT_PATH', "C:\\xampp\htdocs");
-echo ROOT_PATH;
-function autoloader($class){
-    $classPath = ROOT_PATH . "\Projet-Calestor\\model\\${class}.php"; 
-    echo ('Appel de la classe :' .$classPath);
-    if (file_exists($classPath)) {
-        include_once $classPath;
-    } else {
-        throw new Exception("Classe inexistante");
-    }
-}
-// Référencement de la fonction d'autochargement
-spl_autoload_register("autoloader");
+//session_start();
 $isPosted = filter_has_var(INPUT_POST, "submit");
+//echo ('submit');
 // Traitement du formulaire si les données ont été postées.
 if ($isPosted) {
 // Récupération de la saisie
-    $pseudo = filter_input(INPUT_POST, "pseudo", FILTER_SANITIZE_STRING);
+    $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
     $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
 // Validation de la saisie
-    $isFormValid = $pseudo && $password;
+    $isFormValid = $username && $password;
 // Instanciation de l'utilisateur
     if ($isFormValid) {
+        try{
         $UserDAO = new UserDAO();
         $user = $UserDAO->selectUser($userName, $password);
-         var_dump($user);
-        var_dump(serialize($user));
+        echo ('var_dump');
+        var_dump($user);
+       var_dump(serialize($user));
         // Stockage de l'utilisateur dans une session
         $_SESSION["user"] = serialize($user);   // Impossible de stocker un objet donc serialization vers string Json
+        }catch (Exception $e){
+             echo '<h1>Erreur : ' . $e->getMessage().'</h1>';
+        }
     }
 
-// Redirection vers une autre page
     header("location:/routes.php");
-}
+}else{
+    echo ('pas sousmis');
+
 ?>
-<!DOCTYPE>
-<html>
-    <head>
-    </head>
-    <body>
-        <form method="post">
-            <div>
-                <label>PSEUDO</label>
-                <input type="text" name="pseudo">
-            </div>
-            <div>
-                <label>Password</label>
-                <input type="password" name="password">
-            </div>
-            <div>
-                <button type="submit" name="submit">Valider</button>
-            </div>
-            <div id="message">
-            </div>
-        </form>
-    </body>
-</html>
+<?php
+ob_start();
+?>
+<div class="container">
+    <div class="row table-wrapper">
+        <div class="col-md-4 offset-md-4 ">        
+            <form method="POST" action="" accept-charset="UTF-8" role="form">
+                <input type="text" id="username" class="span4" name="username" placeholder="Username">
+                <input type="password" id="password" class="span4" name="password" placeholder="Password">
+                <label class="checkbox">
+                    <input type="checkbox" name="remember" value="1"> Remember Me
+                </label>
+                <button type="submit" name="submit" class="btn btn-primary btn-block">Sign in</button>
+            </form>    
+        </div>
+    </div>
+</div>
+<?php $content = ob_get_clean(); ?>
+<?php require('template.php');} 

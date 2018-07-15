@@ -53,7 +53,9 @@ class Tag {
         return $this;
     }
 
-
+/* public function to_string() { 
+     return "id : $this->id, nom : $this->nom, nb_vendu : $this->nb_vendu"; }
+}*/
 }
 
 ?>

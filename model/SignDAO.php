@@ -22,6 +22,7 @@ class SignDAO extends DAOManager {
             //$objet->setSign($enr['sign']);
             $objet->setSign_ESC($enr['sign_ESC']);
         }
+       // $req->closeCursor();
         return $objet;
     }
 
