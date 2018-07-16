@@ -22,5 +22,6 @@
             </table>
 <?php
 $content = ob_get_clean();
+//AJAX
 echo $content;
 ?>

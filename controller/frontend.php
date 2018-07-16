@@ -108,6 +108,20 @@ function majProductsFile() {
 // Pour requête AJAX
         echo $result;
     }
+    
+    function updateTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue) {
+
+        $TagRequestDAO = new \model\TagRequestDAO();
+        $objet = new \model\TagRequest();
+        $objet->setRequest_id($requestId);
+        $objet->setTag_id($tagId);
+        $objet->setRequest_tag_sign($selectOperator);
+        $objet->setRequest_tag_value($alphanumericValue);
+        $objet->getRequest_tag_numeric($numericValue);
+        $result = $TagRequestDAO->updateTagFromRequest($objet);
+// Pour requête AJAX
+        echo $result;
+    }
 
     function getUserByName($pId, $pBU) {
 
@@ -154,13 +168,17 @@ function majProductsFile() {
 
         require('view/frontend/listRequest.php');
     }
-    function manageQuestion($pBU) {
+    function listQuestionFromForm($bu , $form) {
 
-        $RequestManager = new \model\RequestManager();
-        $bu = $pBU;
-        $requests = $RequestManager->selectAllRequestsFromBU($bu);
+        $QuestionDAO = new \model\QuestionDAO();
+        $questions = $QuestionDAO->selectAllQuestionsFromForm($bu ,$form);
+        require('view/frontend/listQuestion.php');
+    }
+    function manageQuestionFromForm($buId,$formId) {
 
-        require('view/frontend/listRequest.php');
+        $FormDAO = new \model\FormDAO();
+        $form = $FormDAO->selectOneForm($buId,$formId);
+        require('view/frontend/manageQuestion.php');
     }
 
     function listHeaderRequest() {

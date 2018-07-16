@@ -46,7 +46,7 @@
                             Formulaire
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
+                            <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=2">Audiovisuel</a>
                             <a class="dropdown-item" href="#">Création</a>
                             <a class="dropdown-item" href="#">Liste</a>
                             <div class="dropdown-divider"></div>
@@ -80,7 +80,12 @@
                 </ul> 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#">Connecté en tant que : <?php $user=(isset($_SESSION['user'])?$_SESSION['user']:'personne')?><?=$user?></a>
+                        <a class="nav-link " href="#">Business Unit: <?php $bu=(isset($_SESSION['bu'])?$_SESSION['bu']:'Aucune')?><?=$bu?></a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link " href="#">Utilisateur: <?php $user=(isset($_SESSION['user'])?$_SESSION['user']:'personne')?><?=$user?></a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">

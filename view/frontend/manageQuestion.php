@@ -2,9 +2,63 @@
 ob_start();
 ?>
 <script type="text/javascript">
+    function refresh() {
+        $.ajax({
+            type: 'POST',
+            url: '/routes.php?action=listQuestionFromForm&form=' + $("#idForm").val(),
+            success: function (data) {
+                $("#requete").html(data);
+                $('[data-toggle="tooltip"]').tooltip();
+                $("#okbutton").click(function () {
+                    var s = $('table tbody input:checked');
+                    if (s.length !== 0) {
+                        console.log(checkbox);
+                        $("#message").html('');
+                        $("#addResponseModal").modal('show');
+                    } else {
+                        $("#messageModal").modal('show');
+                    }
+                });
+                var checkbox = $('table tbody input[type="checkbox"]');
+
+                checkbox.click(function () {
+                var s = this.checked;
+                        console.log(s)
+                        checkbox.each(function () {
+                        this.checked = false;
+                        });
+                        this.checked = s;
+                    });
+                        
+                        
+                        $('a[class="delete"]').click(function () {
+                idDelete = this.getAttribute('value');
+                        console.log(idDelete);
+                });
+                        $('a[class="edit"]').click(function () {
+                //MISE A JOUR DES CHAMPS POUR L'UPDATE 
+                //value a qualifier
+                idEdit = this.getAttribute('value');
+                        $('#editName').val(this.getAttribute('tagname'));
+                        signEdit = this.getAttribute('sign');
+                        $('#editSign').val(signEdit);
+                        alphaEdit = this.getAttribute('alpha');
+                        $('#editAlpha').val(alphaEdit);
+                        numericEdit = this.getAttribute('numeric');
+                        $('#editNumeric').val(numericEdit);
+                        console.log(idEdit);
+                });
+                },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+        });
+    }
     $(document).ready(function () {
+        refresh();
         // Activate tooltip
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
         // Validation de la modal AJOUTER UNE REPONSE
         $("#okbutton").click(function () {
             var s = $('table tbody input:checked');
@@ -21,6 +75,7 @@ ob_start();
             var s = $('table tbody input:checked');
             if (s.length !== 0) {
                 console.log(checkbox);
+                console.log(s);
                 $("#message").html('');
                 $("#deleteQuestionModal").modal('show');
             } else {
@@ -29,17 +84,6 @@ ob_start();
         });
         // Select/Deselect checkboxes
         var checkbox = $('table tbody input[type="checkbox"]');
-        /*  $("#selectAll").click(function () {
-         if (this.checked) {
-         checkbox.each(function () {
-         this.checked = true;
-         });
-         } else {
-         checkbox.each(function () {
-         this.checked = false;
-         });
-         }
-         });*/
 
         checkbox.click(function () {
             var s = this.checked;
@@ -68,73 +112,19 @@ ob_start();
         <div class="table-title ">
             <div class="row">
                 <div class="col-sm-4">
-                    <h2>Gestion des formulaires</h2>
+                    <h6><?= $form->getForm_name() ?></h6><input type="hidden" value="<?= $form->getForm_id() ?>" id="idForm">
                 </div>
                 <div class="col-sm-8">
-                    
+
                     <button id="okbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></button>
                     <button id="deletebutton" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
                     <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une question</span></button>
-                
+
                 </div>
             </div>
         </div>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Nom</th>
-                    <th>Libellé</th>
-                    <th>Ordre</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $request_save = '';
-                $index = 0;
-                foreach ($requests as $request) {
-                    if ($request['header_designation'] != $request_save) {
-                        $request_save = $request['header_designation'];
-                        ?>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox<?= $index ?>" name="options[]" value="1">
-                                    <label for="checkbox1"></label>
-                                </span>
-                            </td>
-                            <td>Question: <b><?= $request['header_designation'] ?></b></td><td></td><td></td><td></td></tr>
-                        <?php
-                        $index++;
-                    }
-                    ?>
-                    <tr><td></td><td><?= $request['request_name'] ?></td><td><?= $request['request_libelle'] ?></td><td><?= $request['request_order'] ?></td>
-                        <td>
-                            <a href="routes.php?action=majOneRequest&id=<?= $request['request_id'] ?>&bu=<?= $request['header_bu'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                        </td>
-                    </tr>
-                    <?php
-                }
-                ?> 
-            </tbody>
-        </table>
-
-        <!--     <div class="clearfix">
-                 <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-                 <ul class="pagination">
-                     <li class="page-item disabled"><a href="#">Previous</a></li>
-                     <li class="page-item"><a href="#" class="page-link">1</a></li>
-                     <li class="page-item"><a href="#" class="page-link">2</a></li>
-                     <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                     <li class="page-item"><a href="#" class="page-link">4</a></li>
-                     <li class="page-item"><a href="#" class="page-link">5</a></li>
-                     <li class="page-item"><a href="#" class="page-link">Next</a></li>
-                 </ul>
-             </div>
-         </div> -->
+        <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
+        <div id='requete'></div>
     </div>
     <!-- MODAL ADD RESPONSE -->
     <div id="addResponseModal" class="modal fade">

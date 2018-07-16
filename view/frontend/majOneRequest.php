@@ -4,6 +4,18 @@ ob_start();
 <script type="text/javascript">
     var idDelete;
     var idEdit;
+    function ctrlAddForm(form) {
+        var msg = "";
+        if ($("#idOperator").val() == 'EST' && $("#alphanumericValue").val() == "")
+            msg += 'L\'opérateur EST nécessite une valeur alphanumérique';
+        if ($("#idOperator").val() != 'EST' && $("#numericValue").val() == "")
+            msg += 'Les opérateurs =>< nécessite une valeur numérique';
+
+        // Monitoring des erreurs
+        $("#message").html(msg);
+        $result = (msg != "" ? false : true);
+        return $result;
+    }
     function refresh() {
         $.ajax({
             type: 'POST',
@@ -12,24 +24,20 @@ ob_start();
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
                 $('a[class="delete"]').click(function () {
-                    // event.preventDefault();
-                    //var t=this;
                     idDelete = this.getAttribute('value');
-                    // page = ($(this).attr("href"));
                     console.log(idDelete);
                 });
                 $('a[class="edit"]').click(function () {
                     //MISE A JOUR DES CHAMPS POUR L'UPDATE 
+                    //value a qualifier
                     idEdit = this.getAttribute('value');
-                    //nameEdit = this.getAttribute('tagname');
-                    $('#editname').val(this.getAttribute('tagname'));
+                    $('#editName').val(this.getAttribute('tagname'));
                     signEdit = this.getAttribute('sign');
-                    $('#editsign').val(signEdit);
-                    //$('#editsign option[value=' + signEdit + ']').prop('selected', true);
+                    $('#editSign').val(signEdit);
                     alphaEdit = this.getAttribute('alpha');
-                    $('#editalpha').val(alphaEdit);
+                    $('#editAlpha').val(alphaEdit);
                     numericEdit = this.getAttribute('numeric');
-                    $('#editnumeric').val(numericEdit);
+                    $('#editNumeric').val(numericEdit);
 
                     console.log(idEdit);
                 });
@@ -47,64 +55,34 @@ ob_start();
         $('[data-toggle="tooltip"]').tooltip();
         // Activation de la fenêtre modale AJOUTER UN TAG
         $("#addbutton").click(function () {
+            // Reset de la fenetre modale 
+            $("#alphanumericValue").val('');
+            $("#numericValue").val('');
             $("#message").html('');
             $("#addTagModal").modal('show');
         });
-        /* $('a[class="delete"]').click(function () {
-         // event.preventDefault();
-         //var t=this;
-         idDelete = this.getAttribute('value');
-         // page = ($(this).attr("href"));
-         console.log(idDelete);
-         });
-         $('a[class="edit"]').click(function () {
-         // event.preventDefault();
-         //var t=this;
-         idEdit = this.getAttribute('value');
-         // page = ($(this).attr("href"));
-         console.log(idEdit);
-         });*/
-        // CheckBox version RadioButton 
-        //var checkbox = $('table tbody input[type="checkbox"]');
-        //checkbox.click(function () {
-        //  checkbox.each(function () {
-        //    this.checked = false;
-        // });
-        // this.checked = true;
-        //});
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
-            $.ajax({
-                type: 'POST',
-                url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#idOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val(),
-                success: function (result) {
-                    console.log('retour success' + result);
-                    if (result != 1) {
-                        $("#message").html("Erreur d\'insertion");
-                    } else {
-                        $('#cancel').trigger('click');
-                        refresh();
-                        //console.log('maj');
-                        //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
-                        /* $.ajax({
-                         type: 'POST',
-                         url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
-                         success: function (data) {
-                         $("#requete").html(data);
-                         },
-                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                         alert(textStatus);
-                         $("#retour").html("Erreur d\'envoi de la requête");
-                         }
-                         });*/
+            if (ctrlAddForm()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#idOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val(),
+                    success: function (result) {
+                        console.log('retour success' + result);
+                        if (result != 1) {
+                            $("#message").html("Erreur d\'insertion");
+                        } else {
+                            $('#cancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
                     }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert(textStatus);
-                    $("#retour").html("Erreur d\'envoi de la requête");
-                }
-            });
-            return false;
+                });
+                return false;
+            }
         }));
         // AJAX 
         $("#deleteTag").on('click', (function () {
@@ -120,33 +98,28 @@ ob_start();
                     } else {
                         $('#cancelDelete').trigger('click');
                         refresh();
-                        //console.log('maj');
-                        //window.location = 'routes.php?action=majOneRequest&id=' + $("#idRequest").val() + '&bu=' + $("#idBu").val();
-                        /*$.ajax({
-                         type: 'POST',
-                         url: '/routes.php?action=listTagsRequest&id=' + $("#idRequest").val(),
-                         success: function (data) {
-                         $("#requete").html(data);
-                         $('a[class="delete"]').click(function () {
-                         // event.preventDefault();
-                         //var t=this;
-                         idDelete = this.getAttribute('value');
-                         // page = ($(this).attr("href"));
-                         console.log(idDelete);
-                         });
-                         $('a[class="edit"]').click(function () {
-                         // event.preventDefault();
-                         //var t=this;
-                         idEdit = this.getAttribute('value');
-                         // page = ($(this).attr("href"));
-                         console.log(idEdit);
-                         });
-                         },
-                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                         alert(textStatus);
-                         $("#retour").html("Erreur d\'envoi de la requête");
-                         }
-                         });*/
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                    $("#retour").html("Erreur d\'envoi de la requête");
+                }
+            });
+            return false;
+        }));
+        // AJAX
+        $("#editTag").on('click', (function () {
+
+            $.ajax({
+                type: 'POST',
+                url: '/routes.php?action=updateTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + idEdit + '&editSign=' + $("#editSign").val() + '&editAlpha=' + $("#editAlpha").val() + '&editNumeric=' + $("#editNumeric").val(),
+                success: function (data) {
+                    console.log('retour update' + data + $("#idRequest").val() + idEdit + '&editSign=' + $("#editSign").val() + '&editAlpha=' + $("#editAlpha").val() + '&editNumeric=' + $("#editNumeric").val());
+                    if (data != 1) {
+                        $("#messageEdit").html("Erreur de update");
+                    } else {
+                        $('#editCancel').trigger('click');
+                        refresh();
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -204,11 +177,11 @@ ob_start();
                 <div class="modal-body">					
                     <div class="form-group">
                         <label>Nom du Tag</label>
-                        <input type="text" class="form-control" readonly="readonly" id ="editname" >
+                        <input type="text" class="form-control" readonly="readonly" id ="editName" >
                     </div>
                     <div class="form-group">
                         <label>Opérateur</label>
-                        <select class="form-control" name="selectOperator" id="editSign">
+                        <select class="form-control" name="editSign" id="editSign">
                             <option value="=">=</option> 
                             <option value=">">></option>
                             <option value="<"><</option>
@@ -217,16 +190,17 @@ ob_start();
                     </div>
                     <div class="form-group">
                         <label>Valeur Alphanumérique</label>
-                        <input type="text" class="form-control" id ="editalpha">
+                        <input type="text" class="form-control" id ="editAlpha">
                     </div>
                     <div class="form-group">
                         <label>Valeur numérique</label>
-                        <input type="text" class="form-control" id ="editnumeric">
+                        <input type="text" class="form-control" id ="editNumeric">
                     </div>					
                 </div>
+                <div id="messageEdit" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-success" value="save" id="save">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
+                    <input type="submit" class="btn btn-success" value="edit" id="editTag">
                 </div>
             </form>
         </div>
@@ -275,7 +249,7 @@ ob_start();
                 <div id="message" class="text-warning align-center"></div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="cancel">
-                    <input type="button" class="btn btn-info" value="add" id="addTag">
+                    <input type="button" class="btn btn-info" value="add" id="addTag" >
                 </div>
             </form>
         </div>
