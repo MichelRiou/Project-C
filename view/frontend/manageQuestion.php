@@ -22,37 +22,37 @@ ob_start();
                 var checkbox = $('table tbody input[type="checkbox"]');
 
                 checkbox.click(function () {
-                var s = this.checked;
-                        console.log(s)
-                        checkbox.each(function () {
+                    var s = this.checked;
+                    console.log(s)
+                    checkbox.each(function () {
                         this.checked = false;
-                        });
-                        this.checked = s;
                     });
-                        
-                        
-                        $('a[class="delete"]').click(function () {
-                idDelete = this.getAttribute('value');
-                        console.log(idDelete);
+                    this.checked = s;
                 });
-                        $('a[class="edit"]').click(function () {
-                //MISE A JOUR DES CHAMPS POUR L'UPDATE 
-                //value a qualifier
-                idEdit = this.getAttribute('value');
-                        $('#editName').val(this.getAttribute('tagname'));
-                        signEdit = this.getAttribute('sign');
-                        $('#editSign').val(signEdit);
-                        alphaEdit = this.getAttribute('alpha');
-                        $('#editAlpha').val(alphaEdit);
-                        numericEdit = this.getAttribute('numeric');
-                        $('#editNumeric').val(numericEdit);
-                        console.log(idEdit);
+
+
+                $('a[class="delete"]').click(function () {
+                    idDelete = this.getAttribute('value');
+                    console.log(idDelete);
                 });
-                },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert(textStatus);
-                        $("#retour").html("Erreur d\'envoi de la requête");
-                    }
+                $('a[class="edit"]').click(function () {
+                    //MISE A JOUR DES CHAMPS POUR L'UPDATE 
+                    //value a qualifier
+                    idEdit = this.getAttribute('value');
+                    $('#editName').val(this.getAttribute('tagname'));
+                    signEdit = this.getAttribute('sign');
+                    $('#editSign').val(signEdit);
+                    alphaEdit = this.getAttribute('alpha');
+                    $('#editAlpha').val(alphaEdit);
+                    numericEdit = this.getAttribute('numeric');
+                    $('#editNumeric').val(numericEdit);
+                    console.log(idEdit);
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(textStatus);
+                $("#retour").html("Erreur d\'envoi de la requête");
+            }
         });
     }
     $(document).ready(function () {
@@ -74,28 +74,47 @@ ob_start();
         $("#deletebutton").click(function () {
             var s = $('table tbody input:checked');
             if (s.length !== 0) {
-                console.log(checkbox);
-                console.log(s);
+               /// console.log(s[0]);
+               // console.log(s[0].value);
+                var deleteHeader= s[0].value;
                 $("#message").html('');
                 $("#deleteQuestionModal").modal('show');
             } else {
                 $("#messageModal").modal('show');
             }
         });
+                // AJAX 
+        $("#deleteHeader").on('click', (function () {
+            //alert();
+            // console.log(obj);
+            $.ajax({
+                type: 'POST',
+                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + idDelete,
+                success: function (data) {
+                    console.log('retour delete' + data + $("#idRequest").val() + idDelete);
+                    if (data != 1) {
+                        $("#messageDelete").html("Erreur de suppression");
+                    } else {
+                        $('#cancelDelete').trigger('click');
+                        refresh();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                    $("#retour").html("Erreur d\'envoi de la requête");
+                }
+            });
+            return false;
+        }));
         // Select/Deselect checkboxes
         var checkbox = $('table tbody input[type="checkbox"]');
 
         checkbox.click(function () {
             var s = this.checked;
-            console.log(s)
             checkbox.each(function () {
                 this.checked = false;
             });
             this.checked = s;
-            /*   alert();
-             if (!this.checked) {
-             $("#selectAll").prop("checked", false);
-             }*/
         });
         $("#addResponse").click(function () {
             // alert();
@@ -211,7 +230,7 @@ ob_start();
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-danger" value="Delete">
+                        <input type="button" id="deleteHeader" class="btn btn-danger" value="Delete">
                     </div>
                 </form>
             </div>

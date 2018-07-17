@@ -11,7 +11,7 @@
                     <?php
                     foreach ($tagsRequest as $tagRequest) {
                         ?>
-                        <tr><td><?= $tagRequest['tag_name'] ?></td><td><?= $tagRequest['tag_values'] ?></td><td><?= $tagRequest['request_tag_sign'] ?></td><td><?= $tagRequest['request_tag_value'] ?></td><td><?= $tagRequest['request_tag_numeric'] ?></td>
+                        <tr><td><?= $tagRequest['tag_name'] ?></td><td><?= $tagRequest['tag_designation'] ?></td><td><?= $tagRequest['request_tag_sign'] ?></td><td><?= $tagRequest['request_tag_value'] ?></td><td><?= $tagRequest['request_tag_numeric'] ?></td>
                             <td>
                                 <a href="#editTagModal" value="<?=$tagRequest['tag_id'] ?>" tagname="<?=$tagRequest['tag_name'] ?>" sign="<?=$tagRequest['request_tag_sign'] ?>" alpha="<?=$tagRequest['request_tag_value'] ?>" numeric="<?=$tagRequest['request_tag_numeric'] ?>" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                 <a href="#deleteTagModal" value="<?=$tagRequest['tag_id'] ?>"  class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>

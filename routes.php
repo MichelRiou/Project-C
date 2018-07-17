@@ -22,6 +22,8 @@ require('controller/authorization.php');
 
 require('controller/frontend.php');
 
+require('controller/backend.php');
+
 if (controlSession()) {
     /**
      * CONTROLEUR FRONTAL
@@ -76,7 +78,42 @@ if (controlSession()) {
                     } else {
                         throw new Exception('Aucune BU spécifiée');
                     }
+                    break;
+    // GESTION DES TAGS                
+                 case 'manageTagFromBu':
+                    $bu = $_SESSION['bu'];                 
+                    if (isset($bu)) {
+                        manageTagFromBu($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
                     break;    
+                case 'listTagFromBu':
+                    $bu = $_SESSION['bu'];                 
+                    if (isset($bu)) {
+                        listTagFromBu($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break; 
+                case 'deleteTag':
+                    $id = filter_input(INPUT_GET, "id");
+                    if (isset($id)) {
+                        deleteTag($id);
+                    } else {
+                        throw new Exception('Erreur de parametre');
+                    }
+                    break; 
+                case 'updateTag':
+                    $id = filter_input(INPUT_GET, "id");
+                    $designation = filter_input(INPUT_GET, "designation");
+                    if (isset($id) && isset($designation)) {
+                        updateTag($id,$designation);
+                    } else {
+                        throw new Exception('Erreur de parametre');
+                    }
+                    break; 
+    // 
                 case 'listRequest':
                     $bu = filter_input(INPUT_GET, "bu");
                     if ($bu != null) {
@@ -98,6 +135,16 @@ if (controlSession()) {
                         throw new Exception('Aucun Id/BU spécifié');
                     }
                     break;
+                case 'manageResponse':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "id");
+                    //$bu = filter_input(INPUT_GET, "bu");
+                    if (isset($id)&& isset($bu)) {
+                        manageResponse($id, $bu);
+                    } else {
+                        throw new Exception('Aucun Id/BU spécifié');
+                    }
+                    break;    
 
                 case 'listTagsRequest':
                     $id = filter_input(INPUT_GET, "id");

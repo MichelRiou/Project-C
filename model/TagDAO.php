@@ -2,17 +2,16 @@
 
 namespace model;
 
-require_once("model/DAOManager.php");
-require_once("model/Tag.php");
+//require_once("model/DAOManager.php");
+//require_once("model/Tag.php");
 
 class TagDAO extends DAOManager {
-    
+
     /**
      * 
      * @param int $id
      * @return Array 
      */
-   
     public function selectOneTag($id) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM tags WHERE tag_id = ? ');
@@ -21,6 +20,7 @@ class TagDAO extends DAOManager {
         $T_tag = $req->fetchAll();
         return $T_tag;
     }
+
     public function selectAllTags() {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM tags ');
@@ -29,29 +29,75 @@ class TagDAO extends DAOManager {
         $T_tags = $req->fetchAll();
         return $T_tags;
     }
-    public function selectAllTagsFromBU($bu) {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM tags where tag_bu= ? ');
-        $req->execute(array($id));
-        $T_tags = array();
-        $T_tags = $req->fetchAll();
-        return $T_tags;
+
+    public function deleteTag($objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('DELETE FROM tags WHERE tag_id = ?');
+            $req->bindValue(1, $objet->getTag_id());
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
     }
-    public function selectAllTagsNotInRequestFromBU($id,$bu) {
-        $T_tags = array();
-          try {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
-        $req->bindValue(1, $id);
-        $req->bindValue(2, $bu);
-        $req->setFetchMode(\PDO::FETCH_ASSOC);
-        $req->execute();
-        while ($enr = $req->fetch()) {
+
+    public function updateTag($objet) {
+        $affectedRows = 1;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('UPDATE tags SET tag_designation =? WHERE tag_id=? ');
+            $req->bindValue(1, $objet->getTag_designation(), \PDO::PARAM_STR);
+            $req->bindValue(2, $objet->getTag_id(), \PDO::PARAM_INT);
+            $req->execute();
+        } catch (PDOException $e) {
+            $affectedRows = 0;
+        }
+        return $affectedRows;
+    }
+
+    public function selectAllTagsFromBU($bu) {
+        $tags = array();
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('SELECT * FROM tags where tag_bu= ? ');
+            $req->bindValue(1, $bu);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
                 $objet = new Tag();
                 $objet->setTag_id($enr['tag_id']);
                 $objet->setTag_bu($enr['tag_bu']);
                 $objet->setTag_name($enr['tag_name']);
-                $objet->setTag_values($enr['tag_values']);
+                $objet->setTag_designation($enr['tag_designation']);
+                $tags[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $tags[] = $objet;
+        }
+        //print_r($tags);
+        return $tags;
+    }
+
+    public function selectAllTagsNotInRequestFromBU($id, $bu) {
+        $T_tags = array();
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
+            $req->bindValue(1, $id);
+            $req->bindValue(2, $bu);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new Tag();
+                $objet->setTag_id($enr['tag_id']);
+                $objet->setTag_bu($enr['tag_bu']);
+                $objet->setTag_name($enr['tag_name']);
+                $objet->setTag_designation($enr['tag_designation']);
                 $T_tags[] = $objet;
             }
         } catch (PDOException $e) {
@@ -60,5 +106,5 @@ class TagDAO extends DAOManager {
         }
         return $T_tags;
     }
-   
+
 }

@@ -1,20 +1,6 @@
 <?php
 
-/* spl_autoload_register(function ($class_name) {
-  include $class_name . '.php';
-  }); */
-
-// Chargement des classes
-/* require_once('model/PostManager.php');
-  require_once('model/CommentManager.php');
-  require_once('model/BUManager.php');
-  require_once('model/DeviceAudioManager.php');
-  require_once('model/HeaderRequestManager.php');
-  require_once('model/RequestManager.php');
-  require_once('model/ProductManager.php');
-  require_once('model/TagDAO.php');
-  require_once('model/TagRequestDAO.php');
-  require_once('model/TagRequest.php'); */
+// CLASSES CHARGEES PAR AUTOLOAD.
 
 function majProductsFile() {
 
@@ -147,10 +133,26 @@ function majProductsFile() {
         $bu = $pBU;
         $request = $RequestManager->selectOneRequest($id);
         $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
-        $tags = $TagDAO->selectAllTagsNotInRequestFromBU($id, $bu);
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
         $signs = $SignDAO->selectAllSigns();
-// print_r($signs);
+print_r($tags);
         require('view/frontend/majOneRequest.php');
+    }
+    
+    function manageResponse($id, $bu) {
+
+        $RequestManager = new \model\RequestManager();
+        $TagRequestDAO = new \model\TagRequestDAO();
+        $TagDAO = new \model\TagDAO();
+        $SignDAO = new \model\SignDAO();
+        $request = $RequestManager->selectOneRequest($id);
+        $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
+       // echo ('tableau');
+       // print_r($tags);
+        $signs = $SignDAO->selectAllSigns();
+
+        require('view/frontend/manageResponse.php');
     }
 
     function listTagsRequest($pId) {
@@ -173,6 +175,18 @@ function majProductsFile() {
         $QuestionDAO = new \model\QuestionDAO();
         $questions = $QuestionDAO->selectAllQuestionsFromForm($bu ,$form);
         require('view/frontend/listQuestion.php');
+    }
+    function manageTagFromBu($bu) {
+
+        $BusinessDAO = new \model\BusinessDAO();
+        $bu = $BusinessDAO->selectOneBu($bu);
+        require('view/frontend/manageTag.php');
+    }
+    function listTagFromBu($bu) {
+
+        $TagDAO = new \model\TagDAO();
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
+        require('view/frontend/listTag.php');
     }
     function manageQuestionFromForm($buId,$formId) {
 
@@ -233,15 +247,5 @@ function majProductsFile() {
         require('view/frontend/postView.php');
     }
 
-    function addComment($postId, $author, $comment) {
-        $commentManager = new \model\CommentManager();
-
-        $affectedLines = $commentManager->postComment($postId, $author, $comment);
-
-        if ($affectedLines === false) {
-            throw new Exception('Impossible d\'ajouter le commentaire !');
-        } else {
-            header('Location: index.php?action=post&id=' . $postId);
-        }
-    }
+   
    
