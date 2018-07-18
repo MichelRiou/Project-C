@@ -141,11 +141,11 @@ print_r($tags);
     
     function manageResponse($id, $bu) {
 
-        $RequestManager = new \model\RequestManager();
+        $RequestDAO = new \model\RequestDAO();
         $TagRequestDAO = new \model\TagRequestDAO();
         $TagDAO = new \model\TagDAO();
         $SignDAO = new \model\SignDAO();
-        $request = $RequestManager->selectOneRequest($id);
+        $request = $RequestDAO->selectOneRequest($id);
         $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
         $tags = $TagDAO->selectAllTagsFromBU($bu);
        // echo ('tableau');
@@ -160,6 +160,11 @@ print_r($tags);
         $id = $pId;
         $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
         require('view/frontend/listTagsRequest.php');
+    }
+    function listResponse($id) {
+        $TagRequestDAO = new \model\TagRequestDAO();
+        $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
+        require('view/frontend/listResponse.php');
     }
 
     function listRequest($pBU) {
@@ -228,24 +233,4 @@ print_r($tags);
         $BUs = $BUManager->getBUs();
 
         require('view/frontend/listBUView.php');
-    }
-
-    function listPosts() {
-        $postManager = new \model\PostManager();
-        $posts = $postManager->getPosts();
-
-        require('view/frontend/listPostsView.php');
-    }
-
-    function post() {
-        $postManager = new \model\PostManager();
-        $commentManager = new \model\CommentManager();
-
-        $post = $postManager->getPost($_GET['id']);
-        $comments = $commentManager->getComments($_GET['id']);
-
-        require('view/frontend/postView.php');
-    }
-
-   
-   
+    }  

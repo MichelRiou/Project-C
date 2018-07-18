@@ -9,7 +9,7 @@ class TagRequestDAO extends DAOManager {
     /**
      * 
      * @param int $id
-     * @return Array 
+     * @return Array A supprimer
      */
     public function selectAllTagsFromRequest($id) {
         $db = $this->dbConnect();
@@ -19,6 +19,7 @@ class TagRequestDAO extends DAOManager {
         $T_tags = $req->fetchAll();
         return $T_tags;
     }
+
 
     public function insertTagFromRequest($objet) {
         try {
@@ -38,7 +39,7 @@ class TagRequestDAO extends DAOManager {
         }
         return $liAffectes;
     }
-
+// NOT USE
     public function deleteTagFromRequest($idRequest, $idTag) {
         $rowAffected = 0;
         try {
@@ -55,6 +56,7 @@ class TagRequestDAO extends DAOManager {
         }
         return $rowAffected;
     }
+    // NOT USE
 public function updateTagFromRequest($objet) {
         $liAffectes = 1;
         try {
@@ -67,6 +69,38 @@ public function updateTagFromRequest($objet) {
             $req->bindValue(5, $objet->getTag_id(),\PDO::PARAM_INT);
             $req->execute();
             //$liAffectes = $req->rowcount();
+        } catch (PDOException $e) {
+            $liAffectes = 0;
+        }
+        return $liAffectes;
+    }
+    ////////////////////////////////////////////////////////////////////////
+public function updateTagRequest($objet) {
+      //  print_r($objet);
+        $liAffectes = 1;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?, request_tag_value=?,request_tag_numeric=? WHERE request_tag_id=?');
+            $req->bindValue(1, $objet->getRequest_tag_sign(),\PDO::PARAM_STR);
+            $req->bindValue(2, $objet->getRequest_tag_value(),\PDO::PARAM_STR);
+            $req->bindValue(3, $objet->getRequest_tag_numeric(),\PDO::PARAM_INT);
+            $req->bindValue(4, $objet->getRequest_tag_id(),\PDO::PARAM_INT);
+            $req->execute();
+            //$liAffectes = $req->rowcount();
+        } catch (PDOException $e) {
+            $liAffectes = 0;
+        }
+        return $liAffectes;
+    }
+public function deleteTagRequest($objet) {
+      //  print_r($objet);
+        $liAffectes = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('DELETE FROM request_tags WHERE request_tag_id=?');
+            $req->bindValue(1, $objet->getRequest_tag_id(),\PDO::PARAM_INT);
+            $req->execute();
+            $liAffectes = $req->rowcount();
         } catch (PDOException $e) {
             $liAffectes = 0;
         }

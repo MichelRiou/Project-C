@@ -6,26 +6,23 @@ namespace model;
 
 class TagRequest {
 
+    private $request_tag_id;
     private $request_id;
-    private $tag_id;
+    private $tag_id;                          // A corriger $request_tag
     private $request_tag_sign;
     private $request_tag_value;
     private $request_tag_numeric;
 
-    /**
-     * CONSTRUCTEUR
-     * @param type int $request_id
-     * @param type int $tag_id
-     * @param type varchar $request_tag_sign
-     * @param type varchar $request_tag_value
-     * @param type int $request_tag_numeric
-     */    
-    function __construct($request_id="", $tag_id="", $request_tag_sign="", $request_tag_value="", $request_tag_numeric="") {
+    function __construct($request_tag_id="", $request_id="", $tag_id="", $request_tag_sign="", $request_tag_value="", $request_tag_numeric="") {
+        $this->request_tag_id = $request_tag_id;
         $this->request_id = $request_id;
         $this->tag_id = $tag_id;
         $this->request_tag_sign = $request_tag_sign;
         $this->request_tag_value = $request_tag_value;
-        $this->request_tag_numeric = $request_tag_numeric;     
+        $this->request_tag_numeric = $request_tag_numeric;
+    }
+    function getRequest_tag_id() {
+        return $this->request_tag_id;
     }
 
     function getRequest_id() {
@@ -46,6 +43,11 @@ class TagRequest {
 
     function getRequest_tag_numeric() {
         return $this->request_tag_numeric;
+    }
+
+    function setRequest_tag_id($request_tag_id) {
+        $this->request_tag_id = $request_tag_id;
+        return $this;
     }
 
     function setRequest_id($request_id) {
@@ -71,5 +73,7 @@ class TagRequest {
     function setRequest_tag_numeric($request_tag_numeric) {
         $this->request_tag_numeric = $request_tag_numeric;
         return $this;
-    }   
+    }
+
+
 }

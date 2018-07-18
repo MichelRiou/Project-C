@@ -29,7 +29,23 @@ class TagDAO extends DAOManager {
         $T_tags = $req->fetchAll();
         return $T_tags;
     }
-
+    
+    public function addTag($objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('INSERT INTO tags (tag_bu,tag_name,tag_designation) VALUES(?,?,?)');
+            $req->bindValue(1, $objet->getTag_bu(), \PDO::PARAM_INT);
+            $req->bindValue(2, $objet->getTag_name(), \PDO::PARAM_STR);
+            $req->bindValue(3, $objet->getTag_designation(), \PDO::PARAM_STR);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
+    }
     public function deleteTag($objet) {
         $affectedRows = 0;
         try {

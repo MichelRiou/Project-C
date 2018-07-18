@@ -6,10 +6,10 @@ ob_start();
     var idEdit;
     function ctrlAddForm(form) {
         var msg = "";
-        if ($("#idOperator").val() == 'EST' && $("#alphanumericValue").val() == "")
-            msg += 'L\'opérateur EST nécessite une valeur alphanumérique';
-        if ($("#idOperator").val() != 'EST' && $("#numericValue").val() == "")
-            msg += 'Les opérateurs =>< nécessite une valeur numérique';
+        if ($("#addName").val() == '' )
+            msg += 'Le nom est obligatoire.';
+        if ($("#addDesignation").val() == '')
+            msg += 'La désignation est obligatoire.';
 
         // Monitoring des erreurs
         $("#message").html(msg);
@@ -51,23 +51,24 @@ ob_start();
         // Activation de la fenêtre modale AJOUTER UN TAG
         $("#addbutton").click(function () {
             // Reset de la fenetre modale 
-            $("#alphanumericValue").val('');
-            $("#numericValue").val('');
-            $("#message").html('');
+            $("#addName").val('');
+            $("#addDesignation").val('');
+            $("#addMessage").html('');
             $("#addTagModal").modal('show');
         });
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
             if (ctrlAddForm()) {
+               // alert();
                 $.ajax({
                     type: 'POST',
-                    url: '/routes.php?action=addTagOnRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#idTag").val() + '&selectOperator=' + $("#idOperator").val() + '&alphanumericValue=' + $("#alphanumericValue").val() + '&numericValue=' + $("#numericValue").val(),
-                    success: function (result) {
-                        console.log('retour success' + result);
-                        if (result != 1) {
-                            $("#message").html("Erreur d\'insertion");
+                    url: '/routes.php?action=addTag&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val(),
+                    success: function (data) {
+                        console.log('retour success' + data +$("#addName").val() + '&designation=' + $("#addDesignation").val());
+                        if (data != 1) {
+                            $("#addMessage").html("Erreur d\'ajout" + data);
                         } else {
-                            $('#cancel').trigger('click');
+                            $('#addCancel').trigger('click');
                             refresh();
                         }
                     },
@@ -81,17 +82,17 @@ ob_start();
         }));
         // AJAX 
         $("#deleteTag").on('click', (function () {
-            alert();
+            // alert();
             console.log(idDelete);
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=deleteTag&idTag=' + idDelete,
+                url: '/routes.php?action=deleteTag&id=' + idDelete,
                 success: function (data) {
-                   console.log(data);
+                    console.log(data);
                     if (data != 1) {
-                        $("#messageDelete").html("Erreur de suppression" . data);
+                        $("#messageDelete").html("Erreur de suppression".data);
                     } else {
-                        $('#cancelDelete').trigger('click');
+                        $('#deleteCancel').trigger('click');
                         refresh();
                     }
                 },
@@ -109,7 +110,7 @@ ob_start();
                 type: 'POST',
                 url: '/routes.php?action=updateTag&id=' + idEdit + '&designation=' + $("#editDesignation").val(),
                 success: function (data) {
-                    console.log('retour update' + data +'/routes.php?action=updateTag&id=' + idEdit + '&editdesignation=' + $("#editDesignation").val());
+                    console.log('retour update' + data + '/routes.php?action=updateTag&id=' + idEdit + '&editdesignation=' + $("#editDesignation").val());
                     if (data != 1) {
                         $("#messageEdit").html("Erreur de update".data);
                     } else {
@@ -193,41 +194,18 @@ ob_start();
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div>
-                        <input type="hidden" value="<?= $id ?>" name="idRequest" id="idRequest">
-                        <input type="hidden" value="<?= $bu->getBu_id() ?>" name="idBu" id="idBu">
-                    </div>
                     <div class="form-group">
                         <label>Nom du Tag</label>
-                        <select class="form-control" name="idTag" id="idTag">
-                            <?php for ($i = 0; $i < count($tags); $i++) { ?>
-                                <option value="<?= $tags[$i]->getTag_id() ?>"><?= $tags[$i]->getTag_name() ?></option>
-                            <?php } ?>
-                        </select>
+                        <input type="text" class="form-control"  id ="addName" >
                     </div>
                     <div class="form-group">
-                        <label>Opérateur</label>
-                        <select class="form-control" name="selectOperator" id="idOperator">
-                            <option value="=">=</option>
-                            <option value=">">></option>
-                            <option value="<"><</option>
-                            <option value="EST">EST</option>
-
-
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Valeur Alphanumérique</label>
-                        <input type="text" class="form-control" name="alphanumericValue" id="alphanumericValue">
-                    </div>	
-                    <div class="form-group">
-                        <label>Valeur numérique</label>
-                        <input type="number" class="form-control" name="numericValue" id="numericValue">
+                        <label>Désignation</label>
+                        <input type="text" class="form-control"  id ="addDesignation" >
                     </div>
                 </div>
-                <div id="message" class="text-warning align-center"></div>
+                <div id="addMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="cancel">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="addCancel">
                     <input type="button" class="btn btn-info" value="add" id="addTag" >
                 </div>
             </form>

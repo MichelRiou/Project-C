@@ -29,14 +29,6 @@ public function selectOneForm($bu, $form) {
         $objet=null;    
         }
         return $objet;
-    $db = $this->dbConnect();
     
-    $req->setFetchMode(\PDO::FETCH_ASSOC);
-    $req->bindValue(1, $bu,\PDO::PARAM_INT);
-    $req->bindValue(2, $form,\PDO::PARAM_INT);
-    $req->execute();
-    $questions = array();
-    $questions = $req->fetchAll();
-    return $questions;
     }
 }

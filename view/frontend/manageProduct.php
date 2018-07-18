@@ -131,7 +131,7 @@ ob_start();
         <div class="table-title ">
             <div class="row">
                 <div class="col-sm-4">
-                    <h5><?= $form->getForm_name() ?></h5><input type="hidden" value="<?= $form->getForm_id() ?>" id="idForm">
+                    <h5>LISTE DES PRODUITS</h5><input type="hidden" value="<?= $form->getForm_id() ?>" id="idForm">
                 </div>
                 <div class="col-sm-8">
 

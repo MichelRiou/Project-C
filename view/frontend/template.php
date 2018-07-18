@@ -34,37 +34,39 @@
                             Business Unit
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
-                            <a class="dropdown-item" href="#">IT</a>
-                            <a class="dropdown-item" href="#">Print</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=2">Audiovisuel</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=1">IT</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=3">Print</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Formulaire
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=2">Audiovisuel</a>
-                            <a class="dropdown-item" href="#">Création</a>
-                            <a class="dropdown-item" href="#">Liste</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Nouvelle BU</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Produits
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            
-                            <a class="dropdown-item" href="#">Création</a>
-                            <a class="dropdown-item" href="#">Liste</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Nouvelle BU</a>
-                        </div>
-                    </li>
+                    <?php if (isset($_SESSION['bu'])) { ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Formulaires
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=1">RECHERCHER UN PC</a>
+                                <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=2">RECHERCHER UN VIDEOPROJECTEUR</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Nouveau Formulaire</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Produits
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                                <a class="dropdown-item" href="#">Création</a>
+                                <a class="dropdown-item" href="#">Liste</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Nouvelle BU</a>
+                            </div>
+                        </li>
+                    <?php } ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Utilisateurs
@@ -80,12 +82,12 @@
                 </ul> 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#">Business Unit: <?php $bu=(isset($_SESSION['bu'])?$_SESSION['bu']:'Aucune')?><?=$bu?></a>
+                        <a class="nav-link " href="#">Business Unit: <?php $bu = (isset($_SESSION['bu']) ? $_SESSION['bu'] : 'Aucune') ?><?= $bu ?></a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#">Utilisateur: <?php $user=(isset($_SESSION['user'])?$_SESSION['user']:'personne')?><?=$user?></a>
+                        <a class="nav-link " href="#">Utilisateur: <?php $user = (isset($_SESSION['user']) ? $_SESSION['user'] : 'personne') ?><?= $user ?></a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
