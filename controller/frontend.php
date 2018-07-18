@@ -199,10 +199,16 @@ print_r($tags);
         $form = $FormDAO->selectOneForm($buId,$formId);
         require('view/frontend/manageQuestion.php');
     }
+    function getForm($form) {
+
+        $FormDAO = new \model\FormDAO();
+        $headerRequest = $FormDAO->getForm($form);
+        require('view/frontend/getForm.php');
+    }
 
     function listHeaderRequest() {
         $HeaderRequestManager = new \model\HeaderRequestManager();
-        $HeaderRequest = $HeaderRequestManager->getHeaderRequest(2);
+        $HeaderRequest = $HeaderRequestManager->getHeaderRequest(1);
 
         require('view/frontend/form1view.php');
     }
@@ -219,6 +225,12 @@ print_r($tags);
         $Products = $ProductManager->getProductsFromRequests($params);
 
         require('view/frontend/listProductsRequest.php');
+    }
+    function listProductSelection($params) {
+        $ProductDAO = new \model\ProductDAO();
+        $Products = $ProductDAO->getProductSelection($params);
+
+        require('view/frontend/listProductSelection.php');
     }
 
     function listBUAudioParams() {

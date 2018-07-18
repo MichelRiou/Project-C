@@ -7,6 +7,11 @@ body {
         font-family: 'Varela Round', sans-serif;
         font-size: 13px;
     }
+.scrollDiv {
+  height:600px;
+  width: 600px;
+  overflow-y: scroll;
+}
 
     .table-wrapper {
         background: #fff;

@@ -4,8 +4,8 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
-    // $classPath = ROOT_PATH . "\project-c\\${class}.php";
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    $classPath = ROOT_PATH . "\project-c\\${class}.php";
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -57,6 +57,15 @@ if (controlSession()) {
                         throw new Exception('Erreur dans la requete');
                     }
                     break;
+                case 'listProductSelection':
+                    $listParams = filter_input(INPUT_GET, "params");
+                    if ($listParams !== null) {
+                        $params = explode('-', $listParams);
+                        listProductSelection($params);
+                    } else {
+                        throw new Exception('Erreur dans la requete');
+                    }
+                    break;
                 /**
                  *  Route addHeaders
                  *  Création dynamique du formulaire de d'interrogation     
@@ -64,6 +73,15 @@ if (controlSession()) {
                 case 'addHeaders':
                     listHeaderRequest();
                     break;
+                case 'getForm':
+                    $form = filter_input(INPUT_GET, "form");
+                    if (isset($form) ) {
+                        getForm($form);
+                    } else {
+                        throw new Exception('Aucun formulaire spécifié');
+                    }
+                    break;
+                 
                 /**
                  *  Route listRequest
                  *  List de l'ensemble des questions/réponses sur une BU     
