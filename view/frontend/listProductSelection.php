@@ -1,45 +1,45 @@
 <?php ob_start(); ?>
-<h2>Requete Ajax 2</h2>
 <div class="table-wrapper">
-  
-    <table class="table table-striped ">
-        <thead>
-            <tr>
-                
 
-                <th>Builder</th>
+    <table class="table table-striped ">
+        <thead> 
+            <tr>               
+                <th>Constructeur</th>
                 <th>Modèle</th>
-                
+                <th>Désignation</th>
+                <th>Ref. constructeur</th>
+                <th>Hit(s)</th>              
             </tr>
         </thead>
         <tbody>
             <?php
-            foreach ($Products as $data) {
-               // print_r($data);
+            foreach ($products as $data) {
                 ?>
-            <tr>
-                <?= print_r($data); ?>
-                <td>
-                    <?= nl2br(htmlspecialchars($data['product_builder'])) ?>
-                </td>
-                <td>
-                     <?= $data['product_model'] ?>   
-                </td>
-           
-            </tr>
+                <tr>
+                    <td>
+                        <?= $data['product_builder'] ?>
+                    </td>
+                    <td>
+                        <?= $data['product_model'] ?>   
+                    </td>
+                    <td>
+                        <?= $data['product_designation'] ?>
+                    </td>
+                    <td>
+                        <?= $data['product_ref'] ?>
+                    </td>
+                    <td>
+                        <?= $data['hits'] ?>   
+                    </td>
+                    <td>
+                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe01d</i></a>
+                    </td>
+                </tr>
             <?php } ?>
         </tbody>
-        </table>
-    </DIV>
-    <?php
-//print_r($Products);
-
-
-   
-
-// A faire partout !!!!
-//$Products->closeCursor();
-?>
-<?php $content = ob_get_clean();
+    </table>
+</DIV>
+<?php
+$content = ob_get_clean();
 echo $content;
 ?>

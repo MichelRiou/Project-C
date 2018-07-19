@@ -1,11 +1,12 @@
-<?php $title = 'ListRequest'; ?>
+<?php $title = 'Formulaire'; ?>
 <?php ob_start(); ?>
 <div class="container-fluid">
     <div class="table-wrapper">
         <div class="table-title ">
             <div class="row">
-                <div class="col-sm-4">
-                    <h5>AFFICHAGE FORMULAIRE</h5><input type="hidden" value="" id="idForm">
+                <div class="col-sm-10">
+                    <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category">
+                    <input type="hidden" value="<?= $form->getForm_exclusif() ?>" id="exclusif">
                 </div>
 
             </div>
@@ -18,12 +19,11 @@
             <div class="col-md-12 scrollDiv">
                 <form id="formChoice">
                     <?php
-                    //print_r($headerRequest);
+                    if (!isset($headerRequest))
+                        $headerRequest = array();
                     foreach ($headerRequest as $t) {
                         $class = explode('#', $t['header']);
-                        //print_r($class);
                         ?>
-
                         <div class="form-group <?= $class[1] ?> ">
                             <label for="<?= $class[2] ?>"><?= $class[0] ?></label>
                             <select id="<?= $class[2] ?>" class="form-control form-control-sm">
@@ -34,25 +34,25 @@
                                     ?>
                                     <option value="<?= $request[1] ?>"><?= $request[0] ?></option>
 
-                                <?php } ?>
+    <?php } ?>
                             </select>
                         </div>
-                    <?php } ?>
+<?php } ?>
                 </form>            
 
             </div>
         </div>
-          <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
+        <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
         <div class="col-md-9" style="background-color: gainsboro" id="requete"></div>
     </div>
 
 </div>
 <script>
-    var lsparams;
-    var lsplaceType;
-    var lsautonome;
-    var form;
-    var selects;
+    // var lsparams;
+    //  var lsplaceType;
+    //  var lsautonome;
+    //  var form;
+    //  var selects;
 
     $(document).ready(function () {
         $(function () {
@@ -65,9 +65,11 @@
                 });
                 //lsparams=len(params,-1);
                 lsparams = lsparams.substring(0, lsparams.lastIndexOf("-"));
+                category = $('#category').val();
+                exclusif = $('#exclusif').val();
                 $.ajax({
                     type: "POST",
-                    url: '/routes.php?action=listProductSelection&params=' + lsparams,
+                    url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&exclusif=' + exclusif,
                     success: function (data) {
                         $("#requete").html(data);
                     },

@@ -2,53 +2,56 @@
 
 namespace model;
 
-//require_once("model/Manager.php");
-
 class ProductDAO extends Manager {
 
-    public function selectOneProductOnEAN($ean) {
+    public function isExistEAN($ean) {
         $db = $this->dbConnect();
-        $password = sha1($password);
-        $req = $db->prepare('SELECT * FROM allusers WHERE user_pseudo = ? and user_password= ? ');
-        $req->bindValue(1, $pseudo);
-        $req->bindValue(2, $password);
+        $req = $db->prepare('SELECT * FROM products WHERE product_ean = ?');
+        $req->bindValue(1, $ean, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
-        if($enr = $req->fetch()){
-        $objet = new User();
-        $objet->setUser_pseudo($enr['user_pseudo']);
-        $objet->setUser_name($enr['user_name']);
-        $objet->setUser_email($enr['user_email']);
-        $objet->setUser_password($enr['user_password']);
-        $objet->setUser_role($enr['user_role']);    
-        } else {
-        $objet=null;    
-        }
-        return $objet;
+        return ($enr = $req->fetch());
     }
-    public function getProductSelection($params) {
-        //print_r($params);
+
+    public function insertProduct(Product $objet) {
+        $rowAffected = 0;
+        try {
+            //print_r($objet);
+            $db = $this->dbConnect();
+            $req = $db->prepare('INSERT INTO products (product_ean, product_ref, product_builder_ref, product_bu, product_category, product_builder, product_model, product_designation) VALUES(?,?,?,?,?,?,?,?)');
+            $req->bindValue(1, $objet->getProduct_ean());
+            $req->bindValue(2, $objet->getProduct_ref());
+            $req->bindValue(3, $objet->getProduct_builder_ref());
+            $req->bindValue(4, $objet->getProduct_bu());
+            $req->bindValue(5, $objet->getProduct_category());
+            $req->bindValue(6, $objet->getProduct_builder());
+            $req->bindValue(7, $objet->getProduct_model());
+            $req->bindValue(8, $objet->getProduct_designation());
+            $req->execute();
+            $rowAffected = $req->rowcount();
+        } catch (PDOException $e) {
+            $rowAffected = -1;
+        //echo $e->getMessage();
+        }
+        return $rowAffected;
+    }
+
+    public function getProductSelection($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
-            echo $requests;
-            $products = $db->query('SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as c FROM `request_tags`
-            left outer join product_tags on request_tags.tag_id = product_tags.tag_id  
-            where `request_id` in ('.$requests.') 
-            and (`request_tag_sign` = ">" and product_tags.product_tag_numeric > request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "<" and product_tags.product_tag_numeric < request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "=" and product_tags.product_tag_numeric = request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "EST" and product_tags.product_tag_value = request_tags.request_tag_value)  
-            group by  product_tags.product_id) as t on products.product_id=t.product_id ORDER BY t.c DESC, products.product_builder ASC');
-            // $req->bind_param(1, $requests,PDO::PARAM_INT);
-            //$req->execute(array($requests));
-            //$T_products = array();
-            // $T_products=$req->query();
-           //print_r($T_products);
+            $products = $db->query('SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC');
         } else {
-            $products = null;
+            $products = array();
         }
-        print_r($products);
         return $products;
     }
 

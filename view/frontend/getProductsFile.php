@@ -66,45 +66,29 @@ ob_start();
     <div class="table-wrapper">
         <div class="table-title ">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h2>Mise à jour du fichier product</h2>
-                </div>
-                <div class="col-sm-6">
-
-                    <button id="okbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></button>
-                    <button id="deletebutton" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
                 </div>
             </div>
         </div>
-         <div class="col-sm-6">
-        <form class="form-group" method="post" action="routes.php?action=majProductsFile" enctype="multipart/form-data">
-
-            <label class="control-label" for="fichier">Fichier (tous formats | max. 1 Mo) :</label><br />
-            <input type="hidden" name="MAX_FILE_SIZE" value="1048576" />
-            <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx"/><br />
-            <input type="submit" name="submit" value="Envoyer" />
-        </form>
-             <div><?=$message ?></div>
- </div>
+        <div class="row">
+        <div class="col-sm-6">
+            <form class="form-group" method="post" action="/routes.php?action=majProductsFile" enctype="multipart/form-data">
+                   
+                <label class="control-label" for="fichier">Fichier (tous formats | max. 10 Mo) :</label><br />
+                <input type="hidden" name="MAX_FILE_SIZE" value="1073741824" />
+                <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx"/><br />
+                <input type="submit" name="submit" value="Envoyer" />
+            </form>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="customFile">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+            <div><?= $msg ?></div>
+        </div>
+        </div>
     </div>
 </div>
-<div class="col-xs-4">
- 
-<div class="form-group">
- 
-<label class="control-label">A file upload button without icon</label>
- 
-<input type="file" class="filestyle" data-icon="false">
- 
-</div>
- 
-</div>
-<div class="col-sm-4">
-<div class="custom-file">
-  <input type="file" class="custom-file-input" id="customFile">
-  <label class="custom-file-label" for="customFile">Choose file</label>
-</div>
-    </div>
 
-    <?php $content = ob_get_clean(); ?>
+<?php $content = ob_get_clean(); ?>
 <?php require('template.php'); ?>

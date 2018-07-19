@@ -11,20 +11,21 @@ class FormDAO extends DAOManager {
      * @param int $bu
      * @return Array 
      */
-    public function selectOneForm($bu, $form) {
+    public function selectOneForm($id) {
 
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT forms.* FROM forms  WHERE `form_bu`= ? and form_id= ? ');
-        $req->bindValue(1, $bu);
-        $req->bindValue(2, $form);
+        $req = $db->prepare('SELECT forms.* FROM forms  WHERE form_id= ? ');
+        $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
         if ($enr = $req->fetch()) {
             $objet = new Form();
             $objet->setForm_id($enr['form_id']);
             $objet->setForm_bu($enr['form_bu']);
+            $objet->setForm_category($enr['form_category']);
             $objet->setForm_name($enr['form_name']);
             $objet->setForm_designation($enr['form_designation']);
+            $objet->setForm_exclusif($enr['form_exclusif']);
         } else {
             $objet = null;
         }
@@ -50,6 +51,8 @@ class FormDAO extends DAOManager {
             }
             $headers[] = array('header' => $enr['header_designation'] . '#' . $enr['header_class'] . '#' . $enr['header_name'], 'request' => $request);
         }
+        $req->closeCursor();
+        $req2->closeCursor();
         return $headers;
     }
 
