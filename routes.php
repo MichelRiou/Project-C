@@ -60,12 +60,21 @@ if (controlSession()) {
                 case 'listProductSelection':
                     $category = filter_input(INPUT_GET, "category");
                     $listParams = filter_input(INPUT_GET, "params");
-                    $exclusif = filter_input(INPUT_GET, "exclusif");
-                    if ($category !== null && $listParams != null && $exclusif != null) {
+                    $searchtype = filter_input(INPUT_GET, "searchtype");
+                    if ($category !== null && $listParams != null && $searchtype != null) {
                         $params = explode('-', $listParams);
-                        listProductSelection($category, $params, $exclusif);
+                        listProductSelection($category, $params, $searchtype);
                     } else {
                         throw new Exception('Erreur dans la requetelist product');
+                    }
+                    break;
+                case 'listProductByCat':
+                    $bu = $_SESSION['bu'];
+                    $category = filter_input(INPUT_GET, "category");
+                    if (isset($bu) && isset($category)) {
+                        listProductByCat($bu ,$category);
+                    } else {
+                        throw new Exception('Erreur dans la requete listProductByCat');
                     }
                     break;
                 /**

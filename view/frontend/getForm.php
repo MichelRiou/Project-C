@@ -1,12 +1,13 @@
 <?php $title = 'Formulaire'; ?>
-<?php ob_start(); ?>
+<?php ob_start(); print_r($searchtype); ?>
+
 <div class="container-fluid">
     <div class="table-wrapper">
         <div class="table-title ">
             <div class="row">
                 <div class="col-sm-10">
-                    <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category">
-                    <input type="hidden" value="<?= $form->getForm_exclusif() ?>" id="exclusif">
+                    <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?>&nbsp&nbsp Mode :<?= $searchtype->getSearchtype_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category">
+                    <input type="hidden" value="<?= $form->getForm_searchtype() ?>" id="searchtype">
                 </div>
 
             </div>
@@ -34,16 +35,16 @@
                                     ?>
                                     <option value="<?= $request[1] ?>"><?= $request[0] ?></option>
 
-    <?php } ?>
+                                <?php } ?>
                             </select>
                         </div>
-<?php } ?>
+                    <?php } ?>
                 </form>            
 
             </div>
         </div>
         <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
-        <div class="col-md-9" style="background-color: gainsboro" id="requete"></div>
+        <div class="col-md-9 scrollDiv2" style="background-color: gainsboro" id="requete"></div>
     </div>
 
 </div>
@@ -66,10 +67,10 @@
                 //lsparams=len(params,-1);
                 lsparams = lsparams.substring(0, lsparams.lastIndexOf("-"));
                 category = $('#category').val();
-                exclusif = $('#exclusif').val();
+                searchtype = $('#searchtype').val();
                 $.ajax({
                     type: "POST",
-                    url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&exclusif=' + exclusif,
+                    url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&searchtype=' + searchtype,
                     success: function (data) {
                         $("#requete").html(data);
                     },

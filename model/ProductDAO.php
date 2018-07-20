@@ -12,6 +12,14 @@ class ProductDAO extends Manager {
         $req->execute();
         return ($enr = $req->fetch());
     }
+    public function isExistBUILDER_REF($builder_ref) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM products WHERE product_builder_ref = ?');
+        $req->bindValue(1, $ean, \PDO::PARAM_STR);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        return ($enr = $req->fetch());
+    }
 
     public function insertProduct(Product $objet) {
         $rowAffected = 0;
@@ -36,7 +44,7 @@ class ProductDAO extends Manager {
         return $rowAffected;
     }
 
-    public function getProductSelection($category, $params) {
+    public function getProductSelectionSort($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
@@ -54,5 +62,74 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
-
+    public function getProductSelectionExclusif($category, $params) {
+        if (count($params) > 0) {
+            $db = $this->dbConnect();
+            $requests = implode(", ", $params);
+            $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC');
+        } else {
+            $products = array();
+        }
+        return $products;
+    }
+     public function getProductSelectionMandatory($category, $params) {
+        if (count($params) > 0) {
+            $db = $this->dbConnect();
+            $requests = implode(", ", $params);
+            $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC');
+        } else {
+            $products = array();
+        }
+        return $products;
+    }
+    public function selectAllProductByCat($bu, $category) {
+        $products = array();
+        try {
+            $db = $this->dbConnect();
+            if ($category !=''){
+            $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
+            $req->bindValue(1, $bu);
+            $req->bindValue(2, $category);
+            }else{
+             $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? ORDER BY product_category ASC');
+            $req->bindValue(1, $bu);
+            }
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new Product();
+                $objet->setProduct_id($enr['product_id']);
+                $objet->setProduct_ean($enr['product_ean']);
+                $objet->setProduct_ref($enr['product_ref']);
+                $objet->setProduct_builder_ref($enr['product_builder_ref']);
+                $objet->setProduct_bu($enr['product_bu']);
+                $objet->setProduct_category($enr['product_category']);
+                $objet->setProduct_builder($enr['product_builder']);
+                $objet->setProduct_model($enr['product_model']);
+                $objet->setProduct_designation($enr['product_designation']);
+                $products[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $products[] = $objet;
+        }
+        //print_r($tags);
+        return $products;
+    }
 }

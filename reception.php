@@ -11,7 +11,7 @@ $_FILES['fichier']['name'];    //Le nom original du fichier, comme sur le disque
 $_FILES['fichier']['type'];   //Le type du fichier. Par exemple, cela peut être « image/png ».
 $_FILES['fichier']['size'];   //La taille du fichier en octets.
 $_FILES['fichier']['tmp_name']; //L'adresse vers le fichier uploadé dans le répertoire temporaire.
-$_FILES['fichier']['error'];  //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
+echo $_FILES['fichier']['error'];  //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
 $extensions_valides = array('csv', 'xls', 'xlsx');
 //1. strrchr renvoie l'extension avec le point (« . »).
 //2. substr(chaine,1) ignore le premier caractère de chaine.
@@ -43,7 +43,7 @@ if ($resultat)
   fclose($handle);
   } */
 
-$headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 'Devise', 'Qté', '(heure)'));
+/*$headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 'Devise', 'Qté', '(heure)'));
 
 $document_excel = PHPExcel_IOFactory::load($nom);
 $worksheet = $document_excel->getSheet(0);
@@ -74,7 +74,7 @@ if ($headerTECHDATA != $headerReaded) {
         }
         echo ('line');
     }
-}
+}*/
 echo ('done');
 echo('</body></html>');
 

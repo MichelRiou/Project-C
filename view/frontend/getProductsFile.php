@@ -75,7 +75,7 @@ ob_start();
         <div class="col-sm-6">
             <form class="form-group" method="post" action="/routes.php?action=majProductsFile" enctype="multipart/form-data">
                    
-                <label class="control-label" for="fichier">Fichier (tous formats | max. 10 Mo) :</label><br />
+                <label class="control-label" for="fichier">Fichier (tous formats | max. 20 Mo) :</label><br />
                 <input type="hidden" name="MAX_FILE_SIZE" value="1073741824" />
                 <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx"/><br />
                 <input type="submit" name="submit" value="Envoyer" />

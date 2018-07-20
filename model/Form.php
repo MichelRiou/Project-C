@@ -13,15 +13,17 @@ class Form {
     private $form_category;
     private $form_name;
     private $form_designation;
-    private $form_exclusif;
+    private $form_searchtype;
 
-    function __construct($form_id="", $form_bu="", $form_category="", $form_name="", $form_designation="") {
+    function __construct($form_id='', $form_bu='', $form_category='', $form_name='', $form_designation='', $form_searchtype='') {
         $this->form_id = $form_id;
         $this->form_bu = $form_bu;
         $this->form_category = $form_category;
         $this->form_name = $form_name;
         $this->form_designation = $form_designation;
+        $this->form_searchtype = $form_searchtype;
     }
+    
     function getForm_id() {
         return $this->form_id;
     }
@@ -41,11 +43,12 @@ class Form {
     function getForm_designation() {
         return $this->form_designation;
     }
-    function getForm_exclusif() {
-        return $this->form_exclusif;
+
+    function getForm_searchtype() {
+        return $this->form_searchtype;
     }
 
-        function setForm_id($form_id) {
+    function setForm_id($form_id) {
         $this->form_id = $form_id;
         return $this;
     }
@@ -69,12 +72,11 @@ class Form {
         $this->form_designation = $form_designation;
         return $this;
     }
-    
-    function setForm_exclusif($form_exclusif) {
-        $this->form_exclusif = $form_exclusif;
+
+    function setForm_searchtype($form_searchtype) {
+        $this->form_searchtype = $form_searchtype;
         return $this;
     }
-
 
 
 }

@@ -117,70 +117,69 @@ function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error) {
         $headerReaded = implode('', $headerArray);
         if ($headerTECHDATA != $headerReaded)
             $message += 'Fichier non reconnu. ';
-  
     }
     if ($message == "" && $resultat) {
-    if (in_array($extension_upload, $extensions_XLS)) {
-        $index = 0;
-        $ProductDAO = new \model\ProductDAO();
-        set_time_limit(300);
-        foreach ($worksheet->getRowIterator() as $row) {
-            //echo ('test45');
-            if ($index != 0) {
-                // $test = str_pad($row[1]->getCellIterator(), 10, '0', STR_PAD_LEFT);
-                $enr = array();
-                foreach ($row->getCellIterator() as $cell) {
-                    $enr[] = $cell->getValue();
+             set_time_limit(300);
+        if (in_array($extension_upload, $extensions_XLS)) {
+            $index = 0;
+            $ProductDAO = new \model\ProductDAO();
+       
+            foreach ($worksheet->getRowIterator() as $row) {
+                //echo ('test45');
+                if ($index != 0) {
+                    // $test = str_pad($row[1]->getCellIterator(), 10, '0', STR_PAD_LEFT);
+                    $enr = array();
+                    foreach ($row->getCellIterator() as $cell) {
+                        $enr[] = $cell->getValue();
+                    }
+                    $ean = str_pad($enr[2], 13, '0', STR_PAD_LEFT);
+                    $exist = $ProductDAO->isExistEAN($ean);
+                    if ($exist) {
+                        echo ('le :' . $ean . ' existe<br>');
+                    } else {
+                        echo ('le :' . $ean . ' existe pas.Insertion<br>');
+                        $product = new \model\Product();
+                        $product->setProduct_ean($ean);
+                        $product->setProduct_ref($enr[0]);
+                        $product->setProduct_builder_ref($enr[1]);
+                        $product->setProduct_bu(2);
+                        $product->setProduct_category(2);
+                        $product->setProduct_builder($enr[4]);
+                        $product->setProduct_model('');
+                        $product->setProduct_designation($enr[3]);
+                        print_r($product);
+                        $result = $ProductDAO->insertProduct($product);
+                        echo('erreur' . $result . '<br>');
+                        $texte = ($result == 1 ? 'OK' : 'KO');
+                        echo $texte;
+                    }
                 }
-                $ean = str_pad($enr[2], 13, '0', STR_PAD_LEFT);
-                $exist = $ProductDAO->isExistEAN($ean);
-                if ($exist) {
-                    echo ('le :' . $ean . ' existe<br>');
-                } else {
-                    echo ('le :' . $ean . ' existe pas.Insertion<br>');
-                    $product = new \model\Product();
-                    $product->setProduct_ean($ean);
-                    $product->setProduct_ref($enr[0]);
-                    $product->setProduct_builder_ref($enr[1]);
-                    $product->setProduct_bu(2);
-                    $product->setProduct_category(2);
-                    $product->setProduct_builder($enr[4]);
-                    $product->setProduct_model('');
-                    $product->setProduct_designation($enr[3]);
-                    print_r($product);
-                    $result = $ProductDAO->insertProduct($product);
-                    echo('erreur' . $result . '<br>');
-                    $texte = ($result == 1 ? 'OK' : 'KO');
-                    echo $texte;
-                }
+                $index++;
             }
-            $index++;
+            echo ('Traitement EXCEL ' . $nom);
         }
-          echo ('Traitement EXCEL ' . $nom);
-    }
-   
-     if (in_array($extension_upload, $extensions_TXT)) {
-        echo ('texte');
-        $ligne = 1; // compteur de ligne
-        if (($handle = fopen($nom, "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 2048, "\t")) !== FALSE) {
-                $num = count($data);
-                echo "<p> $num champs à la ligne $row: <br /></p>\n";
-                $row++;
-                for ($c = 0; $c < $num; $c++) {
-                    echo $data[$c] . "<br />\n";
-                }
-            }
-            fclose($handle);
-        } else {
-            $message += 'Fichier TXT illisible.';
+
+        if (in_array($extension_upload, $extensions_TXT)) {
+            echo ('texte');
+              $ligne = 1; // compteur de ligne
+              if (($handle = fopen($nom, "r")) !== FALSE) {
+              while (($data = fgetcsv($handle, 2048, "\t")) !== FALSE) {
+              $num = count($data);
+              echo "<p> $num champs à la ligne $row: <br /></p>\n";
+              $row++;
+              for ($c = 0; $c < $num; $c++) {
+              echo $data[$c] . "<br />\n";
+              }
+              }
+              fclose($handle);
+              } else {
+              $message += 'Fichier TXT illisible.';
+              }
+              echo ('Traitement TXT ' . $nom); 
         }
-         echo ('Traitement TXT ' . $nom);
-    }
         set_time_limit(30);
         //header('Location: routes.php?action=listProducts_import');
-       
     } else {
-        header('Location: /routes.php?action=getProductsFile&msg=test74' . $message);
+        header('Location: /routes.php?action=getProductsFile&msg=' . $message);
     }
 }

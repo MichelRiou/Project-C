@@ -60,7 +60,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                                <a class="dropdown-item" href="#">Création</a>
+                                <a class="dropdown-item" href="routes.php?action=manageProduct">Liste</a>
                                 <a class="dropdown-item" href="#">Liste</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">Nouvelle BU</a>

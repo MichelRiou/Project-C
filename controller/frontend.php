@@ -138,11 +138,21 @@ function manageQuestionFromForm($id) {
     $form = $FormDAO->selectOneForm($id);
     require('view/frontend/manageQuestion.php');
 }
+function manageProduct() {
+    // Supprimer la bu
+    //$FormDAO = new \model\FormDAO();
+    //$form = $FormDAO->selectOneForm($id);
+    require('view/frontend/manageProduct.php');
+}
+
+
 
 function getForm($id) {
 
     $FormDAO = new \model\FormDAO();
+    $SearchTypeDAO = new \model\SearchTypeDAO();
     $form = $FormDAO->selectOneForm($id);
+    $searchtype=$SearchTypeDAO->selectOneSearchType($form->getForm_searchtype());
     $headerRequest = $FormDAO->getForm($id);
     require('view/frontend/getForm.php');
 }
@@ -168,11 +178,18 @@ function listProductsRequests($params) {
     require('view/frontend/listProductsRequest.php');
 }
 
-function listProductSelection($category, $params, $exclusif) {
+function listProductSelection($category, $params, $searchtype) {
     $ProductDAO = new \model\ProductDAO();
-    $products = $ProductDAO->getProductSelection($category, $params);
+    $products = $ProductDAO->getProductSelectionMandatory($category, $params);
 
     require('view/frontend/listProductSelection.php');
+}
+
+function listProductByCat($bu, $category) {
+    $ProductDAO = new \model\ProductDAO();
+    $products = $ProductDAO->selectAllProductByCat($bu, $category);
+
+    require('view/frontend/listProduct.php');
 }
 
 function listBUAudioParams() {

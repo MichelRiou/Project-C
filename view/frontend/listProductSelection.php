@@ -1,5 +1,5 @@
 <?php ob_start(); ?>
-<div class="table-wrapper">
+<div class="table-wrapper ">
 
     <table class="table table-striped ">
         <thead> 

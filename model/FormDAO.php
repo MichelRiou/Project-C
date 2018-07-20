@@ -25,7 +25,7 @@ class FormDAO extends DAOManager {
             $objet->setForm_category($enr['form_category']);
             $objet->setForm_name($enr['form_name']);
             $objet->setForm_designation($enr['form_designation']);
-            $objet->setForm_exclusif($enr['form_exclusif']);
+            $objet->setForm_searchtype($enr['form_searchtype']);
         } else {
             $objet = null;
         }

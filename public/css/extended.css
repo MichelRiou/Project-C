@@ -8,8 +8,12 @@ body {
         font-size: 15px;
     }
 .scrollDiv {
-  height:600px;
+  height:700px;
   width: 600px;
+  overflow-y: scroll;
+}
+.scrollDiv2 {
+  height:700px;
   overflow-y: scroll;
 }
 

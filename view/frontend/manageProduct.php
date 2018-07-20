@@ -5,7 +5,7 @@ ob_start();
     function refresh() {
         $.ajax({
             type: 'POST',
-            url: '/routes.php?action=listQuestionFromForm&form=' + $("#idForm").val(),
+            url: '/routes.php?action=listProductByCat&category=',
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
@@ -128,22 +128,21 @@ ob_start();
 
 <div class="container">
     <div class="table-wrapper">
-        <div class="table-title ">
+        <div class="table-title col-md-12">
             <div class="row">
-                <div class="col-sm-4">
-                    <h5>LISTE DES PRODUITS</h5><input type="hidden" value="<?= $form->getForm_id() ?>" id="idForm">
+                <div class="col-md-4">
+                    <h5>LISTE DES PRODUITS</h5><input type="hidden" value="" id="idForm">
                 </div>
-                <div class="col-sm-8">
-
-                    <button id="okbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></button>
-                    <button id="deletebutton" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
-                    <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une question</span></button>
+                <div class="col-md-8">						
+                    <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
 
                 </div>
             </div>
         </div>
         <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
-        <div id='requete'></div>
+        <div id='requete' class="scrollDiv2">
+            
+        </div>
     </div>
     <!-- MODAL ADD RESPONSE -->
     <div id="addResponseModal" class="modal fade">
