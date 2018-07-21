@@ -4,7 +4,8 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    $classPath = ROOT_PATH . "\Project-C\\${class}.php";
     //$classPath = ROOT_PATH . "\project-c\\${class}.php";
     if (file_exists($classPath)) {
         include_once $classPath;

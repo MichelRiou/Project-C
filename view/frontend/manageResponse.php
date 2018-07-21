@@ -80,6 +80,10 @@ ob_start();
             $("#addMessage").html('');
             $("#addTagModal").modal('show');
         });
+         $("#manageTag").click(function () {
+            // Reset de la fenetre modale 
+            window.location = "routes.php?action=manageTagFromBu";
+        });
                 // Requête AJAX pour maj
         $("#majTag").on('click', (function () {
            
@@ -182,7 +186,7 @@ ob_start();
     });
 </script>
 
-<div class="container">
+<div class="container-fluid">
     <?php echo $id ?>
     <div class="table-wrapper">
         <div class="table-title">
@@ -194,23 +198,31 @@ ob_start();
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2 form-group">
+            <div class="col-md-8 form-group row">
+            <div class="col-sm-3 form-group">
 
                 <input class="form-control input-sm" type="text" name="nameRequest" value="<?= $request->getRequest_name() ?>" readonly="readonly" />
             </div>
-            <div class="col-sm-4 form-group">
+            <div class="col-sm-8 form-group">
                 <input class="form-control input-sm" type="text" name="libelleRequest" value="<?= $request->getRequest_libelle() ?>" />
             </div>
             <div class="col-sm-1 form-group">
                 <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $request->getRequest_order() ?>" " />
             </div>  
-            <div class="col-sm-2 offset-sm-1">
-                <button id="majbutton" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE254;</i> <span>Modifiée la reponse</span></button>
+            </div>   
+            <div class="col-md-4 form-group row">
+            <div class="col-sm-4 ">
+                <button id="majbutton" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE254;</i> <span>Màj réponse</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
-            <div class="col-sm-2 ">
+            <div class="col-sm-4 ">
                 <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+            </div>
+            <div class="col-sm-4 ">
+                <button id="manageTag" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Créé un mot-clé</span></button>
+              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+            </div>
             </div>
         </div>
         <div id="requete">
