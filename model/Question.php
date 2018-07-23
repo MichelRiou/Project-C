@@ -2,8 +2,8 @@
 
 namespace model;
 
-/*
- * LE DTO DE LA TABLE [Article] DE LA BD [5Minutes]
+/**
+ * DTO de la table request. (à renommer ??)
  */
 
 class Question {

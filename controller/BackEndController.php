@@ -3,11 +3,11 @@
 // CLASSES CHARGEES PAR AUTOLOAD.
 // CONTROLEUR POUR LES OPERATIONS SUR LE MODEL
 // PAS DE VUES GENEREES 
-namespace controler;
+namespace controller;
 
-require_once("model/Manager.php");
+//require_once("model/Manager.php");
 
-class backendClass {
+class BackEndController {
     
 function changeBU($bu) {
     // En attente de sérialization de l'objet plus tôt dans le process   

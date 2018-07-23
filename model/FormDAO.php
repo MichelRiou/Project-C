@@ -29,6 +29,7 @@ class FormDAO extends DAOManager {
         } else {
             $objet = null;
         }
+        $req->closeCursor();
         return $objet;
     }
 

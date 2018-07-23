@@ -73,21 +73,7 @@ function majOneRequest($pId, $pBU) {
     require('view/frontend/majOneRequest.php');
 }
 
-function manageResponse($id, $bu) {
 
-    $RequestDAO = new \model\RequestDAO();
-    $TagRequestDAO = new \model\TagRequestDAO();
-    $TagDAO = new \model\TagDAO();
-    $SignDAO = new \model\SignDAO();
-    $request = $RequestDAO->selectOneRequest($id);
-    $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
-    $tags = $TagDAO->selectAllTagsFromBU($bu);
-    // echo ('tableau');
-    // print_r($tags);
-    $signs = $SignDAO->selectAllSigns();
-
-    require('view/frontend/manageResponse.php');
-}
 
 function listTagsRequest($pId) {
     $TagRequestDAO = new \model\TagRequestDAO();
@@ -111,33 +97,7 @@ function listRequest($pBU) {
     require('view/frontend/listRequest.php');
 }
 
-function listQuestionFromForm($bu, $form) {
 
-    $QuestionDAO = new \model\QuestionDAO();
-    $questions = $QuestionDAO->selectAllQuestionsFromForm($bu, $form);
-    require('view/frontend/listQuestion.php');
-}
-
-function manageTagFromBu($bu) {
-
-    $BusinessDAO = new \model\BusinessDAO();
-    $bu = $BusinessDAO->selectOneBu($bu);
-    require('view/frontend/manageTag.php');
-}
-
-function listTagFromBu($bu) {
-
-    $TagDAO = new \model\TagDAO();
-    $tags = $TagDAO->selectAllTagsFromBU($bu);
-    require('view/frontend/listTag.php');
-}
-
-function manageQuestionFromForm($id) {
-    // Supprimer la bu
-    $FormDAO = new \model\FormDAO();
-    $form = $FormDAO->selectOneForm($id);
-    require('view/frontend/manageQuestion.php');
-}
 function manageProduct() {
     // Supprimer la bu
     //$FormDAO = new \model\FormDAO();
@@ -178,19 +138,7 @@ function listProductsRequests($params) {
     require('view/frontend/listProductsRequest.php');
 }
 
-function listProductSelection($category, $params, $searchtype) {
-    $ProductDAO = new \model\ProductDAO();
-    $products = $ProductDAO->getProductSelectionMandatory($category, $params);
 
-    require('view/frontend/listProductSelection.php');
-}
-
-function listProductByCat($bu, $category) {
-    $ProductDAO = new \model\ProductDAO();
-    $products = $ProductDAO->selectAllProductByCat($bu, $category);
-
-    require('view/frontend/listProduct.php');
-}
 
 function listBUAudioParams() {
     $BUAudioManager = new \model\BUAudioManager();

@@ -39,7 +39,6 @@ class ProductDAO extends Manager {
             $rowAffected = $req->rowcount();
         } catch (PDOException $e) {
             $rowAffected = -1;
-        //echo $e->getMessage();
         }
         return $rowAffected;
     }

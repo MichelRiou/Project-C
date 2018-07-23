@@ -1,5 +1,5 @@
 <?php $title = 'Formulaire'; ?>
-<?php ob_start(); print_r($searchtype); ?>
+<?php ob_start();  ?>
 
 <div class="container-fluid">
     <div class="table-wrapper">
