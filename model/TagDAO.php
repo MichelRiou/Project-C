@@ -30,7 +30,7 @@ class TagDAO extends DAOManager {
         return $T_tags;
     }
     
-    public function addTag($objet) {
+    public function addTag(Tag $objet) {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
@@ -46,12 +46,12 @@ class TagDAO extends DAOManager {
         }
         return $affectedRows;
     }
-    public function deleteTag($objet) {
+    public function deleteTag(Tag $objet) {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
             $req = $db->prepare('DELETE FROM tags WHERE tag_id = ?');
-            $req->bindValue(1, $objet->getTag_id());
+            $req->bindValue(1, $objet->getTag_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             $affectedRows = $req->rowcount();
@@ -61,7 +61,7 @@ class TagDAO extends DAOManager {
         return $affectedRows;
     }
 
-    public function updateTag($objet) {
+    public function updateTag(Tag $objet) {
         $affectedRows = 1;
         try {
             $db = $this->dbConnect();
@@ -80,7 +80,7 @@ class TagDAO extends DAOManager {
         try {
             $db = $this->dbConnect();
             $req = $db->prepare('SELECT * FROM tags where tag_bu= ? ');
-            $req->bindValue(1, $bu);
+            $req->bindValue(1, $bu, \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             while ($enr = $req->fetch()) {

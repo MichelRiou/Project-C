@@ -8,7 +8,7 @@ class FormDAO extends DAOManager {
 
     /**
      * 
-     * @param int $bu
+     * @param int $id
      * @return Array 
      */
     public function selectOneForm($id) {
