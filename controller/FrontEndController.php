@@ -8,15 +8,7 @@ namespace controller;
 
 class FrontEndController {
 
-    public static function getForm($id) {
-
-        $FormDAO = new \model\FormDAO();
-        $SearchTypeDAO = new \model\SearchTypeDAO();
-        $form = $FormDAO->selectOneForm($id);
-        $searchtype = $SearchTypeDAO->selectOneSearchType($form->getForm_searchtype());
-        $headerRequest = $FormDAO->getForm($id);
-        require('view/frontend/getForm.php');
-    }
+    
 
     public function manageTagFromBu($bu) {
 
@@ -32,12 +24,7 @@ class FrontEndController {
         require('view/frontend/listTag.php');
     }
 
-    public function listProductSelection($category, $params, $searchtype) {
-        $ProductDAO = new \model\ProductDAO();
-        $products = $ProductDAO->getProductSelectionMandatory($category, $params);
-
-        require('view/frontend/listProductSelection.php');
-    }
+   
 
     public function listProductByCat($bu, $category) {
         $ProductDAO = new \model\ProductDAO();

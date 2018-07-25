@@ -4,10 +4,7 @@
 
 
 
-function getProductsFile($msg) {
-   // $message = "";
-    require('view/frontend/getProductsFile.php');
-}
+
 
 function addTagOnRequest($requestId, $tagId, $selectOperator, $alphanumericValue, $numericValue) {
     $TagRequestDAO = new \model\TagRequestDAO();
