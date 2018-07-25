@@ -2,7 +2,6 @@
 
 namespace model;
 
-//require_once("model/Manager.php");
 
 class QuestionDAO extends DAOManager {
 

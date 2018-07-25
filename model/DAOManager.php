@@ -16,10 +16,10 @@ class DAOManager
        
         return $db;
     }
-    protected function dbClose($db)
+    protected function dbClose(\PDO $db)
     {
         try{
-            
+            $db= null;
              
         } catch (Exception $ex) {
                 echo $ex->getMessage();

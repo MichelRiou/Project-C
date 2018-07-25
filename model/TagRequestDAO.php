@@ -13,11 +13,13 @@ class TagRequestDAO extends DAOManager {
      */
     public function selectAllTagsFromRequest($id) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM request_tags left outer join tags on request_tags.tag_id=tags.tag_id where request_id = ?');
-        $req->execute(array($id));
-        $T_tags = array();
-        $T_tags = $req->fetchAll();
-        return $T_tags;
+        $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
+        $req->bindValue(1, $id,\PDO::PARAM_INT);
+        $req->execute();
+        //$tags = array();
+        
+        $tags = $req->fetchAll();
+        return $tags;
     }
 
 
@@ -37,6 +39,8 @@ class TagRequestDAO extends DAOManager {
             $liAffectes = -1;
 //echo $e->getMessage();
         }
+        $this->dbClose($db);
+        
         return $liAffectes;
     }
 // NOT USE

@@ -25,15 +25,15 @@ require('controller/frontend.php');
 
 //require('controller/backend.php');
 
-// SINGLETON
+
 $frontendController = new \controller\FrontEndController();
 
-// SINGLETON
+
 $backendController = new \controller\BackEndController();
 
 if (controlSession()) {
     /**
-     * CONTROLEUR FRONTAL
+     * GESTION DES ROUTES
      */
     try {
         $action = filter_input(INPUT_GET, "action");
