@@ -43,7 +43,7 @@ class ProductDAO extends Manager {
         return $rowAffected;
     }
 
-    public function getProductSelectionSort($category, $params) {
+    public function listProductSelectionSort($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
@@ -61,7 +61,7 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
-    public function getProductSelectionExclusif($category, $params) {
+    public function listProductSelectionExclusif($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
@@ -79,7 +79,7 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
-     public function getProductSelectionMandatory($category, $params) {
+     public function listProductSelectionMandatory($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);

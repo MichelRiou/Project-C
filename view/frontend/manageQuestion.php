@@ -5,7 +5,7 @@ ob_start();
     function refresh() {
         $.ajax({
             type: 'POST',
-            url: '/routes.php?action=listQuestionFromForm&form=' + $("#idForm").val(),
+            url: '/routes.php?action=listQuestion&form=' + $("#idForm").val(),
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();

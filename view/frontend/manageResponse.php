@@ -82,7 +82,7 @@ ob_start();
         });
          $("#manageTag").click(function () {
             // Reset de la fenetre modale 
-            window.location = "routes.php?action=manageTagFromBu";
+            window.location = "routes.php?action=manageTag";
         });
                 // Requête AJAX pour maj
         $("#majTag").on('click', (function () {

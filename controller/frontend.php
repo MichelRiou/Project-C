@@ -79,11 +79,7 @@ function listTagsRequest($pId) {
     require('view/frontend/listTagsRequest.php');
 }
 
-function listResponse($id) {
-    $TagRequestDAO = new \model\TagRequestDAO();
-    $tagsRequest = $TagRequestDAO->selectAllTagsFromRequest($id);
-    require('view/frontend/listResponse.php');
-}
+
 
 function listRequest($pBU) {
 
@@ -95,12 +91,6 @@ function listRequest($pBU) {
 }
 
 
-function manageProduct() {
-    // Supprimer la bu
-    //$FormDAO = new \model\FormDAO();
-    //$form = $FormDAO->selectOneForm($id);
-    require('view/frontend/manageProduct.php');
-}
 
 
 

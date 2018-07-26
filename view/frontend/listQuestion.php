@@ -34,7 +34,7 @@
                     ?>
                     <tr><td></td><td><?= $question['request_name'] ?></td><td><?= $question['request_libelle'] ?></td><td><?= $question['request_order'] ?></td>
                         <td>
-                            <a href="routes.php?action=manageResponse&id=<?= $question['request_id'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                            <a href="routes.php?action=manageTagResponse&id=<?= $question['request_id'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 
                             <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>

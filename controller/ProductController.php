@@ -20,16 +20,23 @@ class ProductController {
         return self::$_instance;
     }
 
+    public function listProductSelection($category, $params, $searchtype) {
+        $ProductDAO = new \model\ProductDAO();
+        $products = $ProductDAO->listProductSelectionMandatory($category, $params);
+
+        require('view/frontend/listProductSelection.php');
+    }
+
+    public function manageProduct() {
+        // Supprimer la bu
+        //$FormDAO = new \model\FormDAO();
+        //$form = $FormDAO->selectOneForm($id);
+        require('view/frontend/manageProduct.php');
+    }
+
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
-    }
-    
-     public function listProductSelection($category, $params, $searchtype) {
-        $ProductDAO = new \model\ProductDAO();
-        $products = $ProductDAO->getProductSelectionMandatory($category, $params);
-
-        require('view/frontend/listProductSelection.php');
     }
 
     function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error) {

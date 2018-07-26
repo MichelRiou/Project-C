@@ -19,7 +19,7 @@ ob_start();
     function refresh() {
         $.ajax({
             type: 'POST',
-            url: '/routes.php?action=listTag',
+            url: '/routes.php?action=listForm',
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
@@ -134,25 +134,27 @@ ob_start();
         <div class="table-title">
             <div class="row">
                 <div class="col-sm-8 form-group">
-                    <h4>Gestion des Tags</h4>
+                    <h4>Gestion des Formulaires</h4>
                 </div>
 
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-10 form-group">
+            <div class="col-md-10 form-group">
                 <h5>VOUS ÊTES DANS LA BUSINESS UNIT :  <?= $bu->getBu_name() ?></h5>  
 
             </div>
 
-            <div class="col-sm-2 ">
+            <div class="col-md-2 ">
                 <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
+               </div>
+             <div class="row" id="requete">
         </div>
-        <div id="requete">
+       
 
-        </div>
+     
     </div>
 </div>
 </div>
@@ -162,12 +164,12 @@ ob_start();
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Edit Tag</h4>
+                    <h4 class="modal-title">Edit formulaire</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
                     <div class="form-group">
-                        <label>Nom du Tag</label>
+                        <label>Nom du Formulaire</label>
                         <input type="text" class="form-control" readonly="readonly" id ="editName" >
                     </div>
                     <div class="form-group">

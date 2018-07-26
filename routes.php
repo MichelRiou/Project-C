@@ -4,13 +4,13 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php";
-    $classPath = ROOT_PATH . "\project-c\\${class}.php";
+   // $classPath = ROOT_PATH . "\project-c\\${class}.php";
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
-        throw new Exception("Classe inexistante");
+        throw new Exception("Classe inexistante ".$classPath);
     }
 }
 
@@ -31,9 +31,11 @@ $frontendController = new \controller\FrontEndController();
 
 //$backendController = new \controller\BackEndController();
 $backendController = controller\BackEndController::getInstance();
-$quizController = controller\QuizController::getInstance();
-$tagController = controller\TagController::getInstance();
-$productController = controller\ProductController::getInstance();
+$manageQuiz = controller\QuizController::getInstance();
+$manageProduct = controller\ProductController::getInstance();
+$manageTag = controller\TagController::getInstance();
+
+
 if (controlSession()) {
     /**
      * GESTION DES ROUTES
@@ -43,18 +45,85 @@ if (controlSession()) {
         if ($action !== null) {
             switch ($action) {
                 //// Routes confirmées
-                case 'displayQuiz':
+                case 'manageQuiz':
                     $form = filter_input(INPUT_GET, "form");
                     if (isset($form)) {
-                        $quizController->displayQuiz($form);
+                        $manageQuiz->manageQuiz($form);
                     } else {
                         throw new Exception('Aucun formulaire spécifié');
+                    }
+                    break;
+                 case 'listProductSelection':
+                    $category = filter_input(INPUT_GET, "category");
+                    $listParams = filter_input(INPUT_GET, "params");
+                    $searchtype = filter_input(INPUT_GET, "searchtype");
+                    if ($category !== null && $listParams != null && $searchtype != null) {
+                        $params = explode('-', $listParams);
+                        $manageProduct->listProductSelection($category, $params, $searchtype);
+                    } else {
+                        throw new Exception('Erreur dans la requetelist product');
+                    }
+                    break;
+                 case 'listResponse':
+                    $id = filter_input(INPUT_GET, "id");
+
+                    if ($id != null) {
+                        $manageTag->listResponse($id);
+                    } else {
+                        throw new Exception('Aucun Id spécifié');
+                    }
+                    break;   
+                 case 'manageProduct':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageProduct->manageProduct($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break;
+                    
+                 case 'manageQuestion':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "form");
+
+                    if (isset($bu) && isset($id)) {
+                        $manageQuiz->manageQuestion($id);
+                    } else {
+                        throw new Exception('Aucun formulaire spécifié');
+                    }
+                    break; 
+                case 'listQuestion':
+                    $bu = $_SESSION['bu'];
+                    $form = filter_input(INPUT_GET, "form");
+
+                    if (isset($bu) && isset($form)) {
+                        $manageQuiz->listQuestion($bu, $form);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break;
+                    case 'manageTag':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageTag->manageTag($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break;
+                  case 'manageTagResponse':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "id");
+                    //$bu = filter_input(INPUT_GET, "bu");
+                    if (isset($id) && isset($bu)) {
+                        $manageTag->manageTagResponse($id, $bu);
+                    } else {
+                        throw new Exception('Aucun Id/BU spécifié');
                     }
                     break;
                 case 'deleteTag':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
-                        $tagController->deleteTag($id);
+                        $manageTag->deleteTag($id);
                     } else {
                         throw new Exception('Erreur de parametre');
                     }
@@ -64,7 +133,7 @@ if (controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
                     $designation = filter_input(INPUT_GET, "designation");
                     if (isset($id) && isset($designation)) {
-                        $tagController->updateTag($id, $designation);
+                        $manageTag->updateTag($id, $designation);
                     } else {
                         throw new Exception('Erreur de parametre');
                     }
@@ -75,7 +144,7 @@ if (controlSession()) {
                     $name = filter_input(INPUT_GET, "name");
                     $designation = filter_input(INPUT_GET, "designation");
                     if (isset($bu) && isset($name) && isset($designation)) {
-                        $tagController->addTag($bu, $name, $designation);
+                        $manageTag->addTag($bu, $name, $designation);
                     } else {
                         throw new Exception('Erreur de parametre');
                     }
@@ -87,7 +156,7 @@ if (controlSession()) {
                     $addAlpha = filter_input(INPUT_GET, "addAlpha");
                     $addNumeric = filter_input(INPUT_GET, "addNumeric");
                     if (isset($idRequest) && isset($idTag) && isset($addSign) && (isset($addAlpha) || isset($addNumeric))) {
-                        $tagController->insertTagRequest($idRequest, $idTag, $addSign, $addAlpha, $addNumeric);
+                        $manageTag->insertTagRequest($idRequest, $idTag, $addSign, $addAlpha, $addNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur addTag');
                     }
@@ -98,7 +167,7 @@ if (controlSession()) {
                     $editAlpha = filter_input(INPUT_GET, "editAlpha");
                     $editNumeric = filter_input(INPUT_GET, "editNumeric");
                     if (isset($id)) {
-                        $tagController->updateTagRequest($id, $editSign, $editAlpha, $editNumeric);
+                        $manageTag->updateTagRequest($id, $editSign, $editAlpha, $editNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur updateTag');
                     }
@@ -106,7 +175,7 @@ if (controlSession()) {
                 case 'deleteTagRequest':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
-                        $tagController->deleteTagRequest($id);
+                        $manageTag->deleteTagRequest($id);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur deleteTagRequest');
                     }
@@ -115,9 +184,9 @@ if (controlSession()) {
                     $msg = filter_input(INPUT_GET, "msg");
                     if (!isset($msg))
                         $msg = "";
-                    $productController->getProductsFile($msg);
+                    $manageProduct->getProductsFile($msg);
                     break;
-
+                
                 case 'majProductsFile':
                     $maxsize = filter_input(INPUT_POST, 'MAX_FILE_SIZE', FILTER_SANITIZE_SPECIAL_CHARS);
                     $name = $_FILES['fichier']['name'];    //Le nom original du fichier, comme sur le disque du visiteur (exemple : mon_icone.png).
@@ -126,22 +195,37 @@ if (controlSession()) {
                     $tmp_name = $_FILES['fichier']['tmp_name']; //L'adresse vers le fichier uploadé dans le répertoire temporaire.
                     $error = $_FILES['fichier']['error'];  //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
                     if (isset($maxsize) && isset($name) && isset($type) && isset($size) && isset($tmp_name) && isset($error)) {
-                        $productController->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error);
+                        $manageProduct->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur majProductsFile');
                     }
                     break;
-                     case 'listProductSelection':
-                    $category = filter_input(INPUT_GET, "category");
-                    $listParams = filter_input(INPUT_GET, "params");
-                    $searchtype = filter_input(INPUT_GET, "searchtype");
-                    if ($category !== null && $listParams != null && $searchtype != null) {
-                        $params = explode('-', $listParams);
-                        $productController->listProductSelection($category, $params, $searchtype);
+                
+                case 'listTag':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageTag->listTag($bu);
                     } else {
-                        throw new Exception('Erreur dans la requetelist product');
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break;  
+                    
+                 case 'manageForm':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageQuiz->manageForm($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
                     }
                     break;
+                case 'listForm':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageQuiz->listForm($bu);
+                    } else {
+                        throw new Exception('Aucune BU spécifiée');
+                    }
+                    break;    
 
                 ///////////////////////    
                 //// Routes à confirmer
@@ -202,46 +286,14 @@ if (controlSession()) {
                  *  
                  */
                 // done
-                case 'manageQuestionFromForm':
-                    $bu = $_SESSION['bu'];
-                    $id = filter_input(INPUT_GET, "form");
-
-                    if (isset($bu) && isset($id)) {
-                        $frontendController->manageQuestionFromForm($id);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;
+               
                 //done
-                case 'listQuestionFromForm':
-                    $bu = $_SESSION['bu'];
-                    $form = filter_input(INPUT_GET, "form");
-
-                    if (isset($bu) && isset($form)) {
-                        $frontendController->listQuestionFromForm($bu, $form);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;
+                
                 // GESTION DES TAGS 
                 //done
-                case 'manageTagFromBu':
-                    $bu = $_SESSION['bu'];
-                    if (isset($bu)) {
-                        $frontendController->manageTagFromBu($bu);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;
+                
                 //done
-                case 'listTagFromBu':
-                    $bu = $_SESSION['bu'];
-                    if (isset($bu)) {
-                        $frontendController->listTagFromBu($bu);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;
+                
                 //done
                 // a supprimer
                 case 'listRequest':
@@ -267,26 +319,8 @@ if (controlSession()) {
                     }
                     break;
                 //done
-                case 'manageResponse':
-                    $bu = $_SESSION['bu'];
-                    $id = filter_input(INPUT_GET, "id");
-                    //$bu = filter_input(INPUT_GET, "bu");
-                    if (isset($id) && isset($bu)) {
-                        $frontendController->manageResponse($id, $bu);
-                    } else {
-                        throw new Exception('Aucun Id/BU spécifié');
-                    }
-                    break;
-                case 'manageProduct':
-                    $bu = $_SESSION['bu'];
-                    // $id = filter_input(INPUT_GET, "id");
-                    //$bu = filter_input(INPUT_GET, "bu");
-                    if (isset($bu)) {
-                        manageProduct($bu);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;
+              
+               
                 case 'listTagsRequest':
                     $id = filter_input(INPUT_GET, "id");
 
@@ -296,15 +330,7 @@ if (controlSession()) {
                         throw new Exception('Aucun Id spécifié');
                     }
                     break;
-                case 'listResponse':
-                    $id = filter_input(INPUT_GET, "id");
-
-                    if ($id != null) {
-                        listResponse($id);
-                    } else {
-                        throw new Exception('Aucun Id spécifié');
-                    }
-                    break;
+                
 
                 case 'deleteTagOnRequest':
                     $id = filter_input(INPUT_GET, "idRequest");

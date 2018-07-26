@@ -47,10 +47,9 @@
                                 Formulaires
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=1">RECHERCHER UN PC</a>
-                                <a class="dropdown-item" href="routes.php?action=manageQuestionFromForm&form=2">RECHERCHER UN VIDEOPROJECTEUR</a>
+                                <a class="dropdown-item" href="routes.php?action=manageForm">LISTE DES FORMULAIRES</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Nouveau Formulaire</a>
+                                <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
 
