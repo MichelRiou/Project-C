@@ -41,6 +41,11 @@
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item ">
+                            <a class="nav-link " href="#"><?php $bu = (isset($_SESSION['bu']) ? $_SESSION['bu'] : 'Aucune B.U sélectionnée') ?><?= $bu ?></a>
+                        </li>
+                    </ul>
                     <?php if (isset($_SESSION['bu'])) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -74,16 +79,13 @@
                             <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
                             <a class="dropdown-item" href="#">Création</a>
                             <a class="dropdown-item" href="#">Liste</a>
+                            <a href=\"javascript:history.back()\">retour arriere</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
                 </ul> 
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item ">
-                        <a class="nav-link " href="#">Business Unit: <?php $bu = (isset($_SESSION['bu']) ? $_SESSION['bu'] : 'Aucune') ?><?= $bu ?></a>
-                    </li>
-                </ul>
+
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
                         <a class="nav-link " href="#">Utilisateur: <?php $user = (isset($_SESSION['user']) ? $_SESSION['user'] : 'personne') ?><?= $user ?></a>

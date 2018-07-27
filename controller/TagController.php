@@ -53,65 +53,7 @@ class TagController {
         echo $result;
     }
 
-    function insertTagRequest($requestId, $tagId, $requestTagSign, $requestTagValue, $requestTagNumeric) {
-        //$TagRequestDAO = new \model\TagRequestDAO();
-        $TagDAO = new \model\TagDAO();
-        $objet = new \model\TagRequest();
-        $objet->setRequest_id($requestId);
-        $objet->setTag_id($tagId);
-        $objet->setRequest_tag_sign($requestTagSign);
-        $objet->setRequest_tag_value($requestTagValue);
-        $objet->setRequest_tag_numeric($requestTagNumeric);
-        //print_r($objet);
-        $result = $TagDAO->insertTagFromRequest($objet);
-// Pour requête AJAX
-        echo $result;
-    }
-
-    function updateTagRequest($id, $editSign, $editValue, $editNumeric) {
-        // En attente de sérialization de l'objet plus tôt dans le process 
-        //$TagRequestDAO = new \model\TagRequestDAO();
-        $TagDAO = new \model\TagDAO();
-        $objet = new \model\TagRequest();
-        $objet->setRequest_tag_id($id);
-        $objet->setRequest_tag_sign($editSign);
-        $objet->setRequest_tag_value($editValue);
-        $objet->setRequest_tag_numeric($editNumeric);
-        $result = $TagDAO->updateTagRequest($objet);
-// Pour requête AJAX
-        echo $result;
-    }
-
-    function deleteTagRequest($id) {
-        // En attente de sérialization de l'objet plus tôt dans le process   
-        //$TagRequestDAO = new \model\TagRequestDAO();
-        $TagDAO = new \model\TagDAO();
-        $objet = new \model\TagRequest();
-        $objet->setRequest_tag_id($id);
-        $result = $TagDAO->deleteTagRequest($objet);
-// Pour requête AJAX
-        echo $result;
-    }
-
-    public function manageTagResponse($id, $bu) {
-
-        $QuizDAO = new \model\QuizDAO;
-        //$TagRequestDAO = new \model\TagRequestDAO();
-        $TagDAO = new \model\TagDAO();
-        //$SignDAO = new \model\SignDAO();
-        $request = $QuizDAO->selectOneRequest($id);
-        $tagsRequest = $TagDAO->selectAllTagsFromRequest($id);
-        $tags = $TagDAO->selectAllTagsFromBU($bu);
-        $signs = $TagDAO->selectAllSigns();
-
-        require('view/frontend/manageResponse.php');
-    }
-    function listResponse($id) {
-        $TagDAO = new \model\TagDAO();
-    //$TagRequestDAO = new \model\TagRequestDAO();
-    $tagsRequest = $TagDAO->selectAllTagsFromRequest($id);
-    require('view/frontend/listResponse.php');
-}
+    
     public function manageTag($bu) {
 
         $BusinessDAO = new \model\BusinessDAO();

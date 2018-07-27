@@ -4,9 +4,9 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";
-    //$classPath = ROOT_PATH . "\Project-C\\${class}.php";
-   // $classPath = ROOT_PATH . "\project-c\\${class}.php";
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";//bureau
+    //$classPath = ROOT_PATH . "\Project-C\\${class}.php";//home
+   // $classPath = ROOT_PATH . "\project-c\\${class}.php";//defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -19,9 +19,9 @@ spl_autoload_register("autoloader");
 /*
  * routes.php
  */
-require('controller/authorization.php');
+//require('controller/authorization.php');
 
-require('controller/frontend.php');
+//require('controller/frontend.php');
 
 //require('controller/backend.php');
 
@@ -34,9 +34,10 @@ $backendController = controller\BackEndController::getInstance();
 $manageQuiz = controller\QuizController::getInstance();
 $manageProduct = controller\ProductController::getInstance();
 $manageTag = controller\TagController::getInstance();
+$manageAdmin = controller\AdminController::getInstance();
 
 
-if (controlSession()) {
+if ($manageAdmin->controlSession()) {
     /**
      * GESTION DES ROUTES
      */
@@ -68,7 +69,7 @@ if (controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
 
                     if ($id != null) {
-                        $manageTag->listResponse($id);
+                        $manageQuiz->listResponse($id);
                     } else {
                         throw new Exception('Aucun Id spécifié');
                     }
@@ -115,7 +116,7 @@ if (controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
                     //$bu = filter_input(INPUT_GET, "bu");
                     if (isset($id) && isset($bu)) {
-                        $manageTag->manageTagResponse($id, $bu);
+                        $manageQuiz->manageTagResponse($id, $bu);
                     } else {
                         throw new Exception('Aucun Id/BU spécifié');
                     }
@@ -156,7 +157,7 @@ if (controlSession()) {
                     $addAlpha = filter_input(INPUT_GET, "addAlpha");
                     $addNumeric = filter_input(INPUT_GET, "addNumeric");
                     if (isset($idRequest) && isset($idTag) && isset($addSign) && (isset($addAlpha) || isset($addNumeric))) {
-                        $manageTag->insertTagRequest($idRequest, $idTag, $addSign, $addAlpha, $addNumeric);
+                        $manageQuiz->insertTagRequest($idRequest, $idTag, $addSign, $addAlpha, $addNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur addTag');
                     }
@@ -167,7 +168,7 @@ if (controlSession()) {
                     $editAlpha = filter_input(INPUT_GET, "editAlpha");
                     $editNumeric = filter_input(INPUT_GET, "editNumeric");
                     if (isset($id)) {
-                        $manageTag->updateTagRequest($id, $editSign, $editAlpha, $editNumeric);
+                        $manageQuiz->updateTagRequest($id, $editSign, $editAlpha, $editNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur updateTag');
                     }
@@ -175,7 +176,7 @@ if (controlSession()) {
                 case 'deleteTagRequest':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
-                        $manageTag->deleteTagRequest($id);
+                        $manageQuiz->deleteTagRequest($id);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur deleteTagRequest');
                     }
@@ -345,7 +346,7 @@ if (controlSession()) {
                 /**
                  * insertTagRequest
                  */
-                case 'addTagOnRequest':
+               /* case 'addTagOnRequest':
                     $idRequest = filter_input(INPUT_GET, "idRequest");
                     $idTag = filter_input(INPUT_GET, "idTag");
                     $selectOperator = filter_input(INPUT_GET, "selectOperator");
@@ -356,7 +357,7 @@ if (controlSession()) {
                     } else {
                         throw new Exception('Erreur d\'appel du controleur addTag');
                     }
-                    break;
+                    break;*/
                 case 'updateTagOnRequest':
                     $idRequest = filter_input(INPUT_GET, "idRequest");
                     $idTag = filter_input(INPUT_GET, "idTag");
@@ -378,7 +379,7 @@ if (controlSession()) {
                     throw new Exception('Aucun controleur défini');
             }
         } else {
-            listBUs();
+            $manageAdmin->mainMenu();
         }
     } catch (Exception $e) {
         echo 'Erreur : ' . $e->getMessage();

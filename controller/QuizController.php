@@ -61,5 +61,63 @@ class QuizController {
         require('view/frontend/listForm.php');
     }
     
-   
+   function insertTagRequest($requestId, $tagId, $requestTagSign, $requestTagValue, $requestTagNumeric) {
+        //$TagRequestDAO = new \model\TagRequestDAO();
+         $quizDAO = new \model\QuizDAO();
+        $objet = new \model\TagRequest();
+        $objet->setRequest_id($requestId);
+        $objet->setTag_id($tagId);
+        $objet->setRequest_tag_sign($requestTagSign);
+        $objet->setRequest_tag_value($requestTagValue);
+        $objet->setRequest_tag_numeric($requestTagNumeric);
+        //print_r($objet);
+        $result = $quizDAO->insertTagFromRequest($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+
+    function updateTagRequest($id, $editSign, $editValue, $editNumeric) {
+        // En attente de sérialization de l'objet plus tôt dans le process 
+        //$TagRequestDAO = new \model\TagRequestDAO();
+         $quizDAO = new \model\QuizDAO();
+        $objet = new \model\TagRequest();
+        $objet->setRequest_tag_id($id);
+        $objet->setRequest_tag_sign($editSign);
+        $objet->setRequest_tag_value($editValue);
+        $objet->setRequest_tag_numeric($editNumeric);
+        $result = $quizDAO->updateTagRequest($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+
+    function deleteTagRequest($id) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        //$TagRequestDAO = new \model\TagRequestDAO();
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\TagRequest();
+        $objet->setRequest_tag_id($id);
+        $result = $quizDAO->deleteTagRequest($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+
+    public function manageTagResponse($id, $bu) {
+
+        $QuizDAO = new \model\QuizDAO;
+        //$TagRequestDAO = new \model\TagRequestDAO();
+        $TagDAO = new \model\TagDAO();
+        //$SignDAO = new \model\SignDAO();
+        $request = $QuizDAO->selectOneRequest($id);
+        $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
+        $signs = $QuizDAO->selectAllSigns();
+
+        require('view/frontend/manageResponse.php');
+    }
+    function listResponse($id) {
+         $QuizDAO = new \model\QuizDAO;
+    //$TagRequestDAO = new \model\TagRequestDAO();
+    $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
+    require('view/frontend/listResponse.php');
+}
 }
