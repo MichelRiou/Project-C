@@ -13,7 +13,7 @@ class TagRequest {
     private $request_tag_value;
     private $request_tag_numeric;
 
-    function __construct($request_tag_id, $request_id, $tag_id, $request_tag_sign, $request_tag_value, $request_tag_numeric) {
+    function __construct($request_tag_id='', $request_id='', $tag_id='', $request_tag_sign='', $request_tag_value='', $request_tag_numeric='') {
         $this->request_tag_id = $request_tag_id;
         $this->request_id = $request_id;
         $this->tag_id = $tag_id;

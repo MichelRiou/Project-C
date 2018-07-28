@@ -4,8 +4,8 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";//bureau
-    //$classPath = ROOT_PATH . "\Project-C\\${class}.php";//home
+   // $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";//bureau
+   $classPath = ROOT_PATH . "\Project-C\\${class}.php";//home
    // $classPath = ROOT_PATH . "\project-c\\${class}.php";//defense
     if (file_exists($classPath)) {
         include_once $classPath;
@@ -227,7 +227,35 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Aucune BU spécifiée');
                     }
                     break;    
-
+                    case 'deleteForm':
+                    $form = filter_input(INPUT_GET, "form");
+                    if (isset($id)) {
+                        $manageQuiz->deleteForm($id);
+                    } else {
+                        throw new Exception('Erreur de parametre');
+                    }
+                    break;
+                //done
+                case 'updateForm':
+                    $form = filter_input(INPUT_GET, "form");
+                    $designation = filter_input(INPUT_GET, "designation");
+                    if (isset($id) && isset($designation)) {
+                        $manageQuiz->updateForm($id, $designation);
+                    } else {
+                        throw new Exception('Erreur de parametre');
+                    }
+                    break;
+                //done
+                case 'addTag':
+                    $bu = $_SESSION['bu'];
+                    $name = filter_input(INPUT_GET, "name");
+                    $designation = filter_input(INPUT_GET, "designation");
+                    if (isset($bu) && isset($name) && isset($designation)) {
+                        $manageTag->addTag($bu, $name, $designation);
+                    } else {
+                        throw new Exception('Erreur de parametre');
+                    }
+                    break;
                 ///////////////////////    
                 //// Routes à confirmer
                 ///////////////////////    

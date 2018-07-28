@@ -4,9 +4,9 @@ ob_start();
 <script type="text/javascript">
     var idDelete;
     var idEdit;
-    function ctrlAddForm(form) {
+    function ctrlAddForm() {
         var msg = "";
-        if ($("#addName").val() == '' )
+        if ($("#addName").val() == '')
             msg += 'Le nom est obligatoire.';
         if ($("#addDesignation").val() == '')
             msg += 'La désignation est obligatoire.';
@@ -59,12 +59,12 @@ ob_start();
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
             if (ctrlAddForm()) {
-               // alert();
+                // alert();
                 $.ajax({
                     type: 'POST',
                     url: '/routes.php?action=addTag&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val(),
                     success: function (data) {
-                        console.log('retour success' + data +$("#addName").val() + '&designation=' + $("#addDesignation").val());
+                        console.log('retour success' + data + $("#addName").val() + '&designation=' + $("#addDesignation").val());
                         if (data != 1) {
                             $("#addMessage").html("Erreur d\'ajout" + data);
                         } else {
@@ -86,7 +86,7 @@ ob_start();
             console.log(idDelete);
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=deleteTag&id=' + idDelete,
+                url: '/routes.php?action=deleteForm&id=' + idDelete,
                 success: function (data) {
                     console.log(data);
                     if (data != 1) {
@@ -108,7 +108,7 @@ ob_start();
 
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=updateTag&id=' + idEdit + '&designation=' + $("#editDesignation").val(),
+                url: '/routes.php?action=updateForm&id=' + idEdit + '&designation=' + $("#editDesignation").val(),
                 success: function (data) {
                     console.log('retour update' + data + '/routes.php?action=updateTag&id=' + idEdit + '&editdesignation=' + $("#editDesignation").val());
                     if (data != 1) {
@@ -140,21 +140,21 @@ ob_start();
             </div>
         </div>
         <div class="row">
-            <div class="col-md-10 form-group">
+            <div class="col-md-9 form-group">
                 <h5>VOUS ÊTES DANS LA BUSINESS UNIT :  <?= $bu->getBu_name() ?></h5>  
 
             </div>
 
-            <div class="col-md-2 ">
-                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
+            <div class="col-md-3 ">
+                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Création d'un formulaire</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
-               </div>
-             <div class="row" id="requete">
         </div>
-       
+        <div class="row" id="requete">
+        </div>
 
-     
+
+
     </div>
 </div>
 </div>
@@ -175,7 +175,15 @@ ob_start();
                     <div class="form-group">
                         <label>Désignation</label>
                         <input type="text" class="form-control"  id ="editDesignation" >
-                    </div>           					
+                    </div>  
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select class="form-control" name="idCategory" id="addCategory">
+                            <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>                    
                 </div>
                 <div id="messageEdit" class="text-warning align-center"></div>
                 <div class="modal-footer">
@@ -192,7 +200,7 @@ ob_start();
         <div class="modal-content">
             <form >
                 <div class="modal-header">						
-                    <h4 class="modal-title">Ajout d'un Tag</h4>
+                    <h4 class="modal-title">Création d'un Formulaire</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -204,6 +212,22 @@ ob_start();
                         <label>Désignation</label>
                         <input type="text" class="form-control"  id ="addDesignation" >
                     </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select class="form-control" name="idCategory" id="addCategory">
+                            <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                            <?php } ?>
+                        </select>
+                    </div> 
+                     <div class="form-group">
+                        <label>Type de recherche</label>
+                        <select class="form-control" name="idSearchType" id="addSearchType">
+                            <?php for ($i = 0; $i < count($searchtypes); $i++) { ?>
+                                <option value="<?= $searchtypes[$i]->getSearchType_id() ?>"><?= $searchtypes[$i]->getSearchType_name() ?></option>
+                            <?php } ?>
+                        </select>
+                    </div> 
                 </div>
                 <div id="addMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
@@ -224,7 +248,7 @@ ob_start();
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
-                    <h6 class="text-warning">ATTENTION, la suppression d'un Tag entraine la supression des Tags correspondant sur les produits et les réponses.</br>Principe du ON DELETE CASCADE</h6>
+                    <h6 class="text-warning">ATTENTION, la suppression du formulaire entraine la supression de tous les éléments le composant.</br>Principe du ON DELETE CASCADE</h6>
                 </div>
                 <div id="messageDelete" class="text-warning align-center"></div>
                 <div class="modal-footer">

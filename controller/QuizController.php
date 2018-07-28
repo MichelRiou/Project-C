@@ -47,7 +47,10 @@ class QuizController {
     }
     public function manageForm($bu) {
         // Supprimer la bu
-       // $quizDAO = new \model\QuizDAO();
+       $productDAO = new \model\ProductDAO();
+       $categories=$productDAO->selectAllCategory();
+       $quizDAO = new \model\QuizDAO();
+       $searchtypes=$quizDAO->selectAllSearchType();
         //$FormDAO = new \model\FormDAO();
        // $form = $quizDAO->selectOneForm($id);
          $BusinessDAO = new \model\BusinessDAO();

@@ -148,9 +148,28 @@ class QuizDAO extends DAOManager {
         //print_r($tags);
         return $forms;
     }
-
+    public function selectAllSearchType() {
+        //$searchtypes = array();
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('SELECT * FROM searchtypes');
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new SearchType();
+                $objet->setSearchtype_id($enr['searchtype_id']);
+                $objet->setSearchtype_name($enr['searchtype_name']);
+                $objet->setSearchtype_description($enr['searchtype_description']);
+                $searchtypes[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $searchtypes[] = $objet;
+        }
+        return $searchtypes;
+    }
     public function selectAllSigns() {
-        $objet = array();
+        $signs = array();
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM signs');
         $req->setFetchMode(\PDO::FETCH_ASSOC);

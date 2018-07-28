@@ -12,6 +12,7 @@ class ProductDAO extends Manager {
         $req->execute();
         return ($enr = $req->fetch());
     }
+
     public function isExistBUILDER_REF($builder_ref) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM products WHERE product_builder_ref = ?');
@@ -61,6 +62,7 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
+
     public function listProductSelectionExclusif($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
@@ -79,7 +81,8 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
-     public function listProductSelectionMandatory($category, $params) {
+
+    public function listProductSelectionMandatory($category, $params) {
         if (count($params) > 0) {
             $db = $this->dbConnect();
             $requests = implode(", ", $params);
@@ -97,17 +100,18 @@ class ProductDAO extends Manager {
         }
         return $products;
     }
+
     public function selectAllProductByCat($bu, $category) {
         $products = array();
         try {
             $db = $this->dbConnect();
-            if ($category !=''){
-            $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
-            $req->bindValue(1, $bu);
-            $req->bindValue(2, $category);
-            }else{
-             $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? ORDER BY product_category ASC');
-            $req->bindValue(1, $bu);
+            if ($category != '') {
+                $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
+                $req->bindValue(1, $bu);
+                $req->bindValue(2, $category);
+            } else {
+                $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? ORDER BY product_category ASC');
+                $req->bindValue(1, $bu);
             }
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
@@ -131,4 +135,27 @@ class ProductDAO extends Manager {
         //print_r($tags);
         return $products;
     }
+
+    public function selectAllCategory() {
+        //$categories = array();
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('SELECT * FROM categories');
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new Category();
+                $objet->setCategory_id($enr['category_id']);
+                $objet->setCategory_name($enr['category_name']);
+                $objet->setCategory_designation($enr['category_designation']);
+                $categories[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $categories[] = $objet;
+        }
+        //print_r($tags);
+        return $categories;
+    }
+
 }
