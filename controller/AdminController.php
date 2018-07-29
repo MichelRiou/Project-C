@@ -25,11 +25,12 @@ class AdminController {
         //$products = $ProductDAO->selectAllProductByCat($bu, $category);
 
         require('view/frontend/mainMenu.php');
-    }    
+    }
+
     public function controlSession() {
         //session_start();
-       $_SESSION['user'] = 'Michel';
-        $_SESSION['bu'] = 2;
+        $_SESSION['user'] = 'Michel';
+        //  $_SESSION['bu'] = 2;
         if (!isset($_SESSION['user'])) {
             require('view/frontend/login.php');
             return false;
@@ -41,6 +42,12 @@ class AdminController {
     function manageUserSession() {
 
         require('view/frontend/login.php');
+    }
+
+    public function changeBU($bu) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $_SESSION['bu'] = $bu;
+        //print_r($_SESSION);
     }
 
 }

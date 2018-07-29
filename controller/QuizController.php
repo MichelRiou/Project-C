@@ -5,8 +5,6 @@
 
 namespace controller;
 
-
-
 class QuizController {
 
     private static $_instance = null;
@@ -22,7 +20,7 @@ class QuizController {
         return self::$_instance;
     }
 
-    public  function manageQuiz($id) {
+    public function manageQuiz($id) {
 
         $quizDAO = new \model\QuizDAO();
         //$SearchTypeDAO = new \model\SearchTypeDAO();
@@ -32,6 +30,7 @@ class QuizController {
         $headerRequest = $quizDAO->getQuiz($id);
         require('view/frontend/displayQuiz.php');
     }
+
     public function manageQuestion($id) {
         // Supprimer la bu
         $quizDAO = new \model\QuizDAO();
@@ -39,34 +38,95 @@ class QuizController {
         $form = $quizDAO->selectOneForm($id);
         require('view/frontend/manageQuestion.php');
     }
-     public function listQuestion($bu, $form) {
+
+    public function listQuestion($bu, $form) {
 
         $quizDAO = new \model\QuizDAO();
         $questions = $quizDAO->selectAllQuestionsFromForm($bu, $form);
         require('view/frontend/listQuestion.php');
     }
+
     public function manageForm($bu) {
         // Supprimer la bu
-       $productDAO = new \model\ProductDAO();
-       $categories=$productDAO->selectAllCategory();
-       $quizDAO = new \model\QuizDAO();
-       $searchtypes=$quizDAO->selectAllSearchType();
+        $productDAO = new \model\ProductDAO();
+        $categories = $productDAO->selectAllCategory();
+        $quizDAO = new \model\QuizDAO();
+        $searchtypes = $quizDAO->selectAllSearchType();
         //$FormDAO = new \model\FormDAO();
-       // $form = $quizDAO->selectOneForm($id);
-         $BusinessDAO = new \model\BusinessDAO();
+        // $form = $quizDAO->selectOneForm($id);
+        $BusinessDAO = new \model\BusinessDAO();
         $bu = $BusinessDAO->selectOneBu($bu);
         require('view/frontend/manageForm.php');
     }
-     public function listForm($bu) {
+
+    public function listForm($bu) {
 
         $quizDAO = new \model\QuizDAO();
         $forms = $quizDAO->selectAllFormFromBu($bu);
         require('view/frontend/listForm.php');
     }
-    
-   function insertTagRequest($requestId, $tagId, $requestTagSign, $requestTagValue, $requestTagNumeric) {
+
+    /*public function deleteForm($id) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\Form();
+        $objet->setForm_id($id);
+        $result = $quizDAO->deleteForm($objet);
+// Pour requête AJAX
+        echo $result;
+    }*/
+
+    public function addForm($bu, $name, $designation, $category, $searchtype) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\Form();
+        $objet->setForm_bu($bu);
+        $objet->setForm_name($name);
+        $objet->setForm_designation($designation);
+        $objet->setForm_category($category);
+        $objet->setForm_searchtype($searchtype);
+        $result = $quizDAO->addForm($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+    public function updateForm($id, $bu,$name, $designation, $category, $searchtype, $validated) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\Form();
+        $objet->setForm_id($id);
+        $objet->setForm_bu($bu);
+        $objet->setForm_name($name);
+        $objet->setForm_designation($designation);
+        $objet->setForm_category($category);
+        $objet->setForm_searchtype($searchtype);
+        $objet->setForm_validated($validated);
+        $result = $quizDAO->updateForm($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+    public function deleteForm($id) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\Form();
+        $objet->setForm_id($id);
+        $result = $quizDAO->deleteForm($objet);
+// Pour requête AJAX
+        echo $result;
+    }
+   /* public function updateTag($id, $designation) {
+        // En attente de sérialization de l'objet plus tôt dans le process   
+        $TagDAO = new \model\TagDAO();
+        $objet = new \model\Tag();
+        $objet->setTag_id($id);
+        $objet->setTag_designation($designation);
+        $result = $TagDAO->updateTag($objet);
+// Pour requête AJAX
+        echo $result;
+    }*/
+
+    function insertTagRequest($requestId, $tagId, $requestTagSign, $requestTagValue, $requestTagNumeric) {
         //$TagRequestDAO = new \model\TagRequestDAO();
-         $quizDAO = new \model\QuizDAO();
+        $quizDAO = new \model\QuizDAO();
         $objet = new \model\TagRequest();
         $objet->setRequest_id($requestId);
         $objet->setTag_id($tagId);
@@ -82,7 +142,7 @@ class QuizController {
     function updateTagRequest($id, $editSign, $editValue, $editNumeric) {
         // En attente de sérialization de l'objet plus tôt dans le process 
         //$TagRequestDAO = new \model\TagRequestDAO();
-         $quizDAO = new \model\QuizDAO();
+        $quizDAO = new \model\QuizDAO();
         $objet = new \model\TagRequest();
         $objet->setRequest_tag_id($id);
         $objet->setRequest_tag_sign($editSign);
@@ -117,10 +177,12 @@ class QuizController {
 
         require('view/frontend/manageResponse.php');
     }
+
     function listResponse($id) {
-         $QuizDAO = new \model\QuizDAO;
-    //$TagRequestDAO = new \model\TagRequestDAO();
-    $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
-    require('view/frontend/listResponse.php');
-}
+        $QuizDAO = new \model\QuizDAO;
+        //$TagRequestDAO = new \model\TagRequestDAO();
+        $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
+        require('view/frontend/listResponse.php');
+    }
+
 }

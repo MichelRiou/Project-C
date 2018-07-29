@@ -3,7 +3,7 @@
 namespace model;
 
 /*
- * LE DTO DE LA TABLE [Article] DE LA BD [5Minutes]
+ * LE DTO DE LA TABLE FORMS
  */
 
 class Form {
@@ -89,4 +89,32 @@ class Form {
         return $this;
     }
 
+    /**
+     * 
+     * @return String
+     */
+    function getForm_category_name() {
+        $productDAO = new ProductDAO();
+        $category = $productDAO->selectOneCategory($this->form_category);
+        return $category->getCategory_name();
+    }
+
+    /**
+     * 
+     * @return String
+     */
+    function getForm_searchtype_name() {
+        $quizDAO = new QuizDAO();
+        $searchtype = $quizDAO->selectOneSearchType($this->form_searchtype);
+        return $searchtype->getSearchtype_name();
+    }
+    /**
+     * 
+     * @return String
+     */
+    function getForm_bu_name() {
+        $buDAO = new BusinessDAO();
+        $bu = $buDAO->selectOneBu($this->form_bu);
+        return $bu->getBu_name();
+    }
 }

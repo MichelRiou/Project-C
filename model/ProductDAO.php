@@ -157,5 +157,22 @@ class ProductDAO extends Manager {
         //print_r($tags);
         return $categories;
     }
+ public function selectOneCategory($id) {
 
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM categories  WHERE category_id= ? ');
+        $req->bindValue(1, $id);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if ($enr = $req->fetch()) {
+            $objet = new Category();
+            $objet->setCategory_id($enr['category_id']);
+            $objet->setCategory_name($enr['category_name']);
+            $objet->setCategory_designation($enr['category_designation']);
+        } else {
+            $objet = null;
+        }
+        $req->closeCursor();
+        return $objet;
+    }
 }

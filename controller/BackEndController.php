@@ -23,12 +23,7 @@ class BackEndController {
         return self::$_instance;
     }
 
-    public function changeBU($bu) {
-        // En attente de sérialization de l'objet plus tôt dans le process   
-        $_SESSION['bu'] = $bu;
-        print_r($_SESSION);
-    }
-
+  
     
     
 
