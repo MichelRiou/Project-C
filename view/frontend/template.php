@@ -63,7 +63,7 @@ print_r($user);
                                 <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
-                                <?php if (isset($user) && ($user->getUser_role()== 1 || $user->getUser_role()== 3)) { ?>
+                                <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role()== 3)) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Produits

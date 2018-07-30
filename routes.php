@@ -3,32 +3,25 @@
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
+/**
+ * AUTOLOADER : Référencement de la fonction d'autochargement
+ */
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-    // $classPath = ROOT_PATH . "\project-c\\${class}.php";//defense
+    $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
         throw new Exception("Classe inexistante " . $classPath);
     }
 }
-
-// Référencement de la fonction d'autochargement
 spl_autoload_register("autoloader");
+
 /*
- * routes.php
+ * CONTROLLEURS : Instanciation unique 
  */
-//require('controller/authorization.php');
-//require('controller/frontend.php');
-//require('controller/backend.php');
 
-
-$frontendController = new \controller\FrontEndController();
-
-
-//$backendController = new \controller\BackEndController();
-//$backendController = controller\BackEndController::getInstance();
 $manageQuiz = controller\QuizController::getInstance();
 $manageProduct = controller\ProductController::getInstance();
 $manageTag = controller\TagController::getInstance();
@@ -56,22 +49,31 @@ if ($manageAdmin->controlSession()) {
                     }
                     break;
                 /**
-                 * ROUTE : Affichage résultat du formulaire
+                 * ROUTE : Affichage résultat du formulaire de recherche
                  */
                 case 'listProductSelection':
                     $category = filter_input(INPUT_POST, "category");
                     $listParams = filter_input(INPUT_POST, "params");
                     $searchtype = filter_input(INPUT_POST, "searchtype");
-                    if (filter_var($category, FILTER_VALIDATE_INT) !== false 
-                            && filter_var($listParams, FILTER_DEFAULT) !== false 
-                            && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
+                    if (filter_var($category, FILTER_VALIDATE_INT) !== false && filter_var($listParams, FILTER_DEFAULT) !== false && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
                         $params = explode('-', $listParams);
                         $manageProduct->listProductSelection($category, $params, $searchtype);
                     } else {
                         throw new Exception('Erreur dans la requête');
                     }
                     break;
-
+                /**
+                 * ROUTE : Affichage résultat sur liste des produits
+                 */
+                case 'listProductByCat':
+                    $bu = $_SESSION['bu'];
+                    $category = filter_input(INPUT_POST, "category");
+                    if (isset($bu) && filter_var($category, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct->listProductByCat($bu, $category);
+                    } else {
+                        throw new Exception('Erreur dans la rêquete');
+                    }
+                    break;
 
                 case 'listResponse':
                     $id = filter_input(INPUT_GET, "id");
@@ -314,15 +316,7 @@ if ($manageAdmin->controlSession()) {
                     break;
                 //done
                 //done
-                case 'listProductByCat':
-                    $bu = $_SESSION['bu'];
-                    $category = filter_input(INPUT_GET, "category");
-                    if (isset($bu) && isset($category)) {
-                        $frontendController->listProductByCat($bu, $category);
-                    } else {
-                        throw new Exception('Erreur dans la requete listProductByCat');
-                    }
-                    break;
+
                 /**
                  *  Route addHeaders
                  *  Création dynamique du formulaire de d'interrogation     

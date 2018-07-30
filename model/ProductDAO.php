@@ -105,7 +105,7 @@ class ProductDAO extends Manager {
         $products = array();
         try {
             $db = $this->dbConnect();
-            if ($category != '') {
+            if ($category != 0) {
                 $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
                 $req->bindValue(1, $bu);
                 $req->bindValue(2, $category);
@@ -132,7 +132,6 @@ class ProductDAO extends Manager {
             $objet = null;
             $products[] = $objet;
         }
-        //print_r($tags);
         return $products;
     }
 

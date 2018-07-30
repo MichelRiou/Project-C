@@ -225,9 +225,7 @@ ob_start();
             </div>
             </div>
         </div>
-        <div id="requete">
-
-        </div>
+        <div class ="scrollDiv2" id="requete"></div>
     </div>
 </div>
 </div>

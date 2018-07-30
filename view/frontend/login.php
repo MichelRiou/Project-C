@@ -2,7 +2,7 @@
 ob_start();
 ?>
 
-<div class="container py-5">
+<div class="container py-5 extra">
     <div class="row">
         <div class="col-md-12">
             <div class="row">

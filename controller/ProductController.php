@@ -40,7 +40,7 @@ class ProductController {
     }
 
     function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error) {
-        require_once("PHPExcel/PHPExcel/Classes/PHPExcel/IOFactory.php");
+        require_once("PHPExcel\vendor\phpoffice\phpspreadsheet\src\PhpSpreadsheet");
         $extensions_valides = array('txt', 'csv', 'xls', 'xlsx');
         $extensions_XLS = array('xls', 'xlsx');
         $extensions_TXT = array('txt');
@@ -52,7 +52,8 @@ class ProductController {
             $message += 'Le fichier est trop gros. ';
         if (!in_array($extension_upload, $extensions_valides))
             $message += 'Extension non valide.';
-        $path = ROOT_PATH . '/Projet-Calestor/temp/importFichier';
+       // $path = ROOT_PATH . '/Projet-Calestor/temp/importFichier';
+         $path = ROOT_PATH . '\Projet-C\temp\importFichier';
         $nom = $path . '.' . $extension_upload;
         $resultat = move_uploaded_file($tmp_name, $nom);
         if (!$resultat)
@@ -142,5 +143,10 @@ class ProductController {
             header('Location: /routes.php?action=getProductsFile&msg=' . $message);
         }
     }
+public function listProductByCat($bu, $category) {
+        $ProductDAO = new \model\ProductDAO();
+        $products = $ProductDAO->selectAllProductByCat($bu, $category);
 
+        require('view/frontend/listProduct.php');
+    }
 }

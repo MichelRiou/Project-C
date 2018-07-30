@@ -5,7 +5,11 @@ ob_start();
     function refresh() {
         $.ajax({
             type: 'POST',
-            url: '/routes.php?action=listProductByCat&category=',
+            url: '/routes.php?action=listProductByCat',
+             data:
+                            {
+                                "category" : 0,
+                            },
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
