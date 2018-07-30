@@ -1,3 +1,8 @@
+.main_logo{
+    height:500px;
+  width: 500px;
+   padding-top: 200px; 
+}
 nav {
     padding-bottom: 30px; 
 }
@@ -6,6 +11,7 @@ body {
         background: #f5f5f5;
         font-family: 'Varela Round', sans-serif;
         font-size: 15px;
+        overflow-y:no-display;
     }
 .scrollDiv {
   height:700px;
@@ -14,7 +20,7 @@ body {
 }
 .scrollDiv2 {
   height:700px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
     .table-wrapper {

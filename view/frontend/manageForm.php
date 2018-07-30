@@ -16,7 +16,22 @@ ob_start();
         $result = (msg != "" ? false : true);
         return $result;
     }
+    function searchString() {
+        var Sstring = $('#string').val();
+        $("td:contains('" + Sstring + "')").css("background", "lightgrey");
+        var n = $("td:contains('" + Sstring + "')").length;
+        //alert(n + " occurence(s) trouvée(s)");
+        $("td:contains('" + Sstring + "')")[0].scrollIntoView(true);
+    }
+    function clearSearch() {
+        var Sstring = $('#string').val();
+        if (Sstring != '') {
+            $("td:contains('" + Sstring + "')").css("background", "none");
+            $('#string').val('');
+        }
+    }
     function refresh() {
+
         $.ajax({
             type: 'POST',
             url: '/routes.php?action=listForm',
@@ -52,6 +67,7 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
+
         // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
         // Activation de la fenêtre modale AJOUTER UN FORMULAIRE
@@ -133,14 +149,17 @@ ob_start();
     });
 </script>
 
-<div class="container-fluid">
+<div class="container">
     <div class="table-wrapper">
         <div class="table-title">
-            <div class="row">
-                <div class="col-md-12 form-group">
+            <div class="form-group row">
+                <div class="col-md-7">
                     <h4>Gestion des Formulaires</h4>
+                </div >
+                <div class="col-md-5">
+                    <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
+                    <input class="pull-right" id="string" name="string" type="text" value="" onfocus="clearSearch()" />
                 </div>
-
             </div>
         </div>
         <div class="row">
@@ -154,7 +173,7 @@ ob_start();
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
         </div>
-        <div class="row" id="requete">
+        <div class="row scrollDiv2" id="requete">
         </div>
 
 

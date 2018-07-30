@@ -4,8 +4,8 @@ session_start();
 define('ROOT_PATH', dirname(__DIR__));
 
 function autoloader($class) {
-    // $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php";//bureau
-    $classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
     // $classPath = ROOT_PATH . "\project-c\\${class}.php";//defense
     if (file_exists($classPath)) {
         include_once $classPath;
@@ -28,7 +28,7 @@ $frontendController = new \controller\FrontEndController();
 
 
 //$backendController = new \controller\BackEndController();
-$backendController = controller\BackEndController::getInstance();
+//$backendController = controller\BackEndController::getInstance();
 $manageQuiz = controller\QuizController::getInstance();
 $manageProduct = controller\ProductController::getInstance();
 $manageTag = controller\TagController::getInstance();
@@ -36,6 +36,7 @@ $manageAdmin = controller\AdminController::getInstance();
 
 
 if ($manageAdmin->controlSession()) {
+
     /**
      * GESTION DES ROUTES
      */
@@ -43,26 +44,35 @@ if ($manageAdmin->controlSession()) {
         $action = filter_input(INPUT_GET, "action");
         if ($action !== null) {
             switch ($action) {
-                //// Routes confirmées
+                /**
+                 * ROUTE : Utilisation du formulaire
+                 */
                 case 'manageQuiz':
-                    $form = filter_input(INPUT_GET, "form");
-                    if (isset($form)) {
-                        $manageQuiz->manageQuiz($form);
+                    $id = filter_input(INPUT_GET, "id");
+                    if (filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz->manageQuiz($id);
                     } else {
-                        throw new Exception('Aucun formulaire spécifié');
+                        throw new Exception('Erreur dans la requête');
                     }
                     break;
+                /**
+                 * ROUTE : Affichage résultat du formulaire
+                 */
                 case 'listProductSelection':
-                    $category = filter_input(INPUT_GET, "category");
-                    $listParams = filter_input(INPUT_GET, "params");
-                    $searchtype = filter_input(INPUT_GET, "searchtype");
-                    if ($category !== null && $listParams != null && $searchtype != null) {
+                    $category = filter_input(INPUT_POST, "category");
+                    $listParams = filter_input(INPUT_POST, "params");
+                    $searchtype = filter_input(INPUT_POST, "searchtype");
+                    if (filter_var($category, FILTER_VALIDATE_INT) !== false 
+                            && filter_var($listParams, FILTER_DEFAULT) !== false 
+                            && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
                         $params = explode('-', $listParams);
                         $manageProduct->listProductSelection($category, $params, $searchtype);
                     } else {
-                        throw new Exception('Erreur dans la requetelist product');
+                        throw new Exception('Erreur dans la requête');
                     }
                     break;
+
+
                 case 'listResponse':
                     $id = filter_input(INPUT_GET, "id");
 
@@ -242,7 +252,7 @@ if ($manageAdmin->controlSession()) {
                     $category = filter_input(INPUT_GET, "category");
                     $searchtype = filter_input(INPUT_GET, "searchtype");
                     $validated = filter_input(INPUT_GET, "validated");
-                    if (isset($id) && isset($bu)  && isset($name) && isset($designation) && isset($category) && isset($searchtype)&& isset($validated)) {
+                    if (isset($id) && isset($bu) && isset($name) && isset($designation) && isset($category) && isset($searchtype) && isset($validated)) {
                         $manageQuiz->updateForm($id, $bu, $name, $designation, $category, $searchtype, $validated);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -271,6 +281,16 @@ if ($manageAdmin->controlSession()) {
                     } else {
                         throw new Exception('Erreur dans la requete ');
                     }
+                    break;
+                case 'disconnectUser':
+                    $manageAdmin->disconnectUser();
+
+                    break;
+                case 'connectUser':
+                    $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+                    $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+                    $manageAdmin->connectUser();
+
                     break;
                 ///////////////////////    
                 //// Routes à confirmer

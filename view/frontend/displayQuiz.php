@@ -1,5 +1,5 @@
 <?php $title = 'Formulaire'; ?>
-<?php ob_start();  ?>
+<?php ob_start(); ?>
 
 <div class="container-fluid">
     <div class="table-wrapper">
@@ -70,7 +70,14 @@
                 searchtype = $('#searchtype').val();
                 $.ajax({
                     type: "POST",
-                    url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&searchtype=' + searchtype,
+                    //url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&searchtype=' + searchtype,
+                    url: '/routes.php?action=listProductSelection',
+                    data:
+                            {
+                                "category" : category,
+                                "params" :  lsparams,
+                                "searchtype" : searchtype
+                            },
                     success: function (data) {
                         $("#requete").html(data);
                     },

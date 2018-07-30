@@ -5,7 +5,7 @@ namespace model;
 //require_once("model/DAOManager.php");
 //require_once("model/User.php");
 
-class UserDAO extends DAOManager {
+class AdminDAO extends DAOManager {
 
     /**
      * 
@@ -27,6 +27,7 @@ class UserDAO extends DAOManager {
         $objet->setUser_email($enr['user_email']);
         $objet->setUser_password($enr['user_password']);
         $objet->setUser_role($enr['user_role']);    
+        $objet->setUser_default_bu($enr['user_default_bu']);
         } else {
         $objet=null;    
         }
@@ -49,7 +50,22 @@ class UserDAO extends DAOManager {
         }
         return $rowAffected;
     }
-
+public function selectOneRole($id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM roles WHERE role_id = ?');
+        $req->bindValue(1, $id, \PDO::PARAM_INT);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if($enr = $req->fetch()){
+        $objet = new Roles();
+        $objet->setRole_id($enr['role_id']);
+        $objet->setRole_type($enr['role_type']); 
+        } else {
+        $objet=null;    
+        }
+        
+        return $objet;
+    }
     
 
 }

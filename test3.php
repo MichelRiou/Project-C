@@ -19,7 +19,7 @@ require_once('model/TagRequest.php'); */
 
 
    $UserDAO = new \model\UserDAO();
-    $user= new \model\User('supermichel3','michel','michel@riou.fr','12345','CHEF');
+    $user= new \model\User('michel','Michel RIOU','michel@riou.fr','123','1');
     $result = $UserDAO->insertUser($user);
     $test=($result==1?'Cool':'Not cool');
     echo $test;

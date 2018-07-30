@@ -1,3 +1,9 @@
+<?php
+if (isset($_SESSION['user'])){
+$user=unserialize($_SESSION['user']);
+print_r($user);
+} ?>
+    
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -57,7 +63,7 @@
                                 <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
-
+                                <?php if (isset($user) && ($user->getUser_role()== 1 || $user->getUser_role()== 3)) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Produits
@@ -70,7 +76,9 @@
                                 <a class="dropdown-item" href="#">Nouvelle BU</a>
                             </div>
                         </li>
+                         <?php } ?>
                     <?php } ?>
+                        <?php if (isset($user) && ($user->getUser_role()==1)) { ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Utilisateurs
@@ -84,17 +92,25 @@
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
+                        <?php } ?>
                 </ul> 
 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#">Utilisateur: <?php $user = (isset($_SESSION['user']) ? $_SESSION['user'] : 'personne') ?><?= $user ?></a>
+                        <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php 
+                        if (isset($user)){
+                            echo ($user->getUser_name()." - ".$user->getUser_role_name());
+                            
+                        } else 
+                            {echo 'Personne';
+                            
+                            } ?></a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
+           <!--     <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                </form> -->
             </div>
         </nav> 
     </nav>

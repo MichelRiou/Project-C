@@ -28,15 +28,39 @@ class AdminController {
     }
 
     public function controlSession() {
-        //session_start();
-        $_SESSION['user'] = 'Michel';
-        //  $_SESSION['bu'] = 2;
+        if (filter_has_var(INPUT_POST, 'username') && filter_has_var(INPUT_POST, 'password')) {
+// Récupération de la saisie
+            $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+            $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+            try {
+                $adminDAO = new \model\AdminDAO();
+                $user = $adminDAO->selectUser($username, $password);
+                if ($user != null) {
+                    $_SESSION["user"] = serialize($user);
+                    $bu = $user->getUser_default_bu();
+                    
+                    if ($bu != 0)
+                     $_SESSION["bu"] = $bu;
+                }
+            } catch (Exception $e) {
+                echo '<h1>Erreur : ' . $e->getMessage() . '</h1>';
+            }
+        }
+
         if (!isset($_SESSION['user'])) {
             require('view/frontend/login.php');
             return false;
         } else {
             return true;
+            header("location:/routes.php");
         }
+    }
+
+    public function disconnectUser() {
+        session_destroy();
+
+        //require('view/frontend/login.php');
+        header("location:/routes.php");
     }
 
     function manageUserSession() {
