@@ -2,7 +2,7 @@
 
 namespace model;
 
-class ProductDAO extends Manager {
+class ProductDAO extends DAOManager {
 
     public function isExistEAN($ean) {
         $db = $this->dbConnect();
@@ -16,7 +16,15 @@ class ProductDAO extends Manager {
     public function isExistBUILDER_REF($builder_ref) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM products WHERE product_builder_ref = ?');
-        $req->bindValue(1, $ean, \PDO::PARAM_STR);
+        $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        return ($enr = $req->fetch());
+    }
+    public function isExistBUILDER_REF_IMP($builder_ref) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM products_import WHERE product_imp_builder_ref = ?');
+        $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
         return ($enr = $req->fetch());
@@ -36,6 +44,28 @@ class ProductDAO extends Manager {
             $req->bindValue(6, $objet->getProduct_builder());
             $req->bindValue(7, $objet->getProduct_model());
             $req->bindValue(8, $objet->getProduct_designation());
+            $req->execute();
+            $rowAffected = $req->rowcount();
+        } catch (PDOException $e) {
+            $rowAffected = -1;
+        }
+        return $rowAffected;
+    }
+    public function insertProductImp(ProductImport $objet) {
+        $rowAffected = 0;
+        try {
+            //print_r($objet);
+            $db = $this->dbConnect();
+            $req = $db->prepare('INSERT INTO products_import (product_imp_builder_ref, product_imp_ref, product_imp_four, product_imp_ean, product_imp_builder, product_imp_model, product_imp_designation, product_imp_category, product_imp_bu) VALUES(?,?,?,?,?,?,?,?,?)');
+            $req->bindValue(1, $objet->getProduct_imp_builder_ref());
+            $req->bindValue(2, $objet->getProduct_imp_ref());
+            $req->bindValue(3, $objet->getProduct_imp_four());
+            $req->bindValue(4, $objet->getProduct_imp_ean());
+            $req->bindValue(5, $objet->getProduct_imp_builder());
+            $req->bindValue(6, $objet->getProduct_imp_model());
+            $req->bindValue(7, $objet->getProduct_imp_designation());
+            $req->bindValue(8, $objet->getProduct_imp_category());
+            $req->bindValue(9, $objet->getProduct_imp_bu());
             $req->execute();
             $rowAffected = $req->rowcount();
         } catch (PDOException $e) {

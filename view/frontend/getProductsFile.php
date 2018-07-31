@@ -66,13 +66,13 @@ ob_start();
     <div class="table-wrapper">
         <div class="table-title ">
             <div class="row">
-                <div class="col-sm-12">
+                <div >
                     <h2>Mise à jour du fichier product</h2>
                 </div>
             </div>
         </div>
-        <div class="row">
-        <div class="col-sm-6">
+        <div class="row col-md-4">
+        <div class="col-md-4 center-block">
             <form class="form-group" method="post" action="/routes.php?action=majProductsFile" enctype="multipart/form-data">
                    
                 <label class="control-label" for="fichier">Fichier (tous formats | max. 20 Mo) :</label><br />
@@ -80,10 +80,6 @@ ob_start();
                 <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx"/><br />
                 <input type="submit" name="submit" value="Envoyer" />
             </form>
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="customFile">
-                <label class="custom-file-label" for="customFile">Choose file</label>
-            </div>
             <div><?= $msg ?></div>
         </div>
         </div>

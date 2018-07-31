@@ -5,6 +5,8 @@
 
 namespace controller;
 
+use PHPExcel_IOFactory;
+
 class ProductController {
 
     private static $_instance = null;
@@ -34,13 +36,20 @@ class ProductController {
         require('view/frontend/manageProduct.php');
     }
 
+    public function manageProductImport() {
+        // Supprimer la bu
+        //$FormDAO = new \model\FormDAO();
+        //$form = $FormDAO->selectOneForm($id);
+        require('view/frontend/manageProductImport.php');
+    }
+
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
     }
 
     function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error) {
-        require_once("PHPExcel\vendor\phpoffice\phpspreadsheet\src\PhpSpreadsheet");
+        require_once("PHPExcel/PHPExcel/Classes/PHPExcel/IOFactory.php");
         $extensions_valides = array('txt', 'csv', 'xls', 'xlsx');
         $extensions_XLS = array('xls', 'xlsx');
         $extensions_TXT = array('txt');
@@ -52,12 +61,14 @@ class ProductController {
             $message += 'Le fichier est trop gros. ';
         if (!in_array($extension_upload, $extensions_valides))
             $message += 'Extension non valide.';
-       // $path = ROOT_PATH . '/Projet-Calestor/temp/importFichier';
-         $path = ROOT_PATH . '\Projet-C\temp\importFichier';
+        $path = ROOT_PATH . '/Projet-Calestor/temp/importFichier';
+        // $path = ROOT_PATH . '\Projet-C\temp\importFichier';
         $nom = $path . '.' . $extension_upload;
         $resultat = move_uploaded_file($tmp_name, $nom);
         if (!$resultat)
             $message += 'Erreur d\'importation. ';
+
+        $reseller = 'INGRAM';
 //PHPExcel
         if (in_array($extension_upload, $extensions_XLS)) {
             $headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 'Devise', 'Qté', '(heure)'));
@@ -79,7 +90,7 @@ class ProductController {
                 $message += 'Fichier non reconnu. ';
         }
         if ($message == "" && $resultat) {
-            set_time_limit(300);
+            set_time_limit(3000);
             if (in_array($extension_upload, $extensions_XLS)) {
                 $index = 0;
                 $ProductDAO = new \model\ProductDAO();
@@ -94,6 +105,7 @@ class ProductController {
                         }
                         $ean = str_pad($enr[2], 13, '0', STR_PAD_LEFT);
                         $exist = $ProductDAO->isExistEAN($ean);
+                        //$exist = $ProductDAO->isExistBUILDER_REF($ean);
                         if ($exist) {
                             echo ('le :' . $ean . ' existe<br>');
                         } else {
@@ -119,7 +131,7 @@ class ProductController {
                 echo ('Traitement EXCEL ' . $nom);
             }
 
-            if (in_array($extension_upload, $extensions_TXT)) {
+            if (in_array($extension_upload, $extensions_TXT) && $reseller == 'TECHDATA') {
                 echo ('texte');
                 $ligne = 1; // compteur de ligne
                 if (($handle = fopen($nom, "r")) !== FALSE) {
@@ -137,16 +149,61 @@ class ProductController {
                 }
                 echo ('Traitement TXT ' . $nom);
             }
+            if (in_array($extension_upload, $extensions_TXT) && $reseller == 'INGRAM') {
+               // echo ('texte');
+                $ligne = 1; // compteur de ligne
+                $row=1;
+                if (($handle = fopen($nom, "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 4096, ',', '"')) !== FALSE) {
+                        $num = count($data);
+                      //  echo "<p> $num champs à la ligne $row: <br /></p>\n";
+                        $row++;
+                       // for ($c = 0; $c < $num; $c++) {
+                         //   echo $data[$c] . "<br />\n";
+                       // }
+                        $ref = trim($data[7]);
+                        //echo $ref;
+                        $ProductDAO = new \model\ProductDAO();
+                        $exist = $ProductDAO->isExistBUILDER_REF($ref);
+                        if (!$exist) {
+                            $existImp = $ProductDAO->isExistBUILDER_REF_IMP($ref);
+                            if (!$existImp) {
+                                $productImp = new \model\ProductImport();
+                                $productImp->setProduct_imp_builder_ref($ref);
+                                $productImp->setProduct_imp_ref(trim($data[3]));
+                                $productImp->setProduct_imp_four(trim($reseller));
+                                $productImp->setProduct_imp_ean(trim($data[13]));
+                                $productImp->setProduct_imp_builder(trim($data[1]));
+                                $productImp->setProduct_imp_model(trim($data[2]));
+                                $productImp->setProduct_imp_designation(trim($data[4])." ".trim($data[5]));
+                                $productImp->setProduct_imp_category(trim($data[14]));
+                                $productImp->setProduct_imp_bu("");
+                               // print_r($productImp);
+                                $result = $ProductDAO->insertProductImp($productImp);
+                               // echo ($result);
+                            }
+                          //  echo ('le :' . $ean . ' existe<br>');
+                        }
+                    }
+                    fclose($handle);
+                    header('Location: /routes.php');
+                } else {
+                    $message += 'Fichier TXT illisible.';
+                }
+                echo ('Traitement TXT ' . $nom);
+            }
             set_time_limit(30);
             //header('Location: routes.php?action=listProducts_import');
         } else {
             header('Location: /routes.php?action=getProductsFile&msg=' . $message);
         }
     }
-public function listProductByCat($bu, $category) {
+
+    public function listProductByCat($bu, $category) {
         $ProductDAO = new \model\ProductDAO();
         $products = $ProductDAO->selectAllProductByCat($bu, $category);
 
         require('view/frontend/listProduct.php');
     }
+
 }

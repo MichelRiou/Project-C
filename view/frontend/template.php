@@ -1,7 +1,6 @@
 <?php
 if (isset($_SESSION['user'])){
 $user=unserialize($_SESSION['user']);
-print_r($user);
 } ?>
     
 <!DOCTYPE html>
@@ -18,7 +17,7 @@ print_r($user);
         <link href="../../public/css/extended.css" rel="stylesheet" />
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-
+        <script src="../../public/js/common.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 
 
@@ -69,9 +68,9 @@ print_r($user);
                                 Produits
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                                <a class="dropdown-item" href="routes.php?action=manageProduct">Liste</a>
-                                <a class="dropdown-item" href="#">Liste</a>
+                                 <a class="dropdown-item" href="routes.php?action=manageProductImport">EN ATTENTE DE VALIDATION</a>
+                                <a class="dropdown-item" href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
+                               
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">Nouvelle BU</a>
                             </div>

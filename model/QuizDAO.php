@@ -2,7 +2,6 @@
 
 namespace model;
 
-//require_once("model/Manager.php");
 
 class QuizDAO extends DAOManager {
 
@@ -374,7 +373,7 @@ public function addForm(Form $objet) {
     }*/
     ////////////////////////////////////////////////////////////////////////
     
-public function updateTagRequest($objet) {
+public function updateTagRequest(TagRequest $objet) {
       //  print_r($objet);
         $liAffectes = 1;
         try {

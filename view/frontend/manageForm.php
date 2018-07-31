@@ -17,17 +17,17 @@ ob_start();
         return $result;
     }
     function searchString() {
-        var Sstring = $('#string').val();
-        $("td:contains('" + Sstring + "')").css("background", "lightgrey");
-        var n = $("td:contains('" + Sstring + "')").length;
+        var search = $('#search').val();
+        $("td:contains('" + search + "')").css("background", "lightgrey");
+        var n = $("td:contains('" + search + "')").length;
         //alert(n + " occurence(s) trouvée(s)");
-        $("td:contains('" + Sstring + "')")[0].scrollIntoView(true);
+        $("td:contains('" + search + "')")[0].scrollIntoView(true);
     }
     function clearSearch() {
-        var Sstring = $('#string').val();
-        if (Sstring != '') {
-            $("td:contains('" + Sstring + "')").css("background", "none");
-            $('#string').val('');
+        var search = $('#search').val();
+        if (search != '') {
+            $("td:contains('" + search + "')").css("background", "none");
+            $('#search').val('');
         }
     }
     function refresh() {
@@ -158,7 +158,7 @@ ob_start();
                 </div >
                 <div class="col-md-5">
                     <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
-                    <input class="pull-right" id="string" name="string" type="text" value="" onfocus="clearSearch()" />
+                    <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
             </div>
         </div>
