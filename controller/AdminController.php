@@ -34,6 +34,7 @@ class AdminController {
             $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
             try {
                 $adminDAO = new \model\AdminDAO();
+                
                 $user = $adminDAO->selectUser($username, $password);
                 if ($user != null) {
                     $_SESSION["user"] = serialize($user);

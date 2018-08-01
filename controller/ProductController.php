@@ -150,17 +150,17 @@ class ProductController {
                 echo ('Traitement TXT ' . $nom);
             }
             if (in_array($extension_upload, $extensions_TXT) && $reseller == 'INGRAM') {
-               // echo ('texte');
+                // echo ('texte');
                 $ligne = 1; // compteur de ligne
-                $row=1;
+                $row = 1;
                 if (($handle = fopen($nom, "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 4096, ',', '"')) !== FALSE) {
                         $num = count($data);
-                      //  echo "<p> $num champs à la ligne $row: <br /></p>\n";
+                        //  echo "<p> $num champs à la ligne $row: <br /></p>\n";
                         $row++;
-                       // for ($c = 0; $c < $num; $c++) {
-                         //   echo $data[$c] . "<br />\n";
-                       // }
+                        // for ($c = 0; $c < $num; $c++) {
+                        //   echo $data[$c] . "<br />\n";
+                        // }
                         $ref = trim($data[7]);
                         //echo $ref;
                         $ProductDAO = new \model\ProductDAO();
@@ -175,14 +175,14 @@ class ProductController {
                                 $productImp->setProduct_imp_ean(trim($data[13]));
                                 $productImp->setProduct_imp_builder(trim($data[1]));
                                 $productImp->setProduct_imp_model(trim($data[2]));
-                                $productImp->setProduct_imp_designation(trim($data[4])." ".trim($data[5]));
+                                $productImp->setProduct_imp_designation(trim($data[4]) . " " . trim($data[5]));
                                 $productImp->setProduct_imp_category(trim($data[14]));
                                 $productImp->setProduct_imp_bu("");
-                               // print_r($productImp);
+                                // print_r($productImp);
                                 $result = $ProductDAO->insertProductImp($productImp);
-                               // echo ($result);
+                                // echo ($result);
                             }
-                          //  echo ('le :' . $ean . ' existe<br>');
+                            //  echo ('le :' . $ean . ' existe<br>');
                         }
                     }
                     fclose($handle);

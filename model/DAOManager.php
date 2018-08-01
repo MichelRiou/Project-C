@@ -3,7 +3,9 @@
 namespace model;
 
 class DAOManager
+
 {
+    
     protected function dbConnect()
     {
         try{
