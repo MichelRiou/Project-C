@@ -12,7 +12,7 @@ class DBAccess {
         $this->PDOInstance = new \PDO('mysql:host=mysql-flyinpizzas.alwaysdata.net;dbname=flyinpizzas_calestor1;charset=utf8', '155227_calestor', 'calestor');
     }
 
-    public static function getInstance() {
+    public static function getDBInstance() {
         if (is_null(self::$instance)) {
             self::$instance = new DBAccess();
         }

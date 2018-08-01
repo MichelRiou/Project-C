@@ -17,8 +17,9 @@ class Product {
     private $product_builder;
     private $product_model;
     private $product_designation;
+    private $product_user_create;
 
-    function __construct($product_id='', $product_ean='', $product_ref='', $product_builder_ref='', $product_bu='', $product_category='', $product_builder='', $product_model='', $product_designation='') {
+    function __construct($product_id='', $product_ean='', $product_ref='', $product_builder_ref='', $product_bu='', $product_category='', $product_builder='', $product_model='', $product_designation='', $product_user_create='') {
         $this->product_id = $product_id;
         $this->product_ean = $product_ean;
         $this->product_ref = $product_ref;
@@ -28,6 +29,7 @@ class Product {
         $this->product_builder = $product_builder;
         $this->product_model = $product_model;
         $this->product_designation = $product_designation;
+        $this->product_user_create = $product_user_create;
     }
     function getProduct_id() {
         return $this->product_id;
@@ -65,6 +67,9 @@ class Product {
         return $this->product_designation;
     }
 
+    function getProduct_user_create() {
+        return $this->product_user_create;
+    }
     function setProduct_id($product_id) {
         $this->product_id = $product_id;
         return $this;
@@ -107,6 +112,11 @@ class Product {
 
     function setProduct_designation($product_designation) {
         $this->product_designation = $product_designation;
+        return $this;
+    }
+    
+    function setProduct_user_create($product_user_create) {
+        $this->product_user_create = $product_user_create;
         return $this;
     }
 

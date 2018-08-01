@@ -25,6 +25,8 @@ class QuizDAO extends DAOManager {
             $objet->setForm_name($enr['form_name']);
             $objet->setForm_designation($enr['form_designation']);
             $objet->setForm_searchtype($enr['form_searchtype']);
+            $objet->setForm_validated($enr['form_validated']);
+            $objet->setForm_user_create($enr['form_user_create']);
         } else {
             $objet = null;
         }
@@ -35,13 +37,14 @@ public function addForm(Form $objet) {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
-            $req = $db->prepare('INSERT INTO forms (form_bu,form_category,form_name,form_designation,form_searchtype,form_validated) VALUES(?,?,?,?,?,?)');
+            $req = $db->prepare('INSERT INTO forms (form_bu,form_category,form_name,form_designation,form_searchtype,form_validated,form_user_create) VALUES(?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getForm_bu(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getForm_category(), \PDO::PARAM_INT);
             $req->bindValue(3, $objet->getForm_name(), \PDO::PARAM_STR);
             $req->bindValue(4, $objet->getForm_designation(), \PDO::PARAM_STR);
             $req->bindValue(5, $objet->getForm_searchtype(), \PDO::PARAM_INT);
             $req->bindValue(6, false, \PDO::PARAM_BOOL);
+            $req->bindValue(7, $objet->getForm_user_create(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             $affectedRows = $req->rowcount();
@@ -84,36 +87,7 @@ public function addForm(Form $objet) {
         }
         return $affectedRows;
     }
-   /* public function deleteTag(Tag $objet) {
-        $affectedRows = 0;
-        try {
-            $db = $this->dbConnect();
-            $req = $db->prepare('DELETE FROM tags WHERE tag_id = ?');
-            $req->bindValue(1, $objet->getTag_id(), \PDO::PARAM_INT);
-            $req->setFetchMode(\PDO::FETCH_ASSOC);
-            $req->execute();
-            $affectedRows = $req->rowcount();
-        } catch (PDOException $e) {
-            $affectedRows = -1;
-        }
-        return $affectedRows;
-    }*/
-
-    /*public function updateTag(Tag $objet) {
-        $affectedRows = 1;
-        try {
-            $db = $this->dbConnect();
-            $req = $db->prepare('UPDATE tags SET tag_designation =? WHERE tag_id=? ');
-            $req->bindValue(1, $objet->getTag_designation(), \PDO::PARAM_STR);
-            $req->bindValue(2, $objet->getTag_id(), \PDO::PARAM_INT);
-            $req->execute();
-        } catch (PDOException $e) {
-            $affectedRows = 0;
-        }
-        return $affectedRows;
-    }*/
-
-
+ 
     /**
      * 
      * @param int $bu
@@ -220,6 +194,7 @@ public function addForm(Form $objet) {
                 $objet->setForm_designation($enr['form_designation']);
                 $objet->setForm_searchtype($enr['form_searchtype']);
                 $objet->setForm_validated($enr['form_validated']);
+                $objet->setForm_user_create($enr['form_user_create']);
                 $forms[] = $objet;
             }
         } catch (PDOException $e) {
