@@ -56,7 +56,7 @@ class TagController {
     
     public function manageTag($bu) {
 
-        $BusinessDAO = new \model\BusinessDAO();
+        $BusinessDAO = new \model\AdminDAO();
         $bu = $BusinessDAO->selectOneBu($bu);
         require('view/frontend/manageTag.php');
     }

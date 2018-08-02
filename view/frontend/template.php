@@ -1,8 +1,9 @@
 <?php
-if (isset($_SESSION['user'])){
-$user=unserialize($_SESSION['user']);
-} ?>
-    
+if (isset($_SESSION['user'])) {
+    $user = unserialize($_SESSION['user']);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -40,18 +41,27 @@ $user=unserialize($_SESSION['user']);
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="routes.php?action=changeBU&bu=2">Audiovisuel</a>
-                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=1">IT</a>
-                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=3">Print</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=3">IT</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=1">Print</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item ">
-                            <a class="nav-link " href="#"><?php $bu = (isset($_SESSION['bu']) ? $_SESSION['bu'] : 'Aucune B.U sélectionnée') ?><?= $bu ?></a>
+                            <a class="nav-link " href="#"><?php
+                            if (isset($_SESSION['bu'])){
+                                $bu = new model\AdminDAO();
+                                $buName=$bu->selectOneBu($_SESSION['bu'])->getBu_name();
+                                echo $buName;
+                            }else{
+                                echo('Aucune B.U sélectionnée');
+                            }
+                            ?>
+                            </a>
                         </li>
                     </ul>
-                    <?php if (isset($_SESSION['bu'])) { ?>
+<?php if (isset($_SESSION['bu'])) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Formulaires
@@ -62,54 +72,53 @@ $user=unserialize($_SESSION['user']);
                                 <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
-                                <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role()== 3)) { ?>
+    <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) { ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Produits
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="routes.php?action=manageProductImport">EN ATTENTE DE VALIDATION</a>
+                                    <a class="dropdown-item" href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Nouvelle BU</a>
+                                </div>
+                            </li>
+                        <?php } ?>
+                    <?php } ?>
+<?php if (isset($user) && ($user->getUser_role() == 1)) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Produits
+                                Utilisateurs
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                 <a class="dropdown-item" href="routes.php?action=manageProductImport">EN ATTENTE DE VALIDATION</a>
-                                <a class="dropdown-item" href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
-                               
+                                <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
+                                <a class="dropdown-item" href="#">Création</a>
+                                <a class="dropdown-item" href="#">Liste</a>
+                                <a href=\"javascript:history.back()\">retour arriere</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">Nouvelle BU</a>
                             </div>
                         </li>
-                         <?php } ?>
-                    <?php } ?>
-                        <?php if (isset($user) && ($user->getUser_role()==1)) { ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Utilisateurs
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
-                            <a class="dropdown-item" href="#">Création</a>
-                            <a class="dropdown-item" href="#">Liste</a>
-                            <a href=\"javascript:history.back()\">retour arriere</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Nouvelle BU</a>
-                        </div>
-                    </li>
-                        <?php } ?>
+<?php } ?>
                 </ul> 
 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php 
-                        if (isset($user)){
-                            echo ($user->getUser_name()." - ".$user->getUser_role_name());
-                            
-                        } else 
-                            {echo 'Personne';
-                            
-                            } ?></a>
+                        <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php
+                            if (isset($user)) {
+                                echo ($user->getUser_name() . " - " . $user->getUser_role_name());
+                            } else {
+                                echo 'Personne';
+                            }
+                            ?></a>
                     </li>
                 </ul>
-           <!--     <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form> -->
+                <!--     <form class="form-inline my-2 my-lg-0">
+                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                     </form> -->
             </div>
         </nav> 
     </nav>

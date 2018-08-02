@@ -7,6 +7,23 @@ namespace model;
 
 class AdminDAO extends DBAccess {
 
+    public function selectOneBu($bu) {
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM businessunit  WHERE bu_id= ?');
+        $req->bindValue(1, $bu);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if ($enr = $req->fetch()) {
+            $objet = new BusinessUnit();
+            $objet->setBu_id($enr['bu_id']);
+            $objet->setBu_name($enr['bu_name']);
+        } else {
+            $objet = null;
+        }
+        return $objet;
+    }
+
     /**
      * 
      * @param int $id
@@ -15,6 +32,9 @@ class AdminDAO extends DBAccess {
     public function selectUser($pseudo, $password) {
         // $db = $this->dbConnect();
         $db = $this::getDBInstance();
+        if (!$db->inTransaction()) {
+            $db->beginTransaction();
+        }
         $password = sha1($password);
         $req = $db->prepare('SELECT * FROM users WHERE user_pseudo = ? and user_password= ? ');
         $req->bindValue(1, $pseudo);
@@ -30,6 +50,7 @@ class AdminDAO extends DBAccess {
             $objet->setUser_password($enr['user_password']);
             $objet->setUser_role($enr['user_role']);
             $objet->setUser_default_bu($enr['user_default_bu']);
+            $db->commit();
         } else {
             $objet = null;
         }
@@ -73,6 +94,7 @@ class AdminDAO extends DBAccess {
 
         return $objet;
     }
+
     public function selectOneUser($id) {
         $db = $this::getDBInstance();
         //$db = $this->dbConnect();

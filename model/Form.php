@@ -122,7 +122,7 @@ class Form {
      * @return String
      */
     function getForm_bu_name() {
-        $buDAO = new BusinessDAO();
+        $buDAO = new AdminDAO();
         $bu = $buDAO->selectOneBu($this->form_bu);
         return $bu->getBu_name();
     }

@@ -21,6 +21,7 @@ class ProductDAO extends DAOManager {
         $req->execute();
         return ($enr = $req->fetch());
     }
+
     public function isExistBUILDER_REF_IMP($builder_ref) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM products_import WHERE product_imp_builder_ref = ?');
@@ -51,6 +52,7 @@ class ProductDAO extends DAOManager {
         }
         return $rowAffected;
     }
+
     public function insertProductImp(ProductImport $objet) {
         $rowAffected = 0;
         try {
@@ -186,7 +188,8 @@ class ProductDAO extends DAOManager {
         //print_r($tags);
         return $categories;
     }
- public function selectOneCategory($id) {
+
+    public function selectOneCategory($id) {
 
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM categories  WHERE category_id= ? ');
@@ -204,4 +207,31 @@ class ProductDAO extends DAOManager {
         $req->closeCursor();
         return $objet;
     }
+
+    public function selectOneProductImport($id) {
+
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM products_import  WHERE product_imp_id= ? ');
+        $req->bindValue(1, $id);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if ($enr = $req->fetch()) {
+            $objet = new ProductImport();
+            $objet->setProduct_imp_id($enr['product_imp_id']);
+            $objet->setProduct_imp_builder_ref($enr['product_imp_builder_ref']);
+            $objet->setProduct_imp_ref($enr['product_imp_ref']);
+            $objet->setProduct_imp_four($enr['product_imp_four']);
+            $objet->setProduct_imp_ean($enr['product_imp_ean']);
+            $objet->setProduct_imp_builder($enr['product_imp_builder']);
+            $objet->setProduct_imp_model($enr['product_imp_model']);
+            $objet->setProduct_imp_designation($enr['product_imp_designation']);
+            $objet->setProduct_imp_category($enr['product_imp_category']);
+            $objet->setProduct_imp_bu($enr['product_imp_bu']);
+        } else {
+            $objet = null;
+        }
+        $req->closeCursor();
+        return $objet;
+    }
+
 }

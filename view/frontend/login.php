@@ -27,9 +27,9 @@ ob_start();
                                 </div>
                                 <div>
                                     <label class="checkbox">
-                                      <input type="checkbox">
+                                      <input type="checkbox" name="rememberme">
                                       <span class="custom-control-indicator"></span>
-                                      <span class="custom-control-description small text-dark">Remember me on this computer</span>
+                                      <span class="custom-control-description small text-dark">Se souvenir de moi</span>
                                     </label>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin" name='toto' >Login</button>

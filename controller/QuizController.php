@@ -54,7 +54,7 @@ class QuizController {
         $searchtypes = $quizDAO->selectAllSearchType();
         //$FormDAO = new \model\FormDAO();
         // $form = $quizDAO->selectOneForm($id);
-        $BusinessDAO = new \model\BusinessDAO();
+        $BusinessDAO = new \model\AdminDAO();
         $bu = $BusinessDAO->selectOneBu($bu);
         require('view/frontend/manageForm.php');
     }

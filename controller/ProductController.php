@@ -42,7 +42,18 @@ class ProductController {
         //$form = $FormDAO->selectOneForm($id);
         require('view/frontend/manageProductImport.php');
     }
+     public function validProductImport($bu,$id) {
+         echo $id;
+        $ProductDAO = new \model\ProductDAO();
+        $TagDAO = new \model\TagDAO();
+        $product = $ProductDAO->selectOneProductImport($id);
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
+       // $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
+       // $tags = $TagDAO->selectAllTagsFromBU($bu);
+       // $signs = $QuizDAO->selectAllSigns();
 
+        require('view/frontend/validProductImport.php');
+    }
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
@@ -205,5 +216,5 @@ class ProductController {
 
         require('view/frontend/listProduct.php');
     }
-
+    
 }

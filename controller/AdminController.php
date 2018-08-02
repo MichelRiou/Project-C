@@ -21,6 +21,10 @@ class AdminController {
     }
 
     public function mainMenu() {
+        /* if (isset($_SESSION['bu'])) {
+          $adminDAO = new \model\AdminDAO();
+          $bu = $adminDAO->selectOneBu($_SESSION['bu']);
+          } */
         //$ProductDAO = new \model\ProductDAO();
         //$products = $ProductDAO->selectAllProductByCat($bu, $category);
 
@@ -34,14 +38,18 @@ class AdminController {
             $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
             try {
                 $adminDAO = new \model\AdminDAO();
-                
+
                 $user = $adminDAO->selectUser($username, $password);
                 if ($user != null) {
                     $_SESSION["user"] = serialize($user);
                     $bu = $user->getUser_default_bu();
-                    
+
                     if ($bu != 0)
-                     $_SESSION["bu"] = $bu;
+                        $_SESSION["bu"] = $bu;
+                    if(filter_has_var(INPUT_POST, 'rememberme')){
+                   setcookie('CAL1', $user->getUser_pseudo(), time() + 365 * 24 * 3600, null, null, false, true);
+                   setcookie('CAL2', $user->getUser_password(), time() + 365 * 24 * 3600, null, null, false, true);
+                    }
                 }
             } catch (Exception $e) {
                 echo '<h1>Erreur : ' . $e->getMessage() . '</h1>';
@@ -51,7 +59,7 @@ class AdminController {
         if (!isset($_SESSION['user'])) {
             require('view/frontend/login.php');
             return false;
-        } else {
+        } else {     
             return true;
             header("location:/routes.php");
         }
@@ -60,7 +68,6 @@ class AdminController {
     public function disconnectUser() {
         session_destroy();
 
-        //require('view/frontend/login.php');
         header("location:/routes.php");
     }
 
@@ -70,9 +77,7 @@ class AdminController {
     }
 
     public function changeBU($bu) {
-        // En attente de sérialization de l'objet plus tôt dans le process   
         $_SESSION['bu'] = $bu;
-        //print_r($_SESSION);
     }
 
 }

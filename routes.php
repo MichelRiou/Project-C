@@ -7,15 +7,16 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-    $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
+    //$classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
         throw new Exception("Classe inexistante " . $classPath);
     }
 }
+
 spl_autoload_register("autoloader");
 
 /*
@@ -92,15 +93,25 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Aucune BU spécifiée');
                     }
                     break;
-                    
+
                 case 'manageProductImport':
                     $bu = $_SESSION['bu'];
-                    if (isset($bu)) {
-                        $manageProduct->manageProductImport($bu);
+                    $id = filter_input(INPUT_GET, "id");
+                    if (isset($bu) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct->manageProductImport($bu, $id);
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
                     break;
+                case 'validProductImport':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "id");
+                    if (isset($bu) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct->validProductImport($bu, $id);
+                    } else {
+                        throw new Exception('Erreur dans la rêquete');
+                    }
+                    break;    
 
                 case 'manageQuestion':
                     $bu = $_SESSION['bu'];
@@ -134,6 +145,15 @@ if ($manageAdmin->controlSession()) {
                     $bu = $_SESSION['bu'];
                     $id = filter_input(INPUT_GET, "id");
                     //$bu = filter_input(INPUT_GET, "bu");
+                    if (isset($id) && isset($bu)) {
+                        $manageQuiz->manageTagResponse($id, $bu);
+                    } else {
+                        throw new Exception('Aucun Id/BU spécifié');
+                    }
+                    break;
+                case 'valideProductImport':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "id");
                     if (isset($id) && isset($bu)) {
                         $manageQuiz->manageTagResponse($id, $bu);
                     } else {

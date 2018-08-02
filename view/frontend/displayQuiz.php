@@ -9,6 +9,9 @@
                     <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?>&nbsp&nbsp Mode :<?= $searchtype->getSearchtype_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category">
                     <input type="hidden" value="<?= $form->getForm_searchtype() ?>" id="searchtype">
                 </div>
+                <div class="col-sm-2">
+                    <button class="pull-right">Envoi Email</button>
+                </div>
 
             </div>
         </div>
@@ -49,12 +52,6 @@
 
 </div>
 <script>
-    // var lsparams;
-    //  var lsplaceType;
-    //  var lsautonome;
-    //  var form;
-    //  var selects;
-
     $(document).ready(function () {
         $(function () {
             $('#formChoice').on('change', function () {
@@ -64,28 +61,26 @@
                         lsparams = lsparams + $(this).val() + '-';
                     }
                 });
-                //lsparams=len(params,-1);
                 lsparams = lsparams.substring(0, lsparams.lastIndexOf("-"));
                 category = $('#category').val();
                 searchtype = $('#searchtype').val();
                 $.ajax({
                     type: "POST",
-                    //url: '/routes.php?action=listProductSelection&category=' + category + '&params=' + lsparams + '&searchtype=' + searchtype,
                     url: '/routes.php?action=listProductSelection',
                     data:
                             {
-                                "category" : category,
-                                "params" :  lsparams,
-                                "searchtype" : searchtype
+                                "category": category,
+                                "params": lsparams,
+                                "searchtype": searchtype
                             },
                     success: function (data) {
+                        console.log(data);
                         $("#requete").html(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert(textStatus);
                     }
                 });
-                //alert(lsPlaceType);
                 return false;
             });
         });

@@ -8,8 +8,14 @@ class DBAccess {
     private static $instance = null;
 
     public function __construct() {
-        //$this->PDOInstance = new \PDO('mysql:host=mysql-flyinpizzas.alwaysdata.net;dbname=flyinpizzas_calestor1;charset=utf8', '155227', 'samovar77');
-        $this->PDOInstance = new \PDO('mysql:host=mysql-flyinpizzas.alwaysdata.net;dbname=flyinpizzas_calestor1;charset=utf8', '155227_calestor', 'calestor');
+        $properties = parse_ini_file("controller/connect.properties");
+        $protocole = $properties["protocole"];
+        $serveur = $properties["serveur"];
+        $port = $properties["port"];
+        $user = $properties["user"];
+        $mdp = $properties["mdp"];
+        $db = $properties["bd"];
+        $this->PDOInstance = new \PDO("$protocole:host=$serveur;dbname=$db;charset=utf8", $user, $mdp);
     }
 
     public static function getDBInstance() {
@@ -19,7 +25,6 @@ class DBAccess {
         return self::$instance;
     }
 
-   
     protected function dbClose(\PDO $db) {
         try {
             $db = null;
@@ -28,8 +33,21 @@ class DBAccess {
         }
     }
 
+    
     public function prepare($sql) {
         return $this->PDOInstance->prepare($sql);
+    }
+    
+    public function inTransaction() {
+        return $this->PDOInstance->inTransaction();
+    }
+    
+    public function beginTransaction() {
+        return $this->PDOInstance->beginTransaction();
+    }
+    
+    public function commit() {
+        return $this->PDOInstance->commit();
     }
 
 }
