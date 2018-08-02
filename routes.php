@@ -7,9 +7,9 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-    //$classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
+    $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -96,13 +96,17 @@ if ($manageAdmin->controlSession()) {
 
                 case 'manageProductImport':
                     $bu = $_SESSION['bu'];
-                    $id = filter_input(INPUT_GET, "id");
-                    if (isset($bu) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
-                        $manageProduct->manageProductImport($bu, $id);
+                    if (isset($bu) ) {
+                        $manageProduct->manageProductImport($bu);
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
                     break;
+                    
+                case 'listProductImport':
+                        $manageProduct->listProductImport();               
+                    break;
+                    
                 case 'validProductImport':
                     $bu = $_SESSION['bu'];
                     $id = filter_input(INPUT_GET, "id");

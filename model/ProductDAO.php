@@ -167,6 +167,34 @@ class ProductDAO extends DAOManager {
         return $products;
     }
 
+    public function selectAllProductImport() {
+        $products = array();
+        try {
+            $db = $this->dbConnect();
+                $req = $db->prepare('SELECT * FROM products_import  ORDER BY product_imp_id');
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new ProductImport();
+                $objet->setProduct_imp_id($enr['product_imp_id']);
+                $objet->setProduct_imp_builder_ref($enr['product_imp_builder_ref']);
+                $objet->setProduct_imp_ref($enr['product_imp_ref']);
+                $objet->getProduct_imp_four($enr['product_imp_four']);
+                $objet->setProduct_imp_ean($enr['product_imp_ean']);
+                $objet->setProduct_imp_builder($enr['product_imp_builder']);
+                $objet->setProduct_imp_model($enr['product_imp_model']);
+                $objet->setProduct_imp_designation($enr['product_imp_designation']);
+                $objet->setProduct_imp_category($enr['product_imp_category']);
+                $objet->setProduct_imp_bu($enr['product_imp_bu']);
+                $products[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $products[] = $objet;
+        }
+        return $products;
+    }
+    
     public function selectAllCategory() {
         //$categories = array();
         try {

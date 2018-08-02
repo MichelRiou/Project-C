@@ -29,13 +29,13 @@ class AdminDAO extends DBAccess {
      * @param int $id
      * @return Array 
      */
-    public function selectUser($pseudo, $password) {
+    public function selectUser($pseudo, $password, $sha1) {
         // $db = $this->dbConnect();
         $db = $this::getDBInstance();
         if (!$db->inTransaction()) {
             $db->beginTransaction();
         }
-        $password = sha1($password);
+        if ($sha1=='yes') $password = sha1($password);
         $req = $db->prepare('SELECT * FROM users WHERE user_pseudo = ? and user_password= ? ');
         $req->bindValue(1, $pseudo);
         $req->bindValue(2, $password);
@@ -118,4 +118,5 @@ class AdminDAO extends DBAccess {
         return $objet;
     }
 
+    
 }

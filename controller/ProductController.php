@@ -217,4 +217,11 @@ class ProductController {
         require('view/frontend/listProduct.php');
     }
     
+    public function listProductImport() {
+        $ProductDAO = new \model\ProductDAO();
+        $products = $ProductDAO->selectAllProductImport();
+
+        require('view/frontend/listProductImport.php');
+    }
+    
 }

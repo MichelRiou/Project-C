@@ -2,6 +2,7 @@
 if (isset($_SESSION['user'])) {
     $user = unserialize($_SESSION['user']);
 }
+//print_r($_REQUEST);
 ?>
 
 <!DOCTYPE html>
