@@ -49,5 +49,9 @@ class DBAccess {
     public function commit() {
         return $this->PDOInstance->commit();
     }
+    
+    public function lastInsertId() {
+        return $this->PDOInstance->lastInsertId();
+    }
 
 }

@@ -7,9 +7,9 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-    $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
+    //$classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -96,27 +96,56 @@ if ($manageAdmin->controlSession()) {
 
                 case 'manageProductImport':
                     $bu = $_SESSION['bu'];
-                    if (isset($bu) ) {
+                    if (isset($bu)) {
                         $manageProduct->manageProductImport($bu);
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
                     break;
-                    
+
                 case 'listProductImport':
-                        $manageProduct->listProductImport();               
+                    $manageProduct->listProductImport();
                     break;
-                    
-                case 'validProductImport':
+
+                case 'createProduct':
                     $bu = $_SESSION['bu'];
+                    $user = unserialize($_SESSION['user']);
+                    $userId=$user->getUser_id();
                     $id = filter_input(INPUT_GET, "id");
-                    if (isset($bu) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
-                        $manageProduct->validProductImport($bu, $id);
-                    } else {
+                    $builderref = filter_input(INPUT_GET, "builderref",FILTER_SANITIZE_STRING);
+                    $ref = filter_input(INPUT_GET, "ref",FILTER_SANITIZE_STRING);
+                    $model = filter_input(INPUT_GET, "model",FILTER_SANITIZE_STRING);
+                    $builder = filter_input(INPUT_GET, "builder",FILTER_SANITIZE_STRING);
+                    $designation = filter_input(INPUT_GET, "designation",FILTER_SANITIZE_STRING);
+                    $ean = filter_input(INPUT_GET, "ean",FILTER_SANITIZE_STRING);
+                    $category = filter_input(INPUT_GET, "category");
+                    $tag = filter_input(INPUT_GET, "tag",FILTER_SANITIZE_STRING);
+                    if (isset($bu) && isset($userId) && (filter_var($id, FILTER_VALIDATE_INT) !== false 
+                            && filter_var($builderref, FILTER_DEFAULT) !== false 
+                            && filter_var($ref, FILTER_DEFAULT) !== false 
+                            && filter_var($model, FILTER_DEFAULT) !== false 
+                            && filter_var($builder, FILTER_DEFAULT) !== false
+                            && filter_var($designation, FILTER_DEFAULT) !== false
+                            && filter_var($ean, FILTER_DEFAULT) !== false
+                            && filter_var($category, FILTER_VALIDATE_INT) !== false
+                            && filter_var($tag, FILTER_DEFAULT) !== false)) {
+                        $test=$manageProduct->createProduct($userId ,$bu, $id,$builderref,$ref,$model,$builder,$designation,$ean,$category,$tag);
+                        echo $test;
+                        
+                            } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
-                    break;    
-
+                    break;
+                 case 'manageProductTag':
+                    $bu = $_SESSION['bu'];
+                    $id = filter_input(INPUT_GET, "id");
+                    if (isset($id) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct->manageProductTag($id, $bu);
+                    } else {
+                        throw new Exception('Aucun Id/BU spécifié');
+                    }
+                    break;
+                    
                 case 'manageQuestion':
                     $bu = $_SESSION['bu'];
                     $id = filter_input(INPUT_GET, "form");
@@ -155,15 +184,7 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Aucun Id/BU spécifié');
                     }
                     break;
-                case 'valideProductImport':
-                    $bu = $_SESSION['bu'];
-                    $id = filter_input(INPUT_GET, "id");
-                    if (isset($id) && isset($bu)) {
-                        $manageQuiz->manageTagResponse($id, $bu);
-                    } else {
-                        throw new Exception('Aucun Id/BU spécifié');
-                    }
-                    break;
+               
                 case 'deleteTag':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {

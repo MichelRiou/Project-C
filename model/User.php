@@ -3,7 +3,8 @@
 namespace model;
 
 class User {
-
+    
+    private $user_id;
     private $user_pseudo;
     private $user_name;
     private $user_email;
@@ -11,13 +12,18 @@ class User {
     private $user_role;
     private $user_default_bu;
 
-    function __construct($user_pseudo = '', $user_name = '', $user_email = '', $user_password = '', $user_role = '', $user_default_bu = '') {
+    function __construct($user_id = '', $user_pseudo = '', $user_name = '', $user_email = '', $user_password = '', $user_role = '', $user_default_bu = '') {
+        $this->user_id = $user_id;
         $this->user_pseudo = $user_pseudo;
         $this->user_name = $user_name;
         $this->user_email = $user_email;
         $this->user_password = sha1($user_password);
         $this->user_role = $user_role;
         $this->user_default_bu = $user_default_bu;
+    }
+    
+     function getUser_id() {
+        return $this->user_id;
     }
 
     function getUser_pseudo() {
@@ -43,7 +49,11 @@ class User {
     function getUser_role() {
         return $this->user_role;
     }
-
+    
+    function setUser_id($user_id) {
+        $this->user_id = $user_id;
+        return $this;
+    }
     function setUser_pseudo($user_pseudo) {
         $this->user_pseudo = $user_pseudo;
         return $this;

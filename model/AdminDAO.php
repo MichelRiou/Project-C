@@ -43,7 +43,7 @@ class AdminDAO extends DBAccess {
         $req->execute();
         if ($enr = $req->fetch()) {
             $objet = new User();
-            $objet->setUser_pseudo($enr['user_id']);
+            $objet->setUser_id($enr['user_id']);
             $objet->setUser_pseudo($enr['user_pseudo']);
             $objet->setUser_name($enr['user_name']);
             $objet->setUser_email($enr['user_email']);

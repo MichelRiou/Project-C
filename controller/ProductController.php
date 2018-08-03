@@ -37,22 +37,55 @@ class ProductController {
     }
 
     public function manageProductImport() {
-        // Supprimer la bu
-        //$FormDAO = new \model\FormDAO();
-        //$form = $FormDAO->selectOneForm($id);
+        $productDAO = new \model\ProductDAO();
+        $categories = $productDAO->selectAllCategory();
         require('view/frontend/manageProductImport.php');
     }
-     public function validProductImport($bu,$id) {
-         echo $id;
-        $ProductDAO = new \model\ProductDAO();
-        $TagDAO = new \model\TagDAO();
-        $product = $ProductDAO->selectOneProductImport($id);
-        $tags = $TagDAO->selectAllTagsFromBU($bu);
-       // $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
-       // $tags = $TagDAO->selectAllTagsFromBU($bu);
-       // $signs = $QuizDAO->selectAllSigns();
 
-        require('view/frontend/validProductImport.php');
+    /*   public function validProductImport($bu,$id) {
+      echo $id;
+      $ProductDAO = new \model\ProductDAO();
+      $TagDAO = new \model\TagDAO();
+      $product = $ProductDAO->selectOneProductImport($id);
+      $tags = $TagDAO->selectAllTagsFromBU($bu);
+      // $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
+      // $tags = $TagDAO->selectAllTagsFromBU($bu);
+      // $signs = $QuizDAO->selectAllSigns();
+
+      require('view/frontend/validProductImport.php');
+      } */
+
+    public function createProduct($userId, $bu, $id, $builderref, $ref, $model, $builder, $designation, $ean, $category, $tag) {
+        $lastInsert = 0;
+        $ProductDAO = new \model\ProductDAO();
+        $productImport = new \model\ProductImport();
+        $productImport->setProduct_imp_id($id);
+        $product = new \model\Product();
+        $product->setProduct_bu($bu);
+        $product->setProduct_builder_ref($builderref);
+        $product->setProduct_ref($ref);
+        $product->setProduct_model($model);
+        $product->setProduct_builder($builder);
+        $product->setProduct_designation($designation);
+        $product->setProduct_ean($ean);
+        $product->setProduct_category($category);
+        $product->setProduct_user_create($userId);
+        $lastInsert = $ProductDAO->createProduct($productImport, $product);
+        return $lastInsert;
+    }
+    public function manageProductTag($id, $bu) {
+
+        $QuizDAO = new \model\QuizDAO();
+        $ProductDAO = new \model\ProductDAO();
+        //$TagRequestDAO = new \model\TagRequestDAO();
+        $TagDAO = new \model\TagDAO();
+        //$SignDAO = new \model\SignDAO();
+        //$request = $QuizDAO->selectOneRequest($id);
+        $tagsProduct = $ProductDAO->selectAllTagsFromProduct($id);
+        $tags = $TagDAO->selectAllTagsFromBU($bu);
+        $signs = $QuizDAO->selectAllSigns();
+
+        require('view/frontend/manageProductTag.php');
     }
     function getProductsFile($msg) {
         // $message = "";
@@ -216,12 +249,12 @@ class ProductController {
 
         require('view/frontend/listProduct.php');
     }
-    
+
     public function listProductImport() {
         $ProductDAO = new \model\ProductDAO();
         $products = $ProductDAO->selectAllProductImport();
 
         require('view/frontend/listProductImport.php');
     }
-    
+
 }

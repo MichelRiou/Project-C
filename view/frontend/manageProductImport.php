@@ -2,52 +2,61 @@
 ob_start();
 ?>
 <script type="text/javascript">
+    var idDelete;
+    var idEdit;
+    function ctrlEditProduct() {
+        var msg = "";
+        if ($("#editCategory").val() == '0')
+            msg += 'La catégorie est obligatoire.';
+        // Monitoring des erreurs
+        $("#editMessage").html(msg);
+        $result = (msg != "" ? false : true);
+        return $result;
+    }
+    function searchString() {
+        var search = $('#search').val();
+        $("td:contains('" + search + "')").css("background", "lightgrey");
+        var n = $("td:contains('" + search + "')").length;
+        //alert(n + " occurence(s) trouvée(s)");
+        $("td:contains('" + search + "')")[0].scrollIntoView(true);
+    }
+    function clearSearch() {
+        var search = $('#search').val();
+        if (search != '') {
+            $("td:contains('" + search + "')").css("background", "none");
+            $('#search').val('');
+        }
+    }
     function refresh() {
+
         $.ajax({
             type: 'POST',
             url: '/routes.php?action=listProductImport',
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
-                $("#okbutton").click(function () {
-                    var s = $('table tbody input:checked');
-                    if (s.length !== 0) {
-                        console.log(checkbox);
-                        $("#message").html('');
-                        $("#addResponseModal").modal('show');
-                    } else {
-                        $("#messageModal").modal('show');
-                    }
-                });
-                var checkbox = $('table tbody input[type="checkbox"]');
-
-                checkbox.click(function () {
-                    var s = this.checked;
-                    console.log(s)
-                    checkbox.each(function () {
-                        this.checked = false;
-                    });
-                    this.checked = s;
-                });
-
-
                 $('a[class="delete"]').click(function () {
-                    idDelete = this.getAttribute('value');
+                    idDelete = this.getAttribute('idProduct');
                     console.log(idDelete);
                 });
                 $('a[class="edit"]').click(function () {
                     //MISE A JOUR DES CHAMPS POUR L'UPDATE 
                     //value a qualifier
-                    idEdit = this.getAttribute('value');
-                    $('#editName').val(this.getAttribute('tagname'));
-                    signEdit = this.getAttribute('sign');
-                    $('#editSign').val(signEdit);
-                    alphaEdit = this.getAttribute('alpha');
-                    $('#editAlpha').val(alphaEdit);
-                    numericEdit = this.getAttribute('numeric');
-                    $('#editNumeric').val(numericEdit);
+                    idEdit = this.getAttribute('idProduct');
                     console.log(idEdit);
+                    $('#editBuilderRef').val(this.getAttribute('builder_ref'));
+                    $('#editRef').val(this.getAttribute('ref'));
+                    //designationEdit = this.getAttribute('designation');
+                    $('#editModel').val(this.getAttribute('model'));
+                    //validatedEdit = this.getAttribute('validated');
+                    $('#editBuilder').val(this.getAttribute('builder'));
+                    //validatedEdit = this.getAttribute('validated');
+                    $('#editEan').val(this.getAttribute('ean'));
+                    $('#editDesignation').val(this.getAttribute('designation'));
+                    $('#editCategory').val("0");
+
                 });
+
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert(textStatus);
@@ -57,45 +66,53 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
-        // Activate tooltip
-        // $('[data-toggle="tooltip"]').tooltip();
-        // Validation de la modal AJOUTER UNE REPONSE
-        $("#okbutton").click(function () {
-            var s = $('table tbody input:checked');
-            if (s.length !== 0) {
-                console.log(checkbox);
-                $("#message").html('');
-                $("#addResponseModal").modal('show');
-            } else {
-                $("#messageModal").modal('show');
-            }
+
+        // Activation du tooltip
+        $('[data-toggle="tooltip"]').tooltip();
+        // Activation de la fenêtre modale AJOUTER UN FORMULAIRE
+        $("#addbutton").click(function () {
+            // Reset de la fenetre modale 
+            $("#addName").val('');
+            $("#addDesignation").val('');
+            $("#addMessage").html('');
+            $("#addFormModal").modal('show');
         });
-        // Validation de la modal SUPPRIMER UNE QUESTION
-        $("#deletebutton").click(function () {
-            var s = $('table tbody input:checked');
-            if (s.length !== 0) {
-               /// console.log(s[0]);
-               // console.log(s[0].value);
-                var deleteHeader= s[0].value;
-                $("#message").html('');
-                $("#deleteQuestionModal").modal('show');
-            } else {
-                $("#messageModal").modal('show');
+        // Requête AJAX pour validation
+        $("#addForm").on('click', (function () {
+            if (ctrlAddForm()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val(),
+                    success: function (data) {
+                        console.log('retour success' + data + 'routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val());
+                        if (data != 1) {
+                            $("#addMessage").html("Erreur d\'ajout" + data);
+                        } else {
+                            $('#addCancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+                });
+                return false;
             }
-        });
-                // AJAX 
-        $("#deleteHeader").on('click', (function () {
-            //alert();
-            // console.log(obj);
+        }));
+        // AJAX 
+        $("#deleteForm").on('click', (function () {
+            // alert();
+            console.log(idDelete);
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + idDelete,
+                url: '/routes.php?action=deleteForm&id=' + idDelete,
                 success: function (data) {
-                    console.log('retour delete' + data + $("#idRequest").val() + idDelete);
+                    console.log(data + '/routes.php?action=deleteForm&id=' + idDelete);
                     if (data != 1) {
-                        $("#messageDelete").html("Erreur de suppression");
+                        $("#deleteMessage").html("Erreur de suppression".data);
                     } else {
-                        $('#cancelDelete').trigger('click');
+                        $('#deleteCancel').trigger('click');
                         refresh();
                     }
                 },
@@ -106,159 +123,184 @@ ob_start();
             });
             return false;
         }));
-        // Select/Deselect checkboxes
-        var checkbox = $('table tbody input[type="checkbox"]');
-
-        checkbox.click(function () {
-            var s = this.checked;
-            checkbox.each(function () {
-                this.checked = false;
-            });
-            this.checked = s;
-        });
-        $("#addResponse").click(function () {
-            // alert();
-            var checkbox = $('table tbody input[type="checkbox"]');
-            //alert(checkbox);
-            console.log(checkbox);
-        });
+        // AJAX
+        $("#editForm").on('click', (function () {
+            if (ctrlEditProduct()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=createProduct&id=' + idEdit + '&builderref=' + $("#editBuilderRef").val()+ '&ref=' + $("#editRef").val() + '&model=' + $("#editModel").val() + '&builder=' + $("#editBuilder").val() + '&designation=' + $("#editDesignation").val() + '&ean=' + $("#editEan").val()+ '&category=' + $("#editCategory").val()+ '&tag=""',
+                    success: function (data) {
+                        console.log(data);
+                        if (data != 1) {
+                            $("#editMessage").html("Erreur d'insert".data);
+                        } else {
+                            $('#editCancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+                });
+                return false;
+            }
+        }));
+                // AJAX
+        $("#editFormSuite").on('click', (function () {
+            if (ctrlEditProduct()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=updateForm&id=' + idEdit + '&name=' + $("#editName").val() + '&designation=' + $("#editDesignation").val() + '&category=' + $("#editCategory").val() + '&searchtype=' + $("#editSearchType").val() + '&validated=' + $("#editValidated").val(),
+                    success: function (data) {
+                        console.log('retour update' + data + '/routes.php?action=updateForm&id=' + idEdit + '&name=' + $("#editName").val() + '&designation=' + $("#editDesignation").val() + '&category=' + $("#editCategory").val() + '&searchtype=' + $("#editSearchType").val() + '&validated=' + $("#editValidated").val());
+                        if (data != 1) {
+                            $("#editMessage").html("Erreur de update".data);
+                        } else {
+                            $('#editCancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+                });
+                return false;
+            }
+        }));
+        // AJAX
     });
-
 </script>
 
-<div class="container-fuid">
+<div class="container">
     <div class="table-wrapper">
-        <div class="table-title col-md-12">
-            <div class="row">
+        <div class="table-title">
+            <div class="form-group row">
                 <div class="col-md-7">
-                    <h5>LISTE DES PRODUITS A VALIDER</h5><input type="hidden" value="" id="idForm">
-                </div>
+                    <h4>Validation des Produits</h4>
+                </div >
                 <div class="col-md-5">
                     <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
                     <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
-             <!--   <div class="col-md-8">						
-                    <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
+            </div>
+        </div>
+        <div class="row scrollDiv2" id="requete">
+        </div>
 
-                </div>     -->
-            </div>
-        </div>
-        <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
-        <div id='requete' class="scrollDiv2">
-            
-        </div>
-    </div>
-    <!-- MODAL ADD RESPONSE -->
-    <div id="addResponseModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">						
-                        <h4 class="modal-title">Ajouter une réponse</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">					
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div>					
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- MODAL EDIT QUESTION -->
-    <div id="editEmployeeModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">						
-                        <h4 class="modal-title">Edit Employee</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">					
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div>					
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-info" value="Save">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- MODAL DELETE QUESTION -->
-    <div id="deleteQuestionModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">						
-                        <h4 class="modal-title">Supprimer une question</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">					
-                        <p>Are you sure you want to delete these Records?</p>
-                        <p class="text-warning"><small>This action cannot be undone.</small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="button" id="deleteHeader" class="btn btn-danger" value="Delete">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- MODAL MESSAGE SELECTION QUESTION-->
-    <div id="messageModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">						
-                        <h4 class="modal-title">Attention</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body align-center">					
-                        <p class="text-warning align-center"><h6>Vous devez sélectionner une question</h6></p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
 
+
+    </div>
+</div>
+</div>
+
+<!-- Edit Modal HTML -->
+<div id="editProduct" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">						
+                    <h4 class="modal-title">Validation Produit</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <div class="form-group">
+                        <label>Ref. constructeur</label>
+                        <input type="text" class="form-control"  id ="editBuilderRef" >
                     </div>
-                </form>
-            </div>
+                      <div class="form-group">
+                        <label>Ref. grossiste</label>
+                        <input type="text" class="form-control"  id ="editRef" >
+                    </div>
+                    <div class="form-group">
+                        <label>Modèle</label>
+                        <input type="text" class="form-control"  id ="editModel" >
+                    </div>  
+
+
+                    <div class="form-group">
+                        <label>Constructeur</label>
+                        <input type="text" class="form-control"  id ="editBuilder" >
+                    </div>  
+                    <div class="form-group">
+                        <label>Désignation</label>
+                        <textarea class="form-control"  id ="editDesignation" rows="3"></textarea>
+                    </div>  
+                    <div class="form-group">
+                        <label>EAN</label>
+                        <input type="text" class="form-control"  id ="editEan" >
+                    </div> 
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select class="form-control" name="editCategory" id="editCategory">
+                            <option value="0">--</option>
+                            <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                            <?php } ?>
+                        </select>
+                    </div> 
+                </div>
+                <div id="editMessage" class="text-warning align-items-center"></div>
+                <div class="modal-footer">
+                     <input type="button" class="btn btn-success" value="Valid + Tag" id="editFormSuite">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
+                    <input type="button" class="btn btn-success" value="Validation" id="editForm">
+                </div>
+            </form>
         </div>
     </div>
+</div>
+<!-- Add Modal HTML -->
+<div id="addFormModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form >
+                <div class="modal-header">						
+                    <h4 class="modal-title">Création d'un Formulaire</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom du Formulaire</label>
+                        <input type="text" class="form-control"  id ="addName" >
+                    </div>
+                    <div class="form-group">
+                        <label>Désignation</label>
+                        <input type="text" class="form-control"  id ="addDesignation" >
+                    </div>
 
-    <?php $content = ob_get_clean(); ?>
-    <?php require('template.php'); ?>
+
+                </div>
+                <div id="addMessage" class="text-warning align-center"></div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="addCancel">
+                    <input type="button" class="btn btn-info" value="add" id="addForm" >
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Delete Modal HTML -->
+<div id="deleteFormModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">						
+                    <h4 class="modal-title">Supprimer un Formulaire</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <h6 class="text-warning">ATTENTION, la suppression du formulaire entraine la supression de tous les éléments le composant.</br>Principe du ON DELETE CASCADE</h6>
+                </div>
+                <div id="deleteMessage" class="text-warning align-center"></div>
+                <div class="modal-footer">
+                    <input type="button" id="deleteCancel" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="button"  class="btn btn-danger" value="delete" id="deleteForm">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php $content = ob_get_clean(); ?>
+<?php require('template.php'); ?>
