@@ -16,7 +16,7 @@ ob_start();
         $result = (msg != "" ? false : true);
         return $result;
     }
-    function searchString() {
+    /*function searchString() {
         var search = $('#search').val();
         $("td:contains('" + search + "')").css("background", "lightgrey");
         var n = $("td:contains('" + search + "')").length;
@@ -29,7 +29,7 @@ ob_start();
             $("td:contains('" + search + "')").css("background", "none");
             $('#search').val('');
         }
-    }
+    }*/
     function refresh() {
 
         $.ajax({
@@ -149,7 +149,7 @@ ob_start();
     });
 </script>
 
-<div class="container">
+<div class="container-fluid">
     <div class="table-wrapper">
         <div class="table-title">
             <div class="form-group row">
@@ -173,13 +173,9 @@ ob_start();
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
         </div>
-        <div class="row scrollDiv2" id="requete">
+        <div class="scrollDiv2" id="requete">
         </div>
-
-
-
     </div>
-</div>
 </div>
 <!-- Edit Modal HTML -->
 <div id="editFormModal" class="modal fade">
@@ -290,7 +286,7 @@ ob_start();
                 </div>
                 <div id="deleteMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" id="deleteCancel" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="button" id="deleteCancel" class="btn btn-default rounded-0" data-dismiss="modal" value="Cancel">
                     <input type="button"  class="btn btn-danger" value="delete" id="deleteForm">
                 </div>
             </form>

@@ -47,13 +47,10 @@ class QuizController {
     }
 
     public function manageForm($bu) {
-        // Supprimer la bu
         $productDAO = new \model\ProductDAO();
         $categories = $productDAO->selectAllCategory();
         $quizDAO = new \model\QuizDAO();
         $searchtypes = $quizDAO->selectAllSearchType();
-        //$FormDAO = new \model\FormDAO();
-        // $form = $quizDAO->selectOneForm($id);
         $BusinessDAO = new \model\AdminDAO();
         $bu = $BusinessDAO->selectOneBu($bu);
         require('view/frontend/manageForm.php');
@@ -66,18 +63,21 @@ class QuizController {
         require('view/frontend/listForm.php');
     }
 
-    /*public function deleteForm($id) {
-        // En attente de sérialization de l'objet plus tôt dans le process   
+       public function addResponse($idQuestion, $addName, $addLibelle, $addOrder) {
+        
         $quizDAO = new \model\QuizDAO();
-        $objet = new \model\Form();
-        $objet->setForm_id($id);
-        $result = $quizDAO->deleteForm($objet);
+        $objet = new \model\Request();
+        $objet->setRequest_header($idQuestion);
+        $objet->setRequest_name($addName);
+        $objet->setRequest_libelle($addLibelle);
+        $objet->setRequest_order($addOrder);
+        $result = $quizDAO->addResponse($objet);
 // Pour requête AJAX
         echo $result;
-    }*/
+    }
 
-    public function addForm($bu, $name, $designation, $category, $searchtype) {
-        // En attente de sérialization de l'objet plus tôt dans le process   
+    public function addForm($bu, $name, $designation, $category, $searchtype, $userId) {
+         
         $quizDAO = new \model\QuizDAO();
         $objet = new \model\Form();
         $objet->setForm_bu($bu);
@@ -85,6 +85,7 @@ class QuizController {
         $objet->setForm_designation($designation);
         $objet->setForm_category($category);
         $objet->setForm_searchtype($searchtype);
+        $objet->setForm_user_create($userId);
         $result = $quizDAO->addForm($objet);
 // Pour requête AJAX
         echo $result;

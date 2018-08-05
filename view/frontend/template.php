@@ -82,7 +82,7 @@ if (isset($_SESSION['user'])) {
                                     <a class="dropdown-item" href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
 
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Nouvelle BU</a>
+                                    <a class="dropdown-item" href="routes.php?action=manageTag">GESTION DES MOTS-CLES</a>
                                 </div>
                             </li>
                         <?php } ?>
@@ -93,7 +93,7 @@ if (isset($_SESSION['user'])) {
                                 Utilisateurs
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="routes.php?action=listRequest&bu=2">Audiovisuel</a>
+                                <a class="dropdown-item" href="#">LISTE</a>
                                 <a class="dropdown-item" href="#">Création</a>
                                 <a class="dropdown-item" href="#">Liste</a>
                                 <a href=\"javascript:history.back()\">retour arriere</a>
@@ -109,16 +109,21 @@ if (isset($_SESSION['user'])) {
                         <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php
                             if (isset($user)) {
                                 echo ($user->getUser_name() . " - " . $user->getUser_role_name());
-                            } else {
-                                echo 'Personne';
-                            }
+                                               }
                             ?></a>
                     </li>
                 </ul>
             </div>
         </nav> 
+        
+        
     </nav>
-
+    <noscript>
+    <div>
+        <div class="container py-5 extra">
+            <div class="row"></div><h2><p>Sans Javascript ce site ne peut pas fonctionner.</p></h2></div>
+    </div>
+    </noscript>
     <body>
         <?= $content ?>
     </body>

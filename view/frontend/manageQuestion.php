@@ -2,25 +2,41 @@
 ob_start();
 ?>
 <script type="text/javascript">
+    var idDelete;
+    var idEdit;
+    var idQuestion;
+    function ctrlAddResponse() {
+        var msg = "";
+        if ($("#addName").val() == '')
+            msg += 'Le nom est obligatoire.';
+         if ($("#addLibelle").val() == '')
+            msg += 'Le libellé est obligatoire.';
+         if ($("#addOrder").val() == '')
+            msg += 'Le numéro d\'ordre est obligatoire.';
+        // Monitoring des erreurs
+        $("#addMessage").html(msg);
+        $result = (msg != "" ? false : true);
+        return $result;
+    }
     function refresh() {
         $.ajax({
             type: 'POST',
             url: '/routes.php?action=listQuestion&form=' + $("#idForm").val(),
             success: function (data) {
                 $("#requete").html(data);
-                $('[data-toggle="tooltip"]').tooltip();
-                $("#okbutton").click(function () {
-                    var s = $('table tbody input:checked');
-                    if (s.length !== 0) {
-                        console.log(checkbox);
-                        $("#message").html('');
-                        $("#addResponseModal").modal('show');
-                    } else {
-                        $("#messageModal").modal('show');
-                    }
-                });
-                var checkbox = $('table tbody input[type="checkbox"]');
+                /*  $('[data-toggle="tooltip"]').tooltip();*/
+                /* $("#okbutton").click(function () {
+                 var s = $('table tbody input:checked');
+                 if (s.length !== 0) {
+                 console.log(checkbox);
+                 $("#message").html('');
+                 $("#addResponseModal").modal('show');
+                 } else {
+                 $("#messageModal").modal('show');
+                 }
+                 });*/
 
+                var checkbox = $('table tbody input[type="checkbox"]');
                 checkbox.click(function () {
                     var s = this.checked;
                     console.log(s)
@@ -60,10 +76,16 @@ ob_start();
         // Activate tooltip
         // $('[data-toggle="tooltip"]').tooltip();
         // Validation de la modal AJOUTER UNE REPONSE
-        $("#okbutton").click(function () {
+        $("#addResponseButton").click(function () {
+             // Reset de la fenetre modale 
+            $("#addName").val('');
+            $("#addLibelle").val('');
+            $("#addOrder").val('');
             var s = $('table tbody input:checked');
             if (s.length !== 0) {
                 console.log(checkbox);
+                idQuestion = s[0].value;
+                console.log(idQuestion);
                 $("#message").html('');
                 $("#addResponseModal").modal('show');
             } else {
@@ -74,16 +96,16 @@ ob_start();
         $("#deletebutton").click(function () {
             var s = $('table tbody input:checked');
             if (s.length !== 0) {
-               /// console.log(s[0]);
-               // console.log(s[0].value);
-                var deleteHeader= s[0].value;
+                /// console.log(s[0]);
+                // console.log(s[0].value);
+                var deleteHeader = s[0].value;
                 $("#message").html('');
                 $("#deleteQuestionModal").modal('show');
             } else {
                 $("#messageModal").modal('show');
             }
         });
-                // AJAX 
+        // AJAX 
         $("#deleteHeader").on('click', (function () {
             //alert();
             // console.log(obj);
@@ -121,7 +143,34 @@ ob_start();
             var checkbox = $('table tbody input[type="checkbox"]');
             //alert(checkbox);
             console.log(checkbox);
+            if (ctrlAddResponse()) {
+            $.ajax({
+                type: 'POST',
+                url: '/routes.php?action=addResponse&idQuestion=' + idQuestion + '&addName=' + $("#addName").val() + '&addLibelle=' + $("#addLibelle").val() + '&addOrder=' + $("#addOrder").val(),
+                /*   data:
+                 {
+                 "idQuestion" : idQuestion,
+                 "addName" : $("#addName").val(),
+                 "addLibelle" : $("#addLibelle").val(),
+                 "addOrder" : $("#addOrder").val(),
+                 },*/
+                success: function (data) {
+                    console.log('add' + data + '/routes.php?action=addResponse&idQuestion=' + idQuestion + '&addName=' + $("#addName").val() + '&addLibelle=' + $("#addLibelle").val() + '&addOrder=' + $("#addOrder").val());
+                    if (data != 1) {
+                        $("#addMessage").html("Erreur d\'ajout");
+                    } else {
+                        $('#addCancel').trigger('click');
+                        refresh();
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                    $("#retour").html("Erreur d\'envoi de la requête");
+                }
+            });
+        }
         });
+    
     });
 
 </script>
@@ -135,15 +184,15 @@ ob_start();
                 </div>
                 <div class="col-sm-8">
 
-                    <button id="okbutton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></button>
-                    <button id="deletebutton" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
-                    <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une question</span></button>
+                    <button id="addResponseButton" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une réponse</span></button>
+                    <button id="deleteQuestionButton" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
+                    <button id="addQuestionButton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter une question</span></button>
 
                 </div>
             </div>
         </div>
         <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
-        <div id='requete'></div>
+        <div id='requete' class="scrollDiv2"></div>
     </div>
     <!-- MODAL ADD RESPONSE -->
     <div id="addResponseModal" class="modal fade">
@@ -157,24 +206,21 @@ ob_start();
                     <div class="modal-body">					
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" class="form-control" required>
+                            <input type="text" class="form-control" required id="addName">
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
+                            <label>Libellé</label>
+                            <input type="text" class="form-control" required id="addLibelle">
                         </div>
                         <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div>					
+                            <label>N° d'ordre</label>
+                            <input type="number" class="form-control" required id="addOrder">
+                        </div>	
+                        <div id="addMessage" class="text-warning align-items-center"></div>
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="addCancel">
+                        <input type="button" class="btn btn-success" value="Ajouter" id="addResponse">
                     </div>
                 </form>
             </div>

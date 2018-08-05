@@ -12,7 +12,9 @@ class User {
     private $user_role;
     private $user_default_bu;
 
-    function __construct($user_id = '', $user_pseudo = '', $user_name = '', $user_email = '', $user_password = '', $user_role = '', $user_default_bu = '') {
+    function __construct($user_id = '', $user_pseudo = '', $user_name = '', 
+            $user_email = '', $user_password = '', $user_role = '', 
+            $user_default_bu = '') {
         $this->user_id = $user_id;
         $this->user_pseudo = $user_pseudo;
         $this->user_name = $user_name;

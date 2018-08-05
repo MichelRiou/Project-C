@@ -136,6 +136,30 @@ class ProductDAO extends DAOManager {
         return $products;
     }
 
+    public function selectAllTagsFromProduct($id) {
+        $productTags = array();
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('CALL SelectAllProductTagFromProduct (?)');
+            $req->bindValue(1, $id, \PDO::PARAM_INT);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new TagProduct();
+                $objet->setProduct_tag_id($enr['product_tag_id']);
+                $objet->setProduct_id($enr['product_id']);
+                $objet->setTag_id($enr['tag_id']);
+                $objet->setProduct_tag_value($enr['product_tag_value']);
+                $objet->setProduct_tag_numeric($enr['product_tag_numeric']);
+                $productTags[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $productTags[] = $objet;
+        }
+        return $productTags;
+    }
+
     public function selectAllProductByCat($bu, $category) {
         $products = array();
         try {
@@ -194,15 +218,15 @@ class ProductDAO extends DAOManager {
             $affectedRows = $req2->rowcount();
             if ($lastInsert != 0 && $affectedRows == 1) {
                 $db->commit();
-                $return = 1;
+                $return = $lastInsert;
             } else {
                 $db->rollback();
-                $return = -1;
+                $return = 0;
             }
         } catch (PDOException $e) {
             echo('Erreur SQL : ' . $e->getMessage());
             $db->rollback();
-            $return = -1;
+            $return = 0;
         }
         return $return;
         // start transaction
@@ -250,7 +274,25 @@ class ProductDAO extends DAOManager {
         }
         return $products;
     }
-
+    
+    public function addProductTag(TagProduct $objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('INSERT INTO product_tags (product_id,tag_id,product_tag_value, product_tag_numeric) VALUES(?,?,?,?)');
+            $req->bindValue(1, $objet->getProduct_id(), \PDO::PARAM_INT);
+            $req->bindValue(2, $objet->getTag_id(), \PDO::PARAM_INT);
+            $req->bindValue(3, $objet->getProduct_tag_value(), \PDO::PARAM_STR);
+            $req->bindValue(4, $objet->getProduct_tag_numeric(), \PDO::PARAM_INT);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
+        
+    }
     public function selectAllCategory() {
         //$categories = array();
         try {
@@ -311,6 +353,32 @@ class ProductDAO extends DAOManager {
             $objet->setProduct_imp_designation($enr['product_imp_designation']);
             $objet->setProduct_imp_category($enr['product_imp_category']);
             $objet->setProduct_imp_bu($enr['product_imp_bu']);
+        } else {
+            $objet = null;
+        }
+        $req->closeCursor();
+        return $objet;
+    }
+
+    public function selectOneProduct($id) {
+
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM products  WHERE product_id= ?');
+        $req->bindValue(1, $id);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if ($enr = $req->fetch()) {
+            $objet = new Product();
+            $objet->setProduct_id($enr['product_id']);
+            $objet->setProduct_builder_ref($enr['product_builder_ref']);
+            $objet->setProduct_ref($enr['product_ref']);
+            $objet->setProduct_builder($enr['product_builder']);
+            $objet->setProduct_ean($enr['product_ean']);
+            $objet->setProduct_bu($enr['product_bu']);
+            $objet->setProduct_category($enr['product_category']);
+            $objet->setProduct_model($enr['product_model']);
+            $objet->setProduct_designation($enr['product_designation']);
+            $objet->setProduct_user_create($enr['product_user_create']);
         } else {
             $objet = null;
         }

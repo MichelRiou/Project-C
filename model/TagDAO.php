@@ -13,12 +13,23 @@ class TagDAO extends DAOManager {
      * @return Array 
      */
     public function selectOneTag($id) {
+               
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM tags WHERE tag_id = ? ');
-        $req->execute(array($id));
-        $T_tag = array();
-        $T_tag = $req->fetchAll();
-        return $T_tag;
+        $req->bindValue(1, $id);
+        $req->setFetchMode(\PDO::FETCH_ASSOC);
+        $req->execute();
+        if ($enr = $req->fetch()) {
+            $objet = new Tag();
+            $objet->setTag_id($enr['tag_id']);
+            $objet->setTag_name($enr['tag_name']);
+            $objet->setTag_bu($enr['tag_bu']);
+            $objet->setTag_designation($enr['tag_designation']);
+        } else {
+            $objet = null;
+        }
+        $req->closeCursor();
+        return $objet;
     }
 
     public function selectAllTags() {

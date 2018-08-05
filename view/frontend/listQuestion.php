@@ -1,6 +1,6 @@
 <?php ob_start(); 
 ?>
-
+<!-- RECUPERATION D'UN TABLEAU ET NON D'UN OBJET -->
       <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -31,15 +31,22 @@
                         <?php
                         $index++;
                     }
-                    ?>
+                    if ($question['request_id']!= null){?>
+                        
                     <tr><td></td><td><?= $question['request_name'] ?></td><td><?= $question['request_libelle'] ?></td><td><?= $question['request_order'] ?></td>
-                        <td>
-                            <a href="routes.php?action=manageTagResponse&id=<?= $question['request_id'] ?>" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-
-                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                        <td class="row">
+                            <a href="routes.php?action=manageTagResponse&id=<?= $question['request_id'] ?>" 
+                               class="view"><i class="material-icons" data-toggle="tooltip" title="Liste">&#xE242;</i></a>
+                            <a href="#editFormModal" idresponse="<?= $question['request_id'] ?>" 
+                               name="<?= $question['request_name'] ?>"  libelle="<?= $question['request_libelle'] ?>" 
+                               order="<?= $question['request_order'] ?>"  class="edit" data-toggle="modal">
+                                <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                            <a href="#deleteResponseModal" idresponse="<?= $question['request_id'] ?>" class="delete" data-toggle="modal">
+                                <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
                     <?php
+                }
                 }
                 ?> 
             </tbody>

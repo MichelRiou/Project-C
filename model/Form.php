@@ -17,7 +17,9 @@ class Form {
     private $form_validated;
     private $form_user_create;
 
-    function __construct($form_id = '', $form_bu = '', $form_category = '', $form_name = '', $form_designation = '', $form_searchtype = '', $form_validated = '', $form_user_create = '') {
+    function __construct($form_id = '', $form_bu = '', $form_category = '', $form_name = '',
+            $form_designation = '', $form_searchtype = '', $form_validated = '', 
+            $form_user_create = '') {
         $this->form_id = $form_id;
         $this->form_bu = $form_bu;
         $this->form_category = $form_category;

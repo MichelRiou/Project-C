@@ -130,16 +130,20 @@ ob_start();
 
 </script>
 
-<div class="container">
+<div class="container-fluid">
     <div class="table-wrapper">
-        <div class="table-title col-md-12">
+        <div class="table-title">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <h5>LISTE DES PRODUITS</h5><input type="hidden" value="" id="idForm">
                 </div>
-                <div class="col-md-8">						
+                <div class="col-sm-4">						
                     <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
 
+                </div>
+                  <div class="col-sm-4">
+                    <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
+                    <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
             </div>
         </div>

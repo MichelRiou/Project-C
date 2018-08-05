@@ -42,18 +42,14 @@ class ProductController {
         require('view/frontend/manageProductImport.php');
     }
 
-    /*   public function validProductImport($bu,$id) {
-      echo $id;
-      $ProductDAO = new \model\ProductDAO();
-      $TagDAO = new \model\TagDAO();
-      $product = $ProductDAO->selectOneProductImport($id);
-      $tags = $TagDAO->selectAllTagsFromBU($bu);
-      // $tagsRequest = $QuizDAO->selectAllTagsFromRequest($id);
-      // $tags = $TagDAO->selectAllTagsFromBU($bu);
-      // $signs = $QuizDAO->selectAllSigns();
-
-      require('view/frontend/validProductImport.php');
-      } */
+    public function deleteProductImport($id) {
+        $productDAO = new \model\ProductDAO();
+        $objet = new \model\ProductImport();
+        $objet->setProduct_imp_id($id);
+        $result = $productDAO->deleteProductImport($objet);
+// Pour requête AJAX
+        echo $result;
+    }
 
     public function createProduct($userId, $bu, $id, $builderref, $ref, $model, $builder, $designation, $ean, $category, $tag) {
         $lastInsert = 0;
@@ -73,6 +69,7 @@ class ProductController {
         $lastInsert = $ProductDAO->createProduct($productImport, $product);
         return $lastInsert;
     }
+
     public function manageProductTag($id, $bu) {
 
         $QuizDAO = new \model\QuizDAO();
@@ -81,11 +78,30 @@ class ProductController {
         $TagDAO = new \model\TagDAO();
         //$SignDAO = new \model\SignDAO();
         //$request = $QuizDAO->selectOneRequest($id);
-        $tagsProduct = $ProductDAO->selectAllTagsFromProduct($id);
+        $product = $ProductDAO->selectOneProduct($id);
         $tags = $TagDAO->selectAllTagsFromBU($bu);
         $signs = $QuizDAO->selectAllSigns();
 
         require('view/frontend/manageProductTag.php');
+    }
+
+    function listProductTag($id) {
+        $productDAO = new \model\ProductDAO;
+        //$TagRequestDAO = new \model\TagRequestDAO();
+        $productTags = $productDAO->selectAllTagsFromProduct($id);
+        require('view/frontend/listProductTag.php');
+    }
+    
+        public function addProductTag($idProduct, $idTag, $addApha, $addNumeric) {  
+        $ProductDAO = new \model\ProductDAO();
+        $objet = new \model\TagProduct();
+        $objet->setProduct_id($idProduct);
+        $objet->setTag_id($idTag);
+        $objet->setProduct_tag_value($addApha);
+        $objet->setProduct_tag_numeric($addNumeric);
+        $result = $ProductDAO->addProductTag($objet);
+// Pour requête AJAX
+        echo $result;
     }
     function getProductsFile($msg) {
         // $message = "";

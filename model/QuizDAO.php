@@ -2,7 +2,6 @@
 
 namespace model;
 
-
 class QuizDAO extends DAOManager {
 
     /**
@@ -33,11 +32,12 @@ class QuizDAO extends DAOManager {
         $req->closeCursor();
         return $objet;
     }
-public function addForm(Form $objet) {
+
+    public function addForm(Form $objet) {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
-            $req = $db->prepare('INSERT INTO forms (form_bu,form_category,form_name,form_designation,form_searchtype,form_validated,form_user_create) VALUES(?,?,?,?,?,?)');
+            $req = $db->prepare('INSERT INTO forms (form_bu,form_category,form_name,form_designation,form_searchtype,form_validated,form_user_create) VALUES(?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getForm_bu(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getForm_category(), \PDO::PARAM_INT);
             $req->bindValue(3, $objet->getForm_name(), \PDO::PARAM_STR);
@@ -51,8 +51,10 @@ public function addForm(Form $objet) {
         } catch (PDOException $e) {
             $affectedRows = -1;
         }
+        $req->closeCursor();
         return $affectedRows;
     }
+
     public function updateForm(Form $objet) {
         $affectedRows = 1;
         try {
@@ -71,8 +73,10 @@ public function addForm(Form $objet) {
         } catch (PDOException $e) {
             $affectedRows = -1;
         }
+        $req->closeCursor();
         return $affectedRows;
     }
+
     public function deleteForm(Form $objet) {
         $affectedRows = 0;
         try {
@@ -85,9 +89,10 @@ public function addForm(Form $objet) {
         } catch (PDOException $e) {
             $affectedRows = -1;
         }
+        $req->closeCursor();
         return $affectedRows;
     }
- 
+
     /**
      * 
      * @param int $bu
@@ -96,16 +101,17 @@ public function addForm(Form $objet) {
     public function selectAllQuestionsFromForm($bu, $form) {
 
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT forms.*,headers.*, request.* FROM forms left outer join headers on forms.form_id=headers.header_form left outer join request on headers.header_id = request.request_header WHERE `form_bu`= ? and form_id= ? order by headers.header_position asc , request.request_order asc');
+        //$req = $db->prepare('SELECT forms.*,headers.*, request.* FROM forms left outer join headers on forms.form_id=headers.header_form left outer join request on headers.header_id = request.request_header WHERE `form_bu`= ? and form_id= ? order by headers.header_position asc , request.request_order asc');
+        $req = $db->prepare('SELECT * FROM headers left outer join request on headers.header_id = request.request_header WHERE headers.header_bu= ? and headers.header_form= ? order by headers.header_position asc , request.request_order asc');
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->bindValue(1, $bu, \PDO::PARAM_INT);
         $req->bindValue(2, $form, \PDO::PARAM_INT);
         $req->execute();
         $questions = array();
         $questions = $req->fetchAll();
+        $req->closeCursor();
         return $questions;
     }
-
 
     public function selectOneSearchType($id) {
 
@@ -122,6 +128,7 @@ public function addForm(Form $objet) {
         } else {
             $objet = null;
         }
+        $req->closeCursor();
         return $objet;
     }
 
@@ -142,18 +149,20 @@ public function addForm(Form $objet) {
             while ($enr2 = $req2->fetch()) {
                 $request[] = $enr2['request_libelle'] . '#' . $enr2['request_id'];
             }
-            $headers[] = array('header' => $enr['header_designation'] . '#' . $enr['header_class'] . '#' . $enr['header_name'], 'request' => $request);
+            $headers[] = array('header' => $enr['header_designation'] . '#' . $enr['header_name'], 'request' => $request);
         }
         $req->closeCursor();
         $req2->closeCursor();
         return $headers;
     }
- public function selectAllRequestsFromBU($bu) {
+
+    public function selectAllRequestsFromBU($bu) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM request left outer join headers on header_id=request_header where header_bu = ? order by header_position asc');
         $req->execute(array($bu));
         $T_requests = array();
         $T_requests = $req->fetchAll();
+        $req->closeCursor();
         return $T_requests;
     }
 
@@ -174,13 +183,15 @@ public function addForm(Form $objet) {
         } else {
             $objet = null;
         }
+        $req->closeCursor();
         return $objet;
     }
+
     public function selectAllFormFromBu($bu) {
         $forms = array();
         try {
             $db = $this->dbConnect();
-             $req = $db->prepare('SELECT * FROM forms WHERE form_bu = ? ORDER BY form_category ASC, form_name ASC');
+            $req = $db->prepare('SELECT * FROM forms WHERE form_bu = ? ORDER BY form_category ASC, form_name ASC');
             $req->bindValue(1, $bu);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
@@ -201,9 +212,10 @@ public function addForm(Form $objet) {
             $objet = null;
             $forms[] = $objet;
         }
-        //print_r($tags);
+        $req->closeCursor();
         return $forms;
     }
+
     public function selectAllSearchType() {
         //$searchtypes = array();
         try {
@@ -222,8 +234,10 @@ public function addForm(Form $objet) {
             $objet = null;
             $searchtypes[] = $objet;
         }
+        $req->closeCursor();
         return $searchtypes;
     }
+
     public function selectAllSigns() {
         $signs = array();
         $db = $this->dbConnect();
@@ -235,81 +249,79 @@ public function addForm(Form $objet) {
             //$objet->setSign($enr['sign']);
             $objet->setSign_ESC($enr['sign_ESC']);
         }
-       // $req->closeCursor();
+        $req->closeCursor();
         return $objet;
     }
-        public function selectAllTagsNotInRequestFromBU($id, $bu) {
-        $T_tags = array();
-        try {
-            $db = $this->dbConnect();
-            $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
-            $req->bindValue(1, $id);
-            $req->bindValue(2, $bu);
-            $req->setFetchMode(\PDO::FETCH_ASSOC);
-            $req->execute();
-            while ($enr = $req->fetch()) {
-                $objet = new Tag();
-                $objet->setTag_id($enr['tag_id']);
-                $objet->setTag_bu($enr['tag_bu']);
-                $objet->setTag_name($enr['tag_name']);
-                $objet->setTag_designation($enr['tag_designation']);
-                $T_tags[] = $objet;
-            }
-        } catch (PDOException $e) {
-            $objet = null;
-            $T_tags[] = $objet;
-        }
-        return $T_tags;
-    }
-/*public function selectAllTagsFromRequest($id) {
-        $db = $this->dbConnect();
-        $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
-        $req->bindValue(1, $id,\PDO::PARAM_INT);
-        $req->execute();
-        //$tags = array();
-        
-        $tags = $req->fetchAll();
-        return $tags;
-    }*/
 
+    /*     public function selectAllTagsNotInRequestFromBU($id, $bu) {
+      $T_tags = array();
+      try {
+      $db = $this->dbConnect();
+      $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
+      $req->bindValue(1, $id);
+      $req->bindValue(2, $bu);
+      $req->setFetchMode(\PDO::FETCH_ASSOC);
+      $req->execute();
+      while ($enr = $req->fetch()) {
+      $objet = new Tag();
+      $objet->setTag_id($enr['tag_id']);
+      $objet->setTag_bu($enr['tag_bu']);
+      $objet->setTag_name($enr['tag_name']);
+      $objet->setTag_designation($enr['tag_designation']);
+      $T_tags[] = $objet;
+      }
+      } catch (PDOException $e) {
+      $objet = null;
+      $T_tags[] = $objet;
+      }
+      return $T_tags;
+      } */
+    /* public function selectAllTagsFromRequest($id) {
+      $db = $this->dbConnect();
+      $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
+      $req->bindValue(1, $id,\PDO::PARAM_INT);
+      $req->execute();
+      //$tags = array();
 
-   
+      $tags = $req->fetchAll();
+      return $tags;
+      } */
+
 // NOT USE
-    
     // NOT USE
-/*public function updateTagFromRequest($objet) {
-        $liAffectes = 1;
-        try {
-            $db = $this->dbConnect();
-            $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?,request_tag_value=?,request_tag_numeric=? WHERE request_id=? and tag_id=?');
-            $req->bindValue(1, $objet->getRequest_tag_sign(),\PDO::PARAM_STR);
-            $req->bindValue(2, $objet->getRequest_tag_value(),\PDO::PARAM_STR);
-            $req->bindValue(3, $objet->getRequest_tag_numeric(),\PDO::PARAM_INT);
-            $req->bindValue(4, $objet->getRequest_id(),\PDO::PARAM_INT);
-            $req->bindValue(5, $objet->getTag_id(),\PDO::PARAM_INT);
-            $req->execute();
-            //$liAffectes = $req->rowcount();
-        } catch (PDOException $e) {
-            $liAffectes = 0;
-        }
-        return $liAffectes;
-    }*/
+    /* public function updateTagFromRequest($objet) {
+      $liAffectes = 1;
+      try {
+      $db = $this->dbConnect();
+      $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?,request_tag_value=?,request_tag_numeric=? WHERE request_id=? and tag_id=?');
+      $req->bindValue(1, $objet->getRequest_tag_sign(),\PDO::PARAM_STR);
+      $req->bindValue(2, $objet->getRequest_tag_value(),\PDO::PARAM_STR);
+      $req->bindValue(3, $objet->getRequest_tag_numeric(),\PDO::PARAM_INT);
+      $req->bindValue(4, $objet->getRequest_id(),\PDO::PARAM_INT);
+      $req->bindValue(5, $objet->getTag_id(),\PDO::PARAM_INT);
+      $req->execute();
+      //$liAffectes = $req->rowcount();
+      } catch (PDOException $e) {
+      $liAffectes = 0;
+      }
+      return $liAffectes;
+      } */
     ////////////////////////////////////////////////////////////////////////
 
 
     public function selectAllTagsFromRequest($id) {
         $db = $this->dbConnect();
         $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
-        $req->bindValue(1, $id,\PDO::PARAM_INT);
+        $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->execute();
         //$tags = array();
-        
+
         $tags = $req->fetchAll();
+        $req->closeCursor();
         return $tags;
     }
 
-
-  public function insertTagFromRequest($objet) {
+    public function insertTagFromRequest($objet) {
         try {
             //print_r($objet);
             $db = $this->dbConnect();
@@ -325,39 +337,60 @@ public function addForm(Form $objet) {
             $liAffectes = -1;
 //echo $e->getMessage();
         }
-        $this->dbClose($db);
-        
+        $req->closeCursor();
+
         return $liAffectes;
     }
 
-   /* public function deleteTagFromRequest($idRequest, $idTag) {
-        $rowAffected = 0;
+    public function addResponse(Request $objet) {
+        $affectedRows = 0;
         try {
             //print_r($objet);
             $db = $this->dbConnect();
-            $req = $db->prepare('DELETE FROM request_tags WHERE request_id = ? AND tag_id = ?');
-            $req->bindValue(1, $idRequest);
-            $req->bindValue(2, $idTag);
+            $req = $db->prepare('INSERT INTO request (request_header, request_name, request_libelle, request_order) VALUES(?,?,?,?)');
+            $req->bindValue(1, $objet->getRequest_header());
+            $req->bindValue(2, $objet->getRequest_name());
+            $req->bindValue(3, $objet->getRequest_libelle());
+            $req->bindValue(4, $objet->getRequest_order());
             $req->execute();
-            $rowAffected = $req->rowcount();
+            $affectedRows = $req->rowcount();
         } catch (PDOException $e) {
-            $rowAffected = -1;
-//echo $e->getMessage();
+            $affectedRows = -1;
         }
-        return $rowAffected;
-    }*/
+        $req->closeCursor();
+
+        return $affectedRows;
+    }
+
+    /* public function deleteTagFromRequest($idRequest, $idTag) {
+      $rowAffected = 0;
+      try {
+      //print_r($objet);
+      $db = $this->dbConnect();
+      $req = $db->prepare('DELETE FROM request_tags WHERE request_id = ? AND tag_id = ?');
+      $req->bindValue(1, $idRequest);
+      $req->bindValue(2, $idTag);
+      $req->execute();
+      $rowAffected = $req->rowcount();
+      } catch (PDOException $e) {
+      $rowAffected = -1;
+      //echo $e->getMessage();
+      }
+      return $rowAffected;
+      } */
+
     ////////////////////////////////////////////////////////////////////////
-    
-public function updateTagRequest(TagRequest $objet) {
-      //  print_r($objet);
+
+    public function updateTagRequest(TagRequest $objet) {
+        //  print_r($objet);
         $liAffectes = 1;
         try {
             $db = $this->dbConnect();
             $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?, request_tag_value=?,request_tag_numeric=? WHERE request_tag_id=?');
-            $req->bindValue(1, $objet->getRequest_tag_sign(),\PDO::PARAM_STR);
-            $req->bindValue(2, $objet->getRequest_tag_value(),\PDO::PARAM_STR);
-            $req->bindValue(3, $objet->getRequest_tag_numeric(),\PDO::PARAM_INT);
-            $req->bindValue(4, $objet->getRequest_tag_id(),\PDO::PARAM_INT);
+            $req->bindValue(1, $objet->getRequest_tag_sign(), \PDO::PARAM_STR);
+            $req->bindValue(2, $objet->getRequest_tag_value(), \PDO::PARAM_STR);
+            $req->bindValue(3, $objet->getRequest_tag_numeric(), \PDO::PARAM_INT);
+            $req->bindValue(4, $objet->getRequest_tag_id(), \PDO::PARAM_INT);
             $req->execute();
             //$liAffectes = $req->rowcount();
         } catch (PDOException $e) {
@@ -365,13 +398,14 @@ public function updateTagRequest(TagRequest $objet) {
         }
         return $liAffectes;
     }
-public function deleteTagRequest($objet) {
-      //  print_r($objet);
+
+    public function deleteTagRequest($objet) {
+        //  print_r($objet);
         $liAffectes = 0;
         try {
             $db = $this->dbConnect();
             $req = $db->prepare('DELETE FROM request_tags WHERE request_tag_id=?');
-            $req->bindValue(1, $objet->getRequest_tag_id(),\PDO::PARAM_INT);
+            $req->bindValue(1, $objet->getRequest_tag_id(), \PDO::PARAM_INT);
             $req->execute();
             $liAffectes = $req->rowcount();
         } catch (PDOException $e) {
@@ -380,5 +414,4 @@ public function deleteTagRequest($objet) {
         return $liAffectes;
     }
 
-        }
-
+}

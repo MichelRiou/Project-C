@@ -15,7 +15,8 @@ class DBAccess {
         $user = $properties["user"];
         $mdp = $properties["mdp"];
         $db = $properties["bd"];
-        $this->PDOInstance = new \PDO("$protocole:host=$serveur;dbname=$db;charset=utf8", $user, $mdp);
+        $this->PDOInstance = new \PDO("$protocole:host=$serveur;"
+                . "dbname=$db;charset=utf8", $user, $mdp);
     }
 
     public static function getDBInstance() {
@@ -33,23 +34,22 @@ class DBAccess {
         }
     }
 
-    
     public function prepare($sql) {
         return $this->PDOInstance->prepare($sql);
     }
-    
+
     public function inTransaction() {
         return $this->PDOInstance->inTransaction();
     }
-    
+
     public function beginTransaction() {
         return $this->PDOInstance->beginTransaction();
     }
-    
+
     public function commit() {
         return $this->PDOInstance->commit();
     }
-    
+
     public function lastInsertId() {
         return $this->PDOInstance->lastInsertId();
     }

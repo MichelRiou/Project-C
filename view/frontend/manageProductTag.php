@@ -4,13 +4,11 @@ ob_start();
 <script type="text/javascript">
     var idDelete;
     var idEdit;
-    function ctrlAddForm() {
+    function ctrlAddTag() {
         var msg = "";
-        if ($("#addSign").val() == 'EST' && $("#addAlpha").val() == "")
-            msg += 'L\'opérateur EST nécessite une valeur alphanumérique';
-        if ($("#addSign").val() != 'EST' && $("#addNumeric").val() == "")
-            msg += 'Les opérateurs =>< nécessite une valeur numérique';
-
+        if ( $("#addAlpha").val() == "" && $("#addNumeric").val() == "")
+            msg += 'La saisie d\'une valeur est obligatoire.';
+      
         // Monitoring des erreurs
         $("#addMessage").html(msg);
         $result = (msg != "" ? false : true);
@@ -38,18 +36,22 @@ ob_start();
     function refresh() {
         $.ajax({
             type: 'POST',
-            url: '/routes.php?action=listResponse&id=' + $("#idRequest").val(),
+            url: '/routes.php?action=listProductTag',
+             data:
+                            {
+                                "id" : $("#idProduct").val(),
+                            },
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
                 $('a[class="delete"]').click(function () {
-                    idDelete = this.getAttribute('value');
+                    idDelete = this.getAttribute('productagid');
                     console.log(idDelete);
                 });
                 $('a[class="edit"]').click(function () {
                     //MISE A JOUR DES CHAMPS POUR L'UPDATE 
                     //value a qualifier
-                    idEdit = this.getAttribute('value');
+                    idEdit = this.getAttribute('producttagid');
                     $('#editName').val(this.getAttribute('tagname'));
                     signEdit = this.getAttribute('sign');
                     $('#editSign').val(signEdit);
@@ -112,13 +114,13 @@ ob_start();
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
            
-            if (ctrlAddForm()) {
+            if (ctrlAddTag()) {
                //  alert();
                 $.ajax({
                     type: 'POST',
-                    url: '/routes.php?action=addTagRequest' + '&idRequest=' + $("#idRequest").val() + '&idTag=' + $("#addName").val() + '&addSign=' + $("#addSign").val() + '&addAlpha=' + $("#addAlpha").val() + '&addNumeric=' + $("#addNumeric").val(),
+                    url: '/routes.php?action=addProductTag' + '&idProduct=' + $("#idProduct").val() + '&idTag=' + $("#addName").val() +  '&addAlpha=' + $("#addAlpha").val() + '&addNumeric=' + $("#addNumeric").val(),
                     success: function (data) {
-                        console.log(data);
+                        console.log(data + '/routes.php?action=addProductTag' + '&idProduct=' + $("#idProduct").val() + '&idTag=' + $("#addName").val() +  '&addAlpha=' + $("#addAlpha").val() + '&addNumeric=' + $("#addNumeric").val());
                         if (data != 1) {
                             $("#addMessage").html("Erreur d\'insertion");
                         } else {
@@ -198,19 +200,19 @@ ob_start();
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 form-group row">
+            <div class="col-sm-8 form-group row">
             <div class="col-sm-3 form-group">
 
-                <input class="form-control input-sm" type="text" name="nameRequest" value="<?= $product->getProduct_name() ?>" readonly="readonly" />
+                <input class="form-control input-sm" type="text" name="refProduct" value="<?= $product->getProduct_ref() ?>" readonly="readonly" />
             </div>
             <div class="col-sm-8 form-group">
-                <input class="form-control input-sm" type="text" name="libelleRequest" value="<?= $product->getProduct_name() ?>" />
+                <input class="form-control input-sm" type="text" name="libelleRequest" value="<?= $product->getProduct_ref() ?>" />
             </div>
             <div class="col-sm-1 form-group">
-                <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $product->getProduct_name() ?>" " />
+                <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $product->getProduct_ref() ?>"  />
             </div>  
             </div>   
-            <div class="col-md-4 form-group row">
+            <div class="col-sm-4 form-group row">
             <div class="col-sm-4 ">
                 <button id="majbutton" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE254;</i> <span>Màj réponse</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
@@ -223,6 +225,11 @@ ob_start();
                 <button id="manageTag" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Créé un mot-clé</span></button>
               <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
             </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 form-group row">
+                <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $product->getProduct_designation() ?>"  />
             </div>
         </div>
         <div class ="scrollDiv2" id="requete"></div>
@@ -281,7 +288,7 @@ ob_start();
                 </div>
                 <div class="modal-body">
                     <div>
-                        <input type="hidden" value="<?= $id ?>" name="idRequest" id="idRequest">
+                        <input type="hidden" value="<?= $product->getProduct_id() ?>" name="idProduct" id="idProduct">
                         <input type="hidden" value="<?= $bu ?>" name="idBu" id="idBu">
                     </div>
                     <div class="form-group">
@@ -290,17 +297,6 @@ ob_start();
                             <?php for ($i = 0; $i < count($tags); $i++) { ?>
                                 <option value="<?= $tags[$i]->getTag_id() ?>"><?= $tags[$i]->getTag_name() ?></option>
                             <?php } ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Opérateur</label>
-                        <select class="form-control" name="selectOperator" id="addSign">
-                            <option value="=">=</option>
-                            <option value=">">></option>
-                            <option value="<"><</option>
-                            <option value="EST">EST</option>
-                            
-                            
                         </select>
                     </div>
                     <div class="form-group">

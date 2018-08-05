@@ -2,14 +2,15 @@
 
 namespace model;
 
-//require_once("model/DAOManager.php");
-//require_once("model/User.php");
-
 class AdminDAO extends DBAccess {
 
+    /**
+     * 
+     * @param type $bu
+     * @return type BusinessUnit
+     */
     public function selectOneBu($bu) {
         $db = $this::getDBInstance();
-        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM businessunit  WHERE bu_id= ?');
         $req->bindValue(1, $bu);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -26,8 +27,10 @@ class AdminDAO extends DBAccess {
 
     /**
      * 
-     * @param int $id
-     * @return Array 
+     * @param type $pseudo
+     * @param type $password
+     * @param type $sha1
+     * @return type User
      */
     public function selectUser($pseudo, $password, $sha1) {
         // $db = $this->dbConnect();
@@ -36,7 +39,8 @@ class AdminDAO extends DBAccess {
             $db->beginTransaction();
         }
         if ($sha1=='yes') $password = sha1($password);
-        $req = $db->prepare('SELECT * FROM users WHERE user_pseudo = ? and user_password= ? ');
+        $req = $db->prepare('SELECT * FROM users WHERE user_pseudo = ? '
+                . 'and user_password= ? ');
         $req->bindValue(1, $pseudo);
         $req->bindValue(2, $password);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -57,12 +61,19 @@ class AdminDAO extends DBAccess {
         return $objet;
     }
 
+    /**
+     * 
+     * @param type $objet
+     * @return type int
+     */
     public function insertUser($objet) {
         $rowAffected = 0;
         try {
             $db = $this::getDBInstance();
             // $db = $this->dbConnect();
-            $req = $db->prepare('INSERT INTO users (user_pseudo,user_name,user_email,user_password,user_role,user_default_bu) VALUES(?,?,?,?,?,?)');
+            $req = $db->prepare('INSERT INTO users (user_pseudo,user_name,'
+                    . 'user_email,user_password,user_role,user_default_bu) '
+                    . 'VALUES(?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getUser_pseudo());
             $req->bindValue(2, $objet->getUser_name());
             $req->bindValue(3, $objet->getUser_email());
@@ -76,10 +87,14 @@ class AdminDAO extends DBAccess {
         }
         return $rowAffected;
     }
-
+    
+    /**
+     * 
+     * @param type $id
+     * @return type Role
+     */
     public function selectOneRole($id) {
         $db = $this::getDBInstance();
-        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM roles WHERE role_id = ?');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -95,9 +110,13 @@ class AdminDAO extends DBAccess {
         return $objet;
     }
 
+    /**
+     * 
+     * @param type $id
+     * @return type User
+     */
     public function selectOneUser($id) {
         $db = $this::getDBInstance();
-        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM users WHERE user_id = ?');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
