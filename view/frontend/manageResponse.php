@@ -70,6 +70,9 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
+        $("#back").click(function () {
+            window.history.back();
+        });
         // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
         // Activation de la fenêtre modale AJOUTER UN TAG
@@ -191,51 +194,51 @@ ob_start();
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
-                <div class="col-sm-8 form-group">
+                <div class="col-sm-4 form-group">
                     <h5>LISTE DES MOT-CLES D'UNE REPONSE</h5>
                 </div>
-
+                        
+            <div class="col-sm-8 ">
+                <button id="back" class="btn btn-default btn-sm" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
+                <button id="majbutton" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE254;</i> <span>Màj réponse</span></button>
+              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+         
+                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajout mot-clé</span></button>
+              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+          
+                <button id="manageTag" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Nouveau mot-clé</span></button>
+              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+            </div>
+            </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 form-group row">
-            <div class="col-sm-3 form-group">
-
+            <div class="col-sm-12 form-group row">
+            <div class="col-sm-2 form-group">
+                <label>Nom</label>
                 <input class="form-control input-sm" type="text" name="nameRequest" value="<?= $request->getRequest_name() ?>" readonly="readonly" />
             </div>
-            <div class="col-sm-8 form-group">
+            <div class="col-sm-9 form-group">
+                <label>Libellé de la réponse</label>
                 <input class="form-control input-sm" type="text" name="libelleRequest" value="<?= $request->getRequest_libelle() ?>" />
             </div>
             <div class="col-sm-1 form-group">
+                 <label>N° d'ordre</label>
                 <input class="form-control input-sm" type="text" name="orderRequest" value="<?= $request->getRequest_order() ?>" " />
             </div>  
             </div>   
-            <div class="col-md-4 form-group row">
-            <div class="col-sm-4 ">
-                <button id="majbutton" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE254;</i> <span>Màj réponse</span></button>
-              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
-            </div>
-            <div class="col-sm-4 ">
-                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
-              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
-            </div>
-            <div class="col-sm-4 ">
-                <button id="manageTag" class="btn btn-info btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Créé un mot-clé</span></button>
-              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
-            </div>
-            </div>
+ 
         </div>
         <div class ="scrollDiv2" id="requete"></div>
     </div>
-</div>
-</div>
+
 <!-- Edit Modal HTML -->
 <div id="editTagModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Edit Tag</h4>
+                    <h4 class="modal-title">Edit Mot-clé</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					

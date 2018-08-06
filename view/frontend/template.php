@@ -2,6 +2,7 @@
 if (isset($_SESSION['user'])) {
     $user = unserialize($_SESSION['user']);
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +62,7 @@ if (isset($_SESSION['user'])) {
                             </a>
                         </li>
                     </ul>
-                    <?php if (isset($_SESSION['bu'])) { ?>
+<?php if (isset($_SESSION['bu'])) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Formulaires
@@ -72,7 +73,7 @@ if (isset($_SESSION['user'])) {
                                 <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
-                        <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) { ?>
+    <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) { ?>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Produits
@@ -87,7 +88,7 @@ if (isset($_SESSION['user'])) {
                             </li>
                         <?php } ?>
                     <?php } ?>
-                    <?php if (isset($user) && ($user->getUser_role() == 1)) { ?>
+<?php if (isset($user) && ($user->getUser_role() == 1)) { ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Utilisateurs
@@ -101,7 +102,7 @@ if (isset($_SESSION['user'])) {
                                 <a class="dropdown-item" href="#">Nouvelle BU</a>
                             </div>
                         </li>
-                    <?php } ?>
+<?php } ?>
                 </ul> 
 
                 <ul class="navbar-nav mr-auto">
@@ -109,14 +110,14 @@ if (isset($_SESSION['user'])) {
                         <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php
                             if (isset($user)) {
                                 echo ($user->getUser_name() . " - " . $user->getUser_role_name());
-                                               }
+                            }
                             ?></a>
                     </li>
                 </ul>
             </div>
         </nav> 
-        
-        
+
+
     </nav>
     <noscript>
     <div>
@@ -125,6 +126,6 @@ if (isset($_SESSION['user'])) {
     </div>
     </noscript>
     <body>
-        <?= $content ?>
+<?= $content ?>
     </body>
 </html>

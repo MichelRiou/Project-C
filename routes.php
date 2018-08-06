@@ -7,8 +7,8 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-    //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
-    $classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
+   $classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+    //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
     //$classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
@@ -259,7 +259,7 @@ if ($manageAdmin->controlSession()) {
                     if (isset($bu) && isset($name) && isset($designation)) {
                         $manageTag->addTag($bu, $name, $designation);
                     } else {
-                        throw new Exception('Erreur de parametre');
+                        throw new Exception('Erreur de paramètre');
                     }
                     break;
                   case 'addResponse':
@@ -270,7 +270,29 @@ if ($manageAdmin->controlSession()) {
                     if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
                         $manageQuiz->addResponse($idQuestion, $addName, $addLibelle, $addOrder);
                     } else {
-                        throw new Exception('Erreur d\'appel du controleur addTag');
+                        throw new Exception('Erreur de paramètre');
+                    }
+                    break;
+                    
+                case 'deleteQuestion':
+                    $idQuestion = filter_input(INPUT_GET, "idQuestion");
+                    if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz->deleteQuestion($idQuestion);
+                    } else {
+                        throw new Exception('Erreur de paramètre');
+                    }
+                    break;
+                    
+                case 'addQuestion':
+                    $bu = $_SESSION['bu'];
+                    $idForm = filter_input(INPUT_POST, "idForm");
+                    $addName = filter_input(INPUT_POST, "addName",FILTER_SANITIZE_STRING);
+                    $addLibelle = filter_input(INPUT_POST, "addLibelle",FILTER_SANITIZE_STRING);
+                    $addOrder = filter_input(INPUT_POST, "addOrder");
+                    if (isset($bu) && filter_var($idForm, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz->addQuestion($idForm, $bu, $addName, $addLibelle, $addOrder);
+                    } else {
+                        throw new Exception('Erreur de paramètre');
                     }
                     break;
                     

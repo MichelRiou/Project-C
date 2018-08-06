@@ -414,4 +414,38 @@ class QuizDAO extends DAOManager {
         return $liAffectes;
     }
 
+        public function deleteQuestion(Header $objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('DELETE FROM headers WHERE header_id = ?');
+            $req->bindValue(1, $objet->getHeader_id(), \PDO::PARAM_INT);
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
+    }
+    
+    public function addQuestion(Header $objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this->dbConnect();
+            $req = $db->prepare('INSERT INTO headers (header_bu, header_form, header_position, header_designation,header_name) VALUES(?,?,?,?,?)');
+            $req->bindValue(1, $objet->getHeader_bu());
+            $req->bindValue(2, $objet->getHeader_form());
+            $req->bindValue(3, $objet->getHeader_position());
+            $req->bindValue(4, $objet->getHeader_designation());
+            $req->bindValue(5, $objet->getHeader_name());
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        $req->closeCursor();
+
+        return $affectedRows;
+    }
 }

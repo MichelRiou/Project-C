@@ -67,7 +67,9 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
-
+        $("#back").click(function () {
+            window.history.back();
+        });
         // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
         // Activation de la fenêtre modale AJOUTER UN FORMULAIRE
@@ -154,17 +156,18 @@ ob_start();
         <div class="table-title">
             <div class="form-group row">
                 <div class="col-md-7">
-                    <h4>Gestion des Formulaires</h4>
+                    <h5>Gestion des Formulaires</h5>
                 </div >
                 <div class="col-md-5">
-                    <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
-                    <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
+                    <button id="back" class="btn btn-default btn-sm" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
+                    <input class=" pull-right btn-sm" type="submit" value="Rechercher" onclick="searchString()" />
+                    <input class="pull-right " id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-9 form-group">
-                <h5>BU :  <?= $bu->getBu_name() ?></h5>  
+                <h5>Business Unit :  <?= $bu->getBu_name() ?></h5>  
 
             </div>
 

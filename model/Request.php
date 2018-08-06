@@ -3,7 +3,7 @@
 namespace model;
 
 /*
- * LE DTO DE LA TABLE [Article] DE LA BD [5Minutes]
+ * LE DTO DE LA TABLE Request
  */
 
 class Request {

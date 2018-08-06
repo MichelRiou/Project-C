@@ -2,8 +2,6 @@
 
 namespace model;
 
-//require_once("model/DAOManager.php");
-//require_once("model/Tag.php");
 
 class TagDAO extends DAOManager {
 
@@ -14,7 +12,8 @@ class TagDAO extends DAOManager {
      */
     public function selectOneTag($id) {
                
-        $db = $this->dbConnect();
+       $db = $this->dbConnect();
+        // $db = $this::getDBInstance();
         $req = $db->prepare('SELECT * FROM tags WHERE tag_id = ? ');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -34,6 +33,7 @@ class TagDAO extends DAOManager {
 
     public function selectAllTags() {
         $db = $this->dbConnect();
+         //$db = $this::getDBInstance();
         $req = $db->prepare('SELECT * FROM tags ');
         $req->execute(array($id));
         $T_tags = array();
@@ -44,7 +44,8 @@ class TagDAO extends DAOManager {
     public function addTag(Tag $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+           $db = $this->dbConnect();
+            // $db = $this::getDBInstance();
             $req = $db->prepare('INSERT INTO tags (tag_bu,tag_name,tag_designation) VALUES(?,?,?)');
             $req->bindValue(1, $objet->getTag_bu(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getTag_name(), \PDO::PARAM_STR);
@@ -61,6 +62,7 @@ class TagDAO extends DAOManager {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
+             //$db = $this::getDBInstance();
             $req = $db->prepare('DELETE FROM tags WHERE tag_id = ?');
             $req->bindValue(1, $objet->getTag_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -76,6 +78,7 @@ class TagDAO extends DAOManager {
         $affectedRows = 1;
         try {
             $db = $this->dbConnect();
+            // $db = $this::getDBInstance();
             $req = $db->prepare('UPDATE tags SET tag_designation =? WHERE tag_id=? ');
             $req->bindValue(1, $objet->getTag_designation(), \PDO::PARAM_STR);
             $req->bindValue(2, $objet->getTag_id(), \PDO::PARAM_INT);
@@ -90,6 +93,7 @@ class TagDAO extends DAOManager {
         $tags = array();
         try {
             $db = $this->dbConnect();
+            // $db = $this::getDBInstance();
             $req = $db->prepare('SELECT * FROM tags where tag_bu= ? ');
             $req->bindValue(1, $bu, \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -113,7 +117,8 @@ class TagDAO extends DAOManager {
     public function selectAllTagsNotInRequestFromBU($id, $bu) {
         $T_tags = array();
         try {
-            $db = $this->dbConnect();
+           $db = $this->dbConnect();
+             //$db = $this::getDBInstance();
             $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
             $req->bindValue(1, $id);
             $req->bindValue(2, $bu);

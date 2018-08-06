@@ -15,7 +15,6 @@
                 <?php
                 $question_save = '';
                 $index = 0;
-                //print_r($questions);
                 foreach ($questions as $question) {
                     if ($question['header_designation'] != $question_save) {
                         $question_save = $question['header_designation'];

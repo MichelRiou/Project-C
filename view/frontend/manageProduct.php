@@ -61,6 +61,9 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
+         $("#back").click(function () {
+            window.history.back();
+        });
         // Activate tooltip
         // $('[data-toggle="tooltip"]').tooltip();
         // Validation de la modal AJOUTER UNE REPONSE
@@ -137,11 +140,13 @@ ob_start();
                 <div class="col-sm-4">
                     <h5>LISTE DES PRODUITS</h5><input type="hidden" value="" id="idForm">
                 </div>
-                <div class="col-sm-4">						
+                <div class="col-sm-4">		
+                    <button id="back" class="btn btn-default" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
                     <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
 
                 </div>
                   <div class="col-sm-4">
+                        
                     <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
                     <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
