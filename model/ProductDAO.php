@@ -15,7 +15,7 @@ class ProductDAO extends DAOManager {
 
     public function isExistBUILDER_REF($builder_ref) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM products WHERE product_builder_ref = ?');
+        $req = $db->prepare('CALL isExistBuilderRef (?)');
         $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
@@ -24,7 +24,7 @@ class ProductDAO extends DAOManager {
 
     public function isExistBUILDER_REF_IMP($builder_ref) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM products_import WHERE product_imp_builder_ref = ?');
+        $req = $db->prepare('CALL isExistBuilderRefImp (?)');
         $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
@@ -61,7 +61,8 @@ class ProductDAO extends DAOManager {
         try {
             //print_r($objet);
             $db = $this->dbConnect();
-            $req = $db->prepare('INSERT INTO products_import (product_imp_builder_ref, product_imp_ref, product_imp_four, product_imp_ean, product_imp_builder, product_imp_model, product_imp_designation, product_imp_category, product_imp_bu) VALUES(?,?,?,?,?,?,?,?,?)');
+            //$req = $db->prepare('INSERT INTO products_import (product_imp_builder_ref, product_imp_ref, product_imp_four, product_imp_ean, product_imp_builder, product_imp_model, product_imp_designation, product_imp_category, product_imp_bu) VALUES(?,?,?,?,?,?,?,?,?)');
+            $req = $db->prepare('CALL InsertProductImp (?,?,?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getProduct_imp_builder_ref());
             $req->bindValue(2, $objet->getProduct_imp_ref());
             $req->bindValue(3, $objet->getProduct_imp_four());
@@ -212,7 +213,7 @@ class ProductDAO extends DAOManager {
             $req->bindValue(9, $objet->getProduct_user_create());
             $req->execute();
             $lastInsert = $db->lastInsertId();
-            $req2 = $db->prepare('DELETE FROM products_import WHERE product_imp_id = ?');
+            $req2 = $db->prepare('DeleteProductImport (?)');
             $req2->bindValue(1, $id->getProduct_imp_id());
             $req2->execute();
             $affectedRows = $req2->rowcount();
