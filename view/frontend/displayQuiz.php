@@ -1,5 +1,5 @@
 <?php $title = 'Formulaire'; ?>
-<?php ob_start(); ?>
+
 
 <div class="container-fluid">
     <div class="table-wrapper">
@@ -86,6 +86,5 @@
         });
     });
 </script>
-<?php $content = ob_get_clean(); ?>
-<?php require('template.php'); ?>
+
     

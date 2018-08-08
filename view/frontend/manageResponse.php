@@ -1,6 +1,4 @@
-<?php
-ob_start();
-?>
+
 <script type="text/javascript">
     var idDelete;
     var idEdit;
@@ -261,7 +259,7 @@ ob_start();
                     </div>
                     <div class="form-group">
                         <label>Valeur numérique</label>
-                        <input type="text" class="form-control" id ="editNumeric">
+                        <input type="number" class="form-control" id ="editNumeric">
                     </div>					
                 </div>
                 <div id="editMessage" class="text-warning align-center"></div>
@@ -346,5 +344,3 @@ ob_start();
         </div>
     </div>
 </div>
-<?php $content = ob_get_clean(); ?>
-<?php require('template.php'); ?>

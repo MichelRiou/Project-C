@@ -7,7 +7,7 @@ class QuizDAO extends DAOManager {
     /**
      * 
      * @param int $id
-     * @return Array 
+     * @return object Form 
      */
     public function selectOneForm($id) {
 
@@ -32,7 +32,12 @@ class QuizDAO extends DAOManager {
         $req->closeCursor();
         return $objet;
     }
-
+    
+    /**
+     * 
+     * @param \model\Form $objet
+     * @return int 
+     */
     public function addForm(Form $objet) {
         $affectedRows = 0;
         try {
@@ -55,6 +60,11 @@ class QuizDAO extends DAOManager {
         return $affectedRows;
     }
 
+    /**
+     * 
+     * @param \model\Form $objet
+     * @return int
+     */
     public function updateForm(Form $objet) {
         $affectedRows = 1;
         try {
@@ -77,6 +87,11 @@ class QuizDAO extends DAOManager {
         return $affectedRows;
     }
 
+    /**
+     * 
+     * @param \model\Form $objet
+     * @return int
+     */
     public function deleteForm(Form $objet) {
         $affectedRows = 0;
         try {
@@ -113,6 +128,11 @@ class QuizDAO extends DAOManager {
         return $questions;
     }
 
+    /**
+     * 
+     * @param int $id
+     * @return object SearchType
+     */
     public function selectOneSearchType($id) {
 
         $db = $this->dbConnect();
@@ -132,16 +152,21 @@ class QuizDAO extends DAOManager {
         return $objet;
     }
 
+    /**
+     * 
+     * @param type $id
+     * @return Array
+     */
     public function getQuiz($id) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT headers.* FROM forms left outer join headers on forms.form_id = headers.header_form where forms.form_id =? order by header_position asc');
+        $req = $db->prepare('SELECT * FROM forms LEFT OUTER JOIN headers ON forms.form_id = headers.header_form WHERE forms.form_id =? ORDER BY header_position ASC');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
         $headers = array();
 
         while ($enr = $req->fetch()) {
-            $req2 = $db->prepare('SELECT request_libelle, request_id FROM request where request_header = ? order by request_order');
+            $req2 = $db->prepare('SELECT request_libelle, request_id FROM request WHERE request_header = ? ORDER BY request_order');
             $req2->bindValue(1, $enr['header_id'], \PDO::PARAM_INT);
             $req2->setFetchMode(\PDO::FETCH_ASSOC);
             $req2->execute();
@@ -166,6 +191,11 @@ class QuizDAO extends DAOManager {
         return $T_requests;
     }
 
+    /**
+     * 
+     * @param int $id
+     * @return object Request
+     */
     public function selectOneRequest($id) {
 
         $db = $this->dbConnect();
@@ -187,6 +217,11 @@ class QuizDAO extends DAOManager {
         return $objet;
     }
 
+    /**
+     * 
+     * @param int $bu
+     * @return Array Form
+     */
     public function selectAllFormFromBu($bu) {
         $forms = array();
         try {
@@ -197,7 +232,7 @@ class QuizDAO extends DAOManager {
             $req->execute();
             while ($enr = $req->fetch()) {
                 $objet = new Form();
-                $category = new Category();
+               // $category = new Category();
                 $objet->setForm_id($enr['form_id']);
                 $objet->setForm_bu($enr['form_bu']);
                 $objet->setForm_category($enr['form_category']);
@@ -216,8 +251,12 @@ class QuizDAO extends DAOManager {
         return $forms;
     }
 
+    /**
+     * 
+     * @return Array SearchType
+     */
     public function selectAllSearchType() {
-        //$searchtypes = array();
+        $searchtypes = array();
         try {
             $db = $this->dbConnect();
             $req = $db->prepare('SELECT * FROM searchtypes');

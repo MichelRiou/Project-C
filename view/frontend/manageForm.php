@@ -1,6 +1,4 @@
-<?php
-ob_start();
-?>
+
 <script type="text/javascript">
     var idDelete;
     var idEdit;
@@ -296,5 +294,3 @@ ob_start();
         </div>
     </div>
 </div>
-<?php $content = ob_get_clean(); ?>
-<?php require('template.php'); ?>
