@@ -6,7 +6,7 @@ ob_start();
     var idEdit;
     function ctrlAddForm(form) {
         var msg = "";
-        if ($("#addName").val() == '' )
+        if ($("#addName").val() == '')
             msg += 'Le nom est obligatoire.';
         if ($("#addDesignation").val() == '')
             msg += 'La désignation est obligatoire.';
@@ -46,6 +46,9 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
+        $("#back").click(function () {
+            window.history.back();
+        });
         // Activation du tooltip
         $('[data-toggle="tooltip"]').tooltip();
         // Activation de la fenêtre modale AJOUTER UN TAG
@@ -59,12 +62,12 @@ ob_start();
         // Requête AJAX pour validation
         $("#addTag").on('click', (function () {
             if (ctrlAddForm()) {
-               // alert();
+                // alert();
                 $.ajax({
                     type: 'POST',
                     url: '/routes.php?action=addTag&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val(),
                     success: function (data) {
-                        console.log('retour success' + data +$("#addName").val() + '&designation=' + $("#addDesignation").val());
+                        console.log('retour success' + data + $("#addName").val() + '&designation=' + $("#addDesignation").val());
                         if (data != 1) {
                             $("#addMessage").html("Erreur d\'ajout" + data);
                         } else {
@@ -133,8 +136,19 @@ ob_start();
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
-                <div class="col-sm-8 form-group">
-                    <h4>Gestion des Tags</h4>
+                <div class="col-sm-4 form-group">
+                    <h5>GESTION DES MOTS-CLES</h5>
+                </div>
+                <div class="col-sm-4 ">
+                     <button id="back" class="btn btn-default btn-sm" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
+                     <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
+                   
+                </div>
+                    <div class="col-sm-4 ">
+                         
+                    <input class=" pull-right btn-sm" type="submit" value="Rechercher" onclick="searchString()" />
+                    <input class="pull-right " id="search" name="search" type="text" value="" onfocus="clearSearch()" />
+                  
                 </div>
 
             </div>
@@ -145,10 +159,7 @@ ob_start();
 
             </div>
 
-            <div class="col-sm-2 ">
-                <button id="addbutton" class="btn btn-success btn-sm" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un tag</span></button>
-              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
-            </div>
+
         </div>
         <div class ="scrollDiv2" id="requete">
 
@@ -162,7 +173,7 @@ ob_start();
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Edit Tag</h4>
+                    <h4 class="modal-title">Modifier un mot-clé</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
@@ -177,8 +188,8 @@ ob_start();
                 </div>
                 <div id="messageEdit" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
-                    <input type="button" class="btn btn-success" value="edit" id="editTag">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Abandon" id="editCancel">
+                    <input type="button" class="btn btn-success" value="Modifier" id="editTag">
                 </div>
             </form>
         </div>
@@ -190,7 +201,7 @@ ob_start();
         <div class="modal-content">
             <form >
                 <div class="modal-header">						
-                    <h4 class="modal-title">Ajout d'un Tag</h4>
+                    <h4 class="modal-title">Ajout d'un Mot-clé</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -205,8 +216,8 @@ ob_start();
                 </div>
                 <div id="addMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="addCancel">
-                    <input type="button" class="btn btn-info" value="add" id="addTag" >
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Abandon" id="addCancel">
+                    <input type="button" class="btn btn-info" value="Ajouter" id="addTag" >
                 </div>
             </form>
         </div>
@@ -218,16 +229,16 @@ ob_start();
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Supprimer un Tag</h4>
+                    <h4 class="modal-title">Supprimer un Mot-clé</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
-                    <h6 class="text-warning">ATTENTION, la suppression d'un Tag entraine la supression des Tags correspondant sur les produits et les réponses.</br>Principe du ON DELETE CASCADE</h6>
+                    <h5 class="text-warning">ATTENTION, la suppression d'un mot-clé entraine la supression des mots-clés correspondant sur les produits et les réponses.</h5>
                 </div>
                 <div id="messageDelete" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" id="deleteCancel" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="button" id="deleteTag" class="btn btn-danger" value="Delete">
+                    <input type="button" id="deleteCancel" class="btn btn-default" data-dismiss="modal" value="Abandon">
+                    <input type="button" id="deleteTag" class="btn btn-danger" value="Supprimer">
                 </div>
             </form>
         </div>

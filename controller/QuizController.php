@@ -111,7 +111,8 @@ class QuizController extends Controller {
             'tagsRequest' => $tagsRequest,
             'tags' => $tags,
             'signs' => $signs,
-            'id' => $id), 'template');
+            'id' => $id,
+            'bu'=>$bu), 'template');
 
         // require('view/frontend/manageResponse.php');
     }

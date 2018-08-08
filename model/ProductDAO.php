@@ -213,7 +213,7 @@ class ProductDAO extends DAOManager {
             $req->bindValue(9, $objet->getProduct_user_create());
             $req->execute();
             $lastInsert = $db->lastInsertId();
-            $req2 = $db->prepare('DeleteProductImport (?)');
+            $req2 = $db->prepare('Call DeleteProductImport(?)');
             $req2->bindValue(1, $id->getProduct_imp_id());
             $req2->execute();
             $affectedRows = $req2->rowcount();
@@ -230,14 +230,14 @@ class ProductDAO extends DAOManager {
             $return = 0;
         }
         return $return;
-        // start transaction
+       
     }
 
     public function deleteProductImport(ProductImport $objet) {
         $affectedRows = 0;
         try {
             $db = $this->dbConnect();
-            $req = $db->prepare('DELETE FROM products_import WHERE product_imp_id = ?');
+            $req = $db->prepare('Call DeleteProductImport(?)');
             $req->bindValue(1, $objet->getProduct_imp_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
@@ -275,7 +275,7 @@ class ProductDAO extends DAOManager {
         }
         return $products;
     }
-    
+
     public function addProductTag(TagProduct $objet) {
         $affectedRows = 0;
         try {
@@ -292,8 +292,8 @@ class ProductDAO extends DAOManager {
             $affectedRows = -1;
         }
         return $affectedRows;
-        
     }
+
     public function selectAllCategory() {
         //$categories = array();
         try {
