@@ -109,7 +109,7 @@ if ($manageAdmin->controlSession()) {
                     $manageProduct = controller\ProductController::getInstance();
                     $manageProduct->listProductImport();
                     break;
-test
+
                 case 'createProduct':
                     $bu = $_SESSION['bu'];
                     $user = unserialize($_SESSION['user']);
