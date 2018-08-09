@@ -41,8 +41,6 @@
                     console.log(idDelete);
                 });
                 $('a[class="edit"]').click(function () {
-                    //MISE A JOUR DES CHAMPS POUR L'UPDATE 
-                    //value a qualifier
                     idEdit = this.getAttribute('idForm');
                     console.log(idEdit);
                     $('#editName').val(this.getAttribute('formname'));
@@ -157,9 +155,13 @@
                     <h5>Gestion des Formulaires</h5>
                 </div >
                 <div class="col-md-5">
-                    <button id="back" class="btn btn-default btn-sm" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
-                    <input class=" pull-right btn-sm" type="submit" value="Rechercher" onclick="searchString()" />
-                    <input class="pull-right " id="search" name="search" type="text" value="" onfocus="clearSearch()" />
+                    <button id="back" class="btn btn-default btn-sm" data-toggle="modal">
+                        <i class="material-icons">&#xE314;</i> 
+                        <span class="black-write">Retour</span></button>
+                    <input class=" pull-right btn-sm" type="submit" 
+                           value="Rechercher" onclick="searchString()" />
+                    <input class="pull-right " id="search" name="search" 
+                           type="text" value="" onfocus="clearSearch()" />
                 </div>
             </div>
         </div>
@@ -170,8 +172,9 @@
             </div>
 
             <div class="col-md-3 ">
-                <button id="addbutton" class="btn btn-success btn-sm pull-right" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Création d'un formulaire</span></button>
-              <!--  <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>test</span></a>		-->				
+                <button id="addbutton" class="btn btn-success btn-sm pull-right" 
+                        data-toggle="modal"><i class="material-icons">&#xE147;
+                    </i><span>Création d'un formulaire</span></button>		
             </div>
         </div>
         <div class="scrollDiv2" id="requete">
@@ -185,7 +188,8 @@
             <form>
                 <div class="modal-header">						
                     <h4 class="modal-title">Edit formulaire</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" 
+                            aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">					
                     <div class="form-group">
@@ -200,7 +204,8 @@
                         <label>Catégorie</label>
                         <select class="form-control" name="idCategory" id="editCategory">
                             <?php for ($i = 0; $i < count($categories); $i++) { ?>
-                                <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                                <option value="<?= $categories[$i]->getCategory_id() ?>">
+                                    <?= $categories[$i]->getCategory_name() ?></option>
                             <?php } ?>
                         </select>
                     </div>  
@@ -208,7 +213,8 @@
                         <label>Type de recherche</label>
                         <select class="form-control" name="idSearchType" id="editSearchType">
                             <?php for ($i = 0; $i < count($searchtypes); $i++) { ?>
-                                <option value="<?= $searchtypes[$i]->getSearchType_id() ?>"><?= $searchtypes[$i]->getSearchType_name() ?></option>
+                                <option value="<?= $searchtypes[$i]->getSearchType_id() ?>">
+                                    <?= $searchtypes[$i]->getSearchType_name() ?></option>
                             <?php } ?>
                         </select>
                     </div> 
@@ -222,7 +228,8 @@
                 </div>
                 <div id="editMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" 
+                           value="Cancel" id="editCancel">
                     <input type="button" class="btn btn-success" value="edit" id="editForm">
                 </div>
             </form>

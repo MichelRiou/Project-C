@@ -1,8 +1,6 @@
-<?php
-if (isset($_SESSION['user'])) {
+<?php if (isset($_SESSION['user'])) {
     $user = unserialize($_SESSION['user']);
-}
-?>
+} ?>
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -27,7 +25,6 @@ if (isset($_SESSION['user'])) {
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
@@ -35,7 +32,8 @@ if (isset($_SESSION['user'])) {
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           role="button" data-toggle="dropdown" aria-haspopup="true" 
+                           aria-expanded="false">
                             Business Unit
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -46,6 +44,8 @@ if (isset($_SESSION['user'])) {
                             <a class="dropdown-item" href="#">Nouvelle BU</a>
                         </div>
                     </li>
+                    
+                    
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item ">
                             <a class="nav-link " href="#"><?php
@@ -62,73 +62,61 @@ if (isset($_SESSION['user'])) {
                     </ul>
         <?php if (isset($_SESSION['bu'])) { ?>
                         <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-                           role="button" data-toggle="dropdown" aria-haspopup="true" 
-                           aria-expanded="false">
-                            Formulaires
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <?php if (isset($user) 
-                                    && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) 
-                                { ?>
-                        <a class="dropdown-item" 
-                           href="routes.php?action=manageForm">LISTE DES FORMULAIRES</a>
-                        <div class="dropdown-divider"></div>
-                                 <?php } ?>
-                                <a class="dropdown-item" href="#">UTILISER UN FORMULAIRE</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Formulaires
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="routes.php?action=manageForm">LISTE DES FORMULAIRES</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">CREER UN FORMULAIRE</a>
                             </div>
                         </li>
-                            <?php if (isset($user) 
-                                    && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) 
-                                { ?>
+    <?php if (isset($user) && ($user->getUser_role() == 1 || $user->getUser_role() == 3)) { ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-                                   role="button" data-toggle="dropdown" aria-haspopup="true" 
-                                   aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Produits
                                 </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" 
-                               href="routes.php?action=manageProductImport">EN ATTENTE DE VALIDATION</a>
-                            <a class="dropdown-item" 
-                               href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="routes.php?action=manageProductImport">EN ATTENTE DE VALIDATION</a>
+                                    <a class="dropdown-item" href="routes.php?action=manageProduct">GESTION DES PRODUITS</a>
 
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" 
-                               href="routes.php?action=manageTag">GESTION DES MOTS-CLES</a>
-                        </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="routes.php?action=manageTag">GESTION DES MOTS-CLES</a>
+                                </div>
                             </li>
                         <?php } ?>
                     <?php } ?>
-                    <?php if (isset($user) && ($user->getUser_role() == 1)) { ?>
+<?php if (isset($user) && ($user->getUser_role() == 1)) { ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-                               role="button" data-toggle="dropdown" aria-haspopup="true" 
-                               aria-expanded="false">
-                                Back-office
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Utilisateurs
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" 
-                                   href="routes.php?action=manageUser">CREER UTILISATEUR</a>
-                                <a class="dropdown-item" 
-                                   href="routes.php?action=getProductsFile">IMPORT FICHIER</a>
+                                <a class="dropdown-item" href="#">LISTE</a>
+                                <a class="dropdown-item" href="#">Création</a>
+                                <a class="dropdown-item" href="#">Liste</a>
+                                <a href=\"javascript:history.back()\">retour arriere</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Nouvelle BU</a>
                             </div>
                         </li>
-                <?php } ?>
+<?php } ?>
                 </ul> 
+
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                    <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php
-                        if (isset($user)) {
-                            echo ($user->getUser_name() . " - " . $user->getUser_role_name());
-                        }
-                        ?></a>
+                        <a class="nav-link " href="routes.php?action=disconnectUser">Utilisateur  : <?php
+                            if (isset($user)) {
+                                echo ($user->getUser_name() . " - " . $user->getUser_role_name());
+                            }
+                            ?></a>
                     </li>
                 </ul>
             </div>
         </nav> 
-</nav> 
 
+
+    </nav>
     <noscript>
     <div>
         <div class="container py-5 extra">
@@ -139,6 +127,3 @@ if (isset($_SESSION['user'])) {
 <?= $content ?>
     </body>
 </html>
-
-
-<aside>
