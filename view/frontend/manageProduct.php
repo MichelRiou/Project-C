@@ -193,7 +193,7 @@ ob_start();
         </div>
     </div>
     <!-- MODAL EDIT QUESTION -->
-    <div id="editEmployeeModal" class="modal fade">
+    <div id="editProductModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>

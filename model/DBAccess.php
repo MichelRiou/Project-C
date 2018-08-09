@@ -15,8 +15,12 @@ class DBAccess {
         $user = $properties["user"];
         $mdp = $properties["mdp"];
         $db = $properties["bd"];
-        $this->PDOInstance = new \PDO("$protocole:host=$serveur;"
-                . "dbname=$db;charset=utf8", $user, $mdp);
+        try {
+            $this->PDOInstance = new \PDO("$protocole:host=$serveur;"
+                    . "dbname=$db;charset=utf8", $user, $mdp);
+        } catch (PDOException $e) {
+             echo $ex->getMessage(); ;
+        }
     }
 
     public static function getDBInstance() {

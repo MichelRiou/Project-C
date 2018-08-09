@@ -29,7 +29,7 @@ class QuizController extends Controller {
         $form = $quizDAO->selectOneForm($id);
         $searchtype = $quizDAO->selectOneSearchType($form->getForm_searchtype());
         $headerRequest = $quizDAO->getQuiz($id);
-        $this->getViewContent('displayQuiz', array(
+       $this->getViewContent('displayQuiz', array(
             'form' => $form,
             'searchtype' => $searchtype,
             'headerRequest' => $headerRequest), 'template');

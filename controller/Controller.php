@@ -2,7 +2,7 @@
 
 namespace controller;
 
-class Controller {
+abstract class  Controller {
 
     protected function getViewContent($view, array $params = [], $template = null) {
         extract($params);

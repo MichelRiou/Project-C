@@ -1,5 +1,3 @@
-<?php $title = 'Formulaire'; ?>
-
 
 <div class="container-fluid">
     <div class="table-wrapper">
@@ -25,12 +23,14 @@
                     <?php
                     if (!isset($headerRequest))
                         $headerRequest = array();
+                   // print_r($headerRequest);
                     foreach ($headerRequest as $t) {
                         $class = explode('#', $t['header']);
+                       // print_r($class);
                         ?>
                         <div class="form-group <?= $class[1] ?> ">
-                            <label for="<?= $class[2] ?>"><?= $class[0] ?></label>
-                            <select id="<?= $class[2] ?>" class="form-control form-control-sm">
+                            <label for="<?= $class[0] ?>"><?= $class[0] ?></label>
+                            <select id="<?= $class[0] ?>" class="form-control form-control-sm">
                                 <option value="0" selected></option>
                                 <?php
                                 foreach ($t['request'] as $n) {

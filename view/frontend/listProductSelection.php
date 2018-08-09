@@ -32,7 +32,7 @@
                         <?= $data['hits'] ?>   
                     </td>
                     <td>
-                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe01d</i></a>
+                    <a href="#deleteEmployeeModal" class="<?php $colorHit =($data['hits']>=2?'delete':'info'); ?><?=$colorHit?>" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe01d</i></a>
                     </td>
                 </tr>
             <?php } ?>

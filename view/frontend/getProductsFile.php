@@ -63,16 +63,16 @@ ob_start();
     });
 </script>
 <div class="container">
-    <div class="table-wrapper">
-        <div class="table-title ">
+    <div class="table-wrapper col-md-5 mx-auto">
+        <div class=" table-title ">
             <div class="row">
                 <div >
-                    <h2>Mise à jour du fichier product</h2>
+                    <h2>Mise à jour du fichier Produits</h2>
                 </div>
             </div>
         </div>
-        <div class="row col-md-4">
-        <div class="col-md-4 center-block">
+        <div class="row col-sm-12">
+        <div class="col-sm-12 center-block">
             <form class="form-group" method="post" action="/routes.php?action=majProductsFile" enctype="multipart/form-data">
                    
                 <label class="control-label" for="fichier">Fichier (tous formats | max. 20 Mo) :</label><br />
