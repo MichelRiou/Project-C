@@ -2,6 +2,8 @@
 
 namespace model;
 
+// CLASSE SINGLETON
+
 class DBAccess {
 
     private $PDOInstance = null;
@@ -19,7 +21,7 @@ class DBAccess {
             $this->PDOInstance = new \PDO("$protocole:host=$serveur;"
                     . "dbname=$db;charset=utf8", $user, $mdp);
         } catch (PDOException $e) {
-             echo $ex->getMessage(); ;
+            echo $e->getMessage();
         }
     }
 
@@ -41,6 +43,10 @@ class DBAccess {
     public function prepare($sql) {
         return $this->PDOInstance->prepare($sql);
     }
+    
+    public function query($sql) {
+        return $this->PDOInstance->query($sql);
+    }
 
     public function inTransaction() {
         return $this->PDOInstance->inTransaction();
@@ -57,5 +63,5 @@ class DBAccess {
     public function lastInsertId() {
         return $this->PDOInstance->lastInsertId();
     }
-
+    
 }

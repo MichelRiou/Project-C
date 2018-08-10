@@ -189,7 +189,6 @@ ob_start();
 </script>
 
 <div class="container-fluid">
-    <?php echo $id ?>
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">

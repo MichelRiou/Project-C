@@ -141,4 +141,3 @@ if (isset($_SESSION['user'])) {
 </html>
 
 
-<aside>

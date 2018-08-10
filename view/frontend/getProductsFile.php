@@ -74,10 +74,14 @@ ob_start();
         <div class="row col-sm-12">
         <div class="col-sm-12 center-block">
             <form class="form-group" method="post" action="/routes.php?action=majProductsFile" enctype="multipart/form-data">
-                   
+                <label class="control-label" for="reseller">Sélectionner un Grossiste</label><br />
+                <select class="form-control" name="reseller" id="reseller">
+                            <option value="INGRAM">INGRAM</option> 
+                            <option value="TECHDATA">TECHDATA</option>
+                        </select>
                 <label class="control-label" for="fichier">Fichier (tous formats | max. 20 Mo) :</label><br />
                 <input type="hidden" name="MAX_FILE_SIZE" value="1073741824" />
-                <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx"/><br />
+                <input type="file" class ="filestyle" name="fichier" id="fichier" data-icon="false" accept=".xls, .xlsx, .txt, .csv"/><br />
                 <input type="submit" name="submit" value="Envoyer" />
             </form>
             <div><?= $msg ?></div>

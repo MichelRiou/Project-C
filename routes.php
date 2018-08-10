@@ -7,9 +7,9 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
- //$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-   $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
+  // $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -19,15 +19,10 @@ function autoloader($class) {
 
 spl_autoload_register("autoloader");
 
-/*
- * CONTROLLEURS : Instanciation unique 
- */
 
-$manageQuiz = controller\QuizController::getInstance();
-$manageProduct = controller\ProductController::getInstance();
-$manageTag = controller\TagController::getInstance();
+
+
 $manageAdmin = controller\AdminController::getInstance();
-
 
 if ($manageAdmin->controlSession()) {
 
@@ -44,6 +39,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageQuiz':
                     $id = filter_input(INPUT_GET, "id");
                     if (filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->manageQuiz($id);
                     } else {
                         throw new Exception('Erreur dans la requête');
@@ -59,11 +55,11 @@ if ($manageAdmin->controlSession()) {
                     if (filter_var($category, FILTER_VALIDATE_INT) !== false 
                    && filter_var($listParams, FILTER_DEFAULT) !== false 
                    && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
-        $params = explode('-', $listParams);
-        $manageProduct->listProductSelection($category, $params, $searchtype);
+                   $params = explode('-', $listParams);
+                   $manageProduct = controller\ProductController::getInstance();
+                   $manageProduct->listProductSelection($category, $params, $searchtype);
                     } else {
                         throw new Exception('Erreur dans la requête');
-                        
                     }
                     break;
                 /**
@@ -74,6 +70,7 @@ if ($manageAdmin->controlSession()) {
                     $category = filter_input(INPUT_POST, "category");
                     if (isset($bu) 
                     && filter_var($category, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->listProductByCat($bu, $category);
                     } else {
                         throw new Exception('Erreur dans la rêquete');
@@ -84,6 +81,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
 
                     if ($id != null) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->listResponse($id);
                     } else {
                         throw new Exception('Aucun Id spécifié');
@@ -92,6 +90,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageProduct':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->manageProduct($bu);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -101,6 +100,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageProductImport':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->manageProductImport($bu);
                     } else {
                         throw new Exception('Erreur dans la rêquete');
@@ -108,6 +108,7 @@ if ($manageAdmin->controlSession()) {
                     break;
 
                 case 'listProductImport':
+                    $manageProduct = controller\ProductController::getInstance();
                     $manageProduct->listProductImport();
                     break;
 
@@ -137,19 +138,53 @@ if ($manageAdmin->controlSession()) {
             && filter_var($ean, FILTER_DEFAULT) !== false 
             && filter_var($category, FILTER_VALIDATE_INT) !== false 
             && filter_var($tag, FILTER_DEFAULT) !== false)) {
-            $result = $manageProduct->createProduct($userId, $bu, $id, 
-            $builderref, $ref, $model, $builder, $designation, $ean, 
+                    $manageProduct = controller\ProductController::getInstance();
+                    $result = $manageProduct->createProduct($userId, $bu, $id, 
+                    $builderref, $ref, $model, $builder, $designation, $ean, 
                     $category, $tag);
                         echo $result;
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
                     break;
+                    
+                case 'addProduct':
+            $bu = $_SESSION['bu'];
+            $user = unserialize($_SESSION['user']);
+            $userId = $user->getUser_id();
+            $builderref = filter_input(INPUT_GET, "builderref", 
+                    FILTER_SANITIZE_STRING);
+            $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
+            $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
+            $builder = filter_input(INPUT_GET, "builder", 
+                    FILTER_SANITIZE_STRING);
+            $designation = filter_input(INPUT_GET, "designation", 
+                    FILTER_SANITIZE_STRING);
+            $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
+            $category = filter_input(INPUT_GET, "category");
+                    if (isset($bu) && isset($userId) && (
+            filter_var($builderref, FILTER_DEFAULT) !== false 
+            && filter_var($ref, FILTER_DEFAULT) !== false 
+            && filter_var($model, FILTER_DEFAULT) !== false 
+            && filter_var($builder, FILTER_DEFAULT) !== false 
+            && filter_var($designation, FILTER_DEFAULT) !== false 
+            && filter_var($ean, FILTER_DEFAULT) !== false 
+            && filter_var($category, FILTER_VALIDATE_INT) !== false )) {
+                    $manageProduct = controller\ProductController::getInstance();
+                    $result = $manageProduct->addProduct($userId, $bu, 
+                    $builderref, $ref, $model, $builder, $designation, $ean, 
+                    $category);
+                        echo $result;
+                    } else {
+                        throw new Exception('Erreur dans la rêquete');
+                    }
+                    break;    
 
                 case 'deleteProductImport':
                     $id = filter_input(INPUT_POST, "id");
 
                     if (filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->deleteProductImport($id);
                     } else {
                         throw new Exception('Erreur dans la requête');
@@ -161,6 +196,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($bu) && filter_var($id, 
                             FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->manageProductTag($id, $bu);
                     } else {
                         throw new Exception('Aucun Id/BU spécifié');
@@ -171,6 +207,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_POST, "id");
 
                     if (filter_var($id, FILTER_VALIDATE_INT) !== false) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->listProductTag($id);
                     } else {
                         throw new Exception('Erreur dans la requête');
@@ -189,6 +226,7 @@ if ($manageAdmin->controlSession()) {
                     $addAlpha = filter_input(INPUT_GET, "addAlpha",FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_HIGH);
                     $addNumeric = filter_input(INPUT_GET, "addNumeric");
                     if (filter_var($idProduct, FILTER_VALIDATE_INT) !== false && filter_var($idTag, FILTER_VALIDATE_INT) !== false && filter_var($addAlpha, FILTER_DEFAULT) !== false && filter_var($addNumeric, FILTER_DEFAULT) !== false) {
+                        $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->addProductTag($idProduct, $idTag, $addAlpha, $addNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur addTag');
@@ -199,6 +237,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_GET, "form");
 
                     if (isset($bu) && isset($id)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->manageQuestion($id);
                     } else {
                         throw new Exception('Aucun formulaire spécifié');
@@ -209,6 +248,7 @@ if ($manageAdmin->controlSession()) {
                     $form = filter_input(INPUT_GET, "form");
 
                     if (isset($bu) && isset($form)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->listQuestion($bu, $form);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -217,6 +257,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageTag':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageTag = controller\TagController::getInstance();
                         $manageTag->manageTag($bu);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -227,6 +268,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
                     //$bu = filter_input(INPUT_GET, "bu");
                     if (isset($id) && isset($bu)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->manageTagResponse($id, $bu);
                     } else {
                         throw new Exception('Aucun Id/BU spécifié');
@@ -236,6 +278,7 @@ if ($manageAdmin->controlSession()) {
                 case 'deleteTag':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
+                        $manageTag = controller\TagController::getInstance();
                         $manageTag->deleteTag($id);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -246,6 +289,7 @@ if ($manageAdmin->controlSession()) {
                     $id = filter_input(INPUT_GET, "id");
                     $designation = filter_input(INPUT_GET, "designation");
                     if (isset($id) && isset($designation)) {
+                        $manageTag = controller\TagController::getInstance();
                         $manageTag->updateTag($id, $designation);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -257,6 +301,7 @@ if ($manageAdmin->controlSession()) {
                     $name = filter_input(INPUT_GET, "name");
                     $designation = filter_input(INPUT_GET, "designation");
                     if (isset($bu) && isset($name) && isset($designation)) {
+                        $manageTag = controller\TagController::getInstance();
                         $manageTag->addTag($bu, $name, $designation);
                     } else {
                         throw new Exception('Erreur de paramètre');
@@ -268,6 +313,7 @@ if ($manageAdmin->controlSession()) {
                     $addLibelle = filter_input(INPUT_GET, "addLibelle",FILTER_SANITIZE_STRING);
                     $addOrder = filter_input(INPUT_GET, "addOrder");
                     if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->addResponse($idQuestion, $addName, $addLibelle, $addOrder);
                     } else {
                         throw new Exception('Erreur de paramètre');
@@ -277,6 +323,7 @@ if ($manageAdmin->controlSession()) {
                 case 'deleteQuestion':
                     $idQuestion = filter_input(INPUT_GET, "idQuestion");
                     if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->deleteQuestion($idQuestion);
                     } else {
                         throw new Exception('Erreur de paramètre');
@@ -290,6 +337,7 @@ if ($manageAdmin->controlSession()) {
                     $addLibelle = filter_input(INPUT_POST, "addLibelle",FILTER_SANITIZE_STRING);
                     $addOrder = filter_input(INPUT_POST, "addOrder");
                     if (isset($bu) && filter_var($idForm, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->addQuestion($idForm, $bu, $addName, $addLibelle, $addOrder);
                     } else {
                         throw new Exception('Erreur de paramètre');
@@ -303,6 +351,7 @@ if ($manageAdmin->controlSession()) {
                     $addAlpha = filter_input(INPUT_GET, "addAlpha");
                     $addNumeric = filter_input(INPUT_GET, "addNumeric");
                     if (isset($idRequest) && isset($idTag) && isset($addSign) && (isset($addAlpha) || isset($addNumeric))) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->insertTagRequest($idRequest, $idTag, $addSign, $addAlpha, $addNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur addTag');
@@ -314,6 +363,7 @@ if ($manageAdmin->controlSession()) {
                     $editAlpha = filter_input(INPUT_GET, "editAlpha");
                     $editNumeric = filter_input(INPUT_GET, "editNumeric");
                     if (isset($id)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->updateTagRequest($id, $editSign, $editAlpha, $editNumeric);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur updateTag');
@@ -322,6 +372,7 @@ if ($manageAdmin->controlSession()) {
                 case 'deleteTagRequest':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->deleteTagRequest($id);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur deleteTagRequest');
@@ -331,18 +382,21 @@ if ($manageAdmin->controlSession()) {
                     $msg = filter_input(INPUT_GET, "msg");
                     if (!isset($msg))
                         $msg = "";
+                    $manageProduct = controller\ProductController::getInstance();
                     $manageProduct->getProductsFile($msg);
                     break;
 
                 case 'majProductsFile':
                     $maxsize = filter_input(INPUT_POST, 'MAX_FILE_SIZE', FILTER_SANITIZE_SPECIAL_CHARS);
-                    $name = $_FILES['fichier']['name'];    //Le nom original du fichier, comme sur le disque du visiteur (exemple : mon_icone.png).
-                    $type = $_FILES['fichier']['type'];   //Le type du fichier. Par exemple, cela peut être « image/png ».
+                    $reseller = filter_input(INPUT_POST, 'reseller', FILTER_SANITIZE_SPECIAL_CHARS);
+                    $name = $_FILES['fichier']['name'];    //Le nom original du fichier.
+                    $type = $_FILES['fichier']['type'];   //Le type du fichier.
                     $size = $_FILES['fichier']['size'];   //La taille du fichier en octets.
                     $tmp_name = $_FILES['fichier']['tmp_name']; //L'adresse vers le fichier uploadé dans le répertoire temporaire.
-                    $error = $_FILES['fichier']['error'];  //Le code d'erreur, qui permet de savoir si le fichier a bien été uploadé.
-                    if (isset($maxsize) && isset($name) && isset($type) && isset($size) && isset($tmp_name) && isset($error)) {
-                        $manageProduct->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error);
+                    $error = $_FILES['fichier']['error'];  //Le code d'erreur.
+                    if (isset($maxsize) && isset($reseller) && isset($name) && isset($type) && isset($size) && isset($tmp_name) && isset($error)) {
+                        $manageProduct = controller\ProductController::getInstance();
+                        $manageProduct->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error,$reseller);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur majProductsFile');
                     }
@@ -351,6 +405,7 @@ if ($manageAdmin->controlSession()) {
                 case 'listTag':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageTag = controller\TagController::getInstance();
                         $manageTag->listTag($bu);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -360,6 +415,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageForm':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->manageForm($bu);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -368,6 +424,7 @@ if ($manageAdmin->controlSession()) {
                 case 'listForm':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->listForm($bu);
                     } else {
                         throw new Exception('Aucune BU spécifiée');
@@ -376,6 +433,7 @@ if ($manageAdmin->controlSession()) {
                 case 'deleteForm':
                     $id = filter_input(INPUT_GET, "id");
                     if (isset($id)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->deleteForm($id);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -391,6 +449,7 @@ if ($manageAdmin->controlSession()) {
                     $searchtype = filter_input(INPUT_GET, "searchtype");
                     $validated = filter_input(INPUT_GET, "validated");
                     if (isset($id) && isset($bu) && isset($name) && isset($designation) && isset($category) && isset($searchtype) && isset($validated)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->updateForm($id, $bu, $name, $designation, $category, $searchtype, $validated);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -406,6 +465,7 @@ if ($manageAdmin->controlSession()) {
                     $category = filter_input(INPUT_GET, "category");
                     $searchtype = filter_input(INPUT_GET, "searchtype");
                     if (isset($bu) && isset($name) && isset($designation) && isset($category) && isset($searchtype)) {
+                        $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->addForm($bu, $name, $designation, $category, $searchtype, $userId);
                     } else {
                         throw new Exception('Erreur de parametre');
@@ -431,127 +491,7 @@ if ($manageAdmin->controlSession()) {
                     $manageAdmin->connectUser();
 
                     break;
-                ///////////////////////    
-                //// Routes à confirmer
-                ///////////////////////    
-                /**
-                 *  Route addSelection
-                 *  Exécution de la requete de recherceh selon paramètres
-                 */
-                // a supprimer    
-         /*       case 'addSelection':
-                    $domaine = filter_input(INPUT_GET, "domaine");
-                    $queryparam = filter_input(INPUT_GET, "queryparam");
-                    if ($domaine !== null && $queryparam !== null) {
-                        $params = explode('-', $queryparam);
-                        // Sortir l'aspect Audio dédié
-                        //listDeviceAudio($params);
-                        listProductsRequests($params);
-                    } else {
-                        throw new Exception('Erreur dans la requete');
-                    }
-                    break;*/
-                //done
-                //done
-
-                /**
-                 *  Route addHeaders
-                 *  Création dynamique du formulaire de d'interrogation     
-                 */
-                //a supprimer
-          /*      case 'addHeaders':
-                    listHeaderRequest();
-                    break;*/
-                //done
-
-
-                /**
-                 *  Route listRequest
-                 *  List de l'ensemble des questions/réponses sur une BU     
-                 *  
-                 */
-                // done
-                //done
-                // GESTION DES TAGS 
-                //done
-                //done
-                //done
-                // a supprimer
-             /*   case 'listRequest':
-                    $bu = filter_input(INPUT_GET, "bu");
-                    if ($bu != null) {
-                        listRequest($bu);
-                    } else {
-                        throw new Exception('Aucune BU spécifiée');
-                    }
-                    break;*/
-                /**
-                 *  Route listRequest
-                 *  List de l'ensemble des questions/réponses sur une BU     
-                 */
-                // a supprimer
-      /*          case 'majOneRequest':
-                    $id = filter_input(INPUT_GET, "id");
-                    $bu = filter_input(INPUT_GET, "bu");
-                    if ($id != null && $bu != null) {
-                        majOneRequest($id, $bu);
-                    } else {
-                        throw new Exception('Aucun Id/BU spécifié');
-                    }
-                    break;*/
-                //done
-
-
-         /*       case 'listTagsRequest':
-                    $id = filter_input(INPUT_GET, "id");
-
-                    if ($id != null) {
-                        listTagsRequest($id);
-                    } else {
-                        throw new Exception('Aucun Id spécifié');
-                    }
-                    break;*/
-
-
-           /*     case 'deleteTagOnRequest':
-                    $id = filter_input(INPUT_GET, "idRequest");
-                    $tag = filter_input(INPUT_GET, "idTag");
-
-                    if ($id != null && $tag != null) {
-                        deleteTagOnRequest($id, $tag);
-                    } else {
-                        throw new Exception('Aucun Id spécifié');
-                    }
-                    break;*/
-                /**
-                 * insertTagRequest
-                 */
-                /* case 'addTagOnRequest':
-                  $idRequest = filter_input(INPUT_GET, "idRequest");
-                  $idTag = filter_input(INPUT_GET, "idTag");
-                  $selectOperator = filter_input(INPUT_GET, "selectOperator");
-                  $alphanumericValue = filter_input(INPUT_GET, "alphanumericValue");
-                  $numericValue = filter_input(INPUT_GET, "numericValue");
-                  if (isset($idRequest) && isset($idTag) && isset($selectOperator) && isset($alphanumericValue) && isset($numericValue)) {
-                  addTagOnRequest($idRequest, $idTag, $selectOperator, $alphanumericValue, $numericValue);
-                  } else {
-                  throw new Exception('Erreur d\'appel du controleur addTag');
-                  }
-                  break; */
-            /*    case 'updateTagOnRequest':
-                    $idRequest = filter_input(INPUT_GET, "idRequest");
-                    $idTag = filter_input(INPUT_GET, "idTag");
-                    $selectOperator = filter_input(INPUT_GET, "editSign");
-                    $alphanumericValue = filter_input(INPUT_GET, "editAlpha");
-                    $numericValue = filter_input(INPUT_GET, "editNumeric");
-                    if (isset($idRequest) && isset($idTag) && isset($selectOperator) && isset($alphanumericValue) && isset($numericValue)) {
-                        updateTagOnRequest($idRequest, $idTag, $selectOperator, $alphanumericValue, $numericValue);
-                    } else {
-                        throw new Exception('Erreur d\'appel du controleur updateTag');
-                    }
-                    break;*/
-
-
+              
                 /**
                  *  Traitement des routes non reconnues
                  */

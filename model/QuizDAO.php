@@ -2,7 +2,7 @@
 
 namespace model;
 
-class QuizDAO extends DAOManager {
+class QuizDAO extends DBAccess {
 
     /**
      * 
@@ -11,7 +11,8 @@ class QuizDAO extends DAOManager {
      */
     public function selectOneForm($id) {
 
-        $db = $this->dbConnect();
+        // $db = $this->dbConnect();
+        $db = $this::getDBInstance();
         $req = $db->prepare('SELECT forms.* FROM forms  WHERE form_id= ? ');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -32,7 +33,7 @@ class QuizDAO extends DAOManager {
         $req->closeCursor();
         return $objet;
     }
-    
+
     /**
      * 
      * @param \model\Form $objet
@@ -41,7 +42,8 @@ class QuizDAO extends DAOManager {
     public function addForm(Form $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            //$db = $this->dbConnect();
             $req = $db->prepare('INSERT INTO forms (form_bu,form_category,form_name,form_designation,form_searchtype,form_validated,form_user_create) VALUES(?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getForm_bu(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getForm_category(), \PDO::PARAM_INT);
@@ -68,7 +70,8 @@ class QuizDAO extends DAOManager {
     public function updateForm(Form $objet) {
         $affectedRows = 1;
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('UPDATE forms SET form_bu=?,form_name=?,form_designation=?,form_category=?,form_searchtype=?,form_validated=? WHERE form_id=?');
             $req->bindValue(1, $objet->getForm_bu(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getForm_name(), \PDO::PARAM_STR);
@@ -95,7 +98,8 @@ class QuizDAO extends DAOManager {
     public function deleteForm(Form $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('DELETE FROM forms WHERE form_id = ?');
             $req->bindValue(1, $objet->getForm_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -114,8 +118,8 @@ class QuizDAO extends DAOManager {
      * @return Array 
      */
     public function selectAllQuestionsFromForm($bu, $form) {
-
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         //$req = $db->prepare('SELECT forms.*,headers.*, request.* FROM forms left outer join headers on forms.form_id=headers.header_form left outer join request on headers.header_id = request.request_header WHERE `form_bu`= ? and form_id= ? order by headers.header_position asc , request.request_order asc');
         $req = $db->prepare('SELECT * FROM headers left outer join request on headers.header_id = request.request_header WHERE headers.header_bu= ? and headers.header_form= ? order by headers.header_position asc , request.request_order asc');
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -135,7 +139,8 @@ class QuizDAO extends DAOManager {
      */
     public function selectOneSearchType($id) {
 
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM searchtypes  WHERE searchtype_id= ? ');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -158,7 +163,8 @@ class QuizDAO extends DAOManager {
      * @return Array
      */
     public function getQuiz($id) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM forms LEFT OUTER JOIN headers ON forms.form_id = headers.header_form WHERE forms.form_id =? ORDER BY header_position ASC');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -182,7 +188,8 @@ class QuizDAO extends DAOManager {
     }
 
     public function selectAllRequestsFromBU($bu) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM request left outer join headers on header_id=request_header where header_bu = ? order by header_position asc');
         $req->execute(array($bu));
         $T_requests = array();
@@ -198,7 +205,8 @@ class QuizDAO extends DAOManager {
      */
     public function selectOneRequest($id) {
 
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM request WHERE request_id = ? ');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -225,14 +233,14 @@ class QuizDAO extends DAOManager {
     public function selectAllFormFromBu($bu) {
         $forms = array();
         try {
-            $db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            //$db = $this->dbConnect();
             $req = $db->prepare('SELECT * FROM forms WHERE form_bu = ? ORDER BY form_category ASC, form_name ASC');
             $req->bindValue(1, $bu);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             while ($enr = $req->fetch()) {
                 $objet = new Form();
-               // $category = new Category();
                 $objet->setForm_id($enr['form_id']);
                 $objet->setForm_bu($enr['form_bu']);
                 $objet->setForm_category($enr['form_category']);
@@ -258,7 +266,8 @@ class QuizDAO extends DAOManager {
     public function selectAllSearchType() {
         $searchtypes = array();
         try {
-            $db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            //$db = $this->dbConnect();
             $req = $db->prepare('SELECT * FROM searchtypes');
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
@@ -279,77 +288,28 @@ class QuizDAO extends DAOManager {
 
     public function selectAllSigns() {
         $signs = array();
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM signs');
-        $req->setFetchMode(\PDO::FETCH_ASSOC);
-        $req->execute();
-        while ($enr = $req->fetch()) {
-            $objet = new Sign();
-            //$objet->setSign($enr['sign']);
-            $objet->setSign_ESC($enr['sign_ESC']);
+        try {
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            $req = $db->prepare('SELECT * FROM signs');
+            $req->setFetchMode(\PDO::FETCH_ASSOC);
+            $req->execute();
+            while ($enr = $req->fetch()) {
+                $objet = new Sign();
+                $objet->setSign_ESC($enr['sign_ESC']);
+                $searchtypes[] = $objet;
+            }
+        } catch (PDOException $e) {
+            $objet = null;
+            $signs[] = $objet;
         }
         $req->closeCursor();
         return $objet;
     }
 
-    /*     public function selectAllTagsNotInRequestFromBU($id, $bu) {
-      $T_tags = array();
-      try {
-      $db = $this->dbConnect();
-      $req = $db->prepare('SELECT DISTINCT tags.* FROM tags LEFT OUTER JOIN request_tags on tags.tag_id=request_tags.tag_id where request_id<> ? and tag_bu= ?');
-      $req->bindValue(1, $id);
-      $req->bindValue(2, $bu);
-      $req->setFetchMode(\PDO::FETCH_ASSOC);
-      $req->execute();
-      while ($enr = $req->fetch()) {
-      $objet = new Tag();
-      $objet->setTag_id($enr['tag_id']);
-      $objet->setTag_bu($enr['tag_bu']);
-      $objet->setTag_name($enr['tag_name']);
-      $objet->setTag_designation($enr['tag_designation']);
-      $T_tags[] = $objet;
-      }
-      } catch (PDOException $e) {
-      $objet = null;
-      $T_tags[] = $objet;
-      }
-      return $T_tags;
-      } */
-    /* public function selectAllTagsFromRequest($id) {
-      $db = $this->dbConnect();
-      $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
-      $req->bindValue(1, $id,\PDO::PARAM_INT);
-      $req->execute();
-      //$tags = array();
-
-      $tags = $req->fetchAll();
-      return $tags;
-      } */
-
-// NOT USE
-    // NOT USE
-    /* public function updateTagFromRequest($objet) {
-      $liAffectes = 1;
-      try {
-      $db = $this->dbConnect();
-      $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?,request_tag_value=?,request_tag_numeric=? WHERE request_id=? and tag_id=?');
-      $req->bindValue(1, $objet->getRequest_tag_sign(),\PDO::PARAM_STR);
-      $req->bindValue(2, $objet->getRequest_tag_value(),\PDO::PARAM_STR);
-      $req->bindValue(3, $objet->getRequest_tag_numeric(),\PDO::PARAM_INT);
-      $req->bindValue(4, $objet->getRequest_id(),\PDO::PARAM_INT);
-      $req->bindValue(5, $objet->getTag_id(),\PDO::PARAM_INT);
-      $req->execute();
-      //$liAffectes = $req->rowcount();
-      } catch (PDOException $e) {
-      $liAffectes = 0;
-      }
-      return $liAffectes;
-      } */
-    ////////////////////////////////////////////////////////////////////////
-
-
     public function selectAllTagsFromRequest($id) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('CALL SelectAllRequestTagFromRequest (?)');
         $req->bindValue(1, $id, \PDO::PARAM_INT);
         $req->execute();
@@ -363,7 +323,8 @@ class QuizDAO extends DAOManager {
     public function insertTagFromRequest($objet) {
         try {
             //print_r($objet);
-            $db = $this->dbConnect();
+            //  $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('INSERT INTO request_tags (request_id, tag_id, request_tag_sign, request_tag_value, request_tag_numeric) VALUES(?,?,?,?,?)');
             $req->bindValue(1, $objet->getRequest_id());
             $req->bindValue(2, $objet->getTag_id());
@@ -385,7 +346,8 @@ class QuizDAO extends DAOManager {
         $affectedRows = 0;
         try {
             //print_r($objet);
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('INSERT INTO request (request_header, request_name, request_libelle, request_order) VALUES(?,?,?,?)');
             $req->bindValue(1, $objet->getRequest_header());
             $req->bindValue(2, $objet->getRequest_name());
@@ -401,30 +363,12 @@ class QuizDAO extends DAOManager {
         return $affectedRows;
     }
 
-    /* public function deleteTagFromRequest($idRequest, $idTag) {
-      $rowAffected = 0;
-      try {
-      //print_r($objet);
-      $db = $this->dbConnect();
-      $req = $db->prepare('DELETE FROM request_tags WHERE request_id = ? AND tag_id = ?');
-      $req->bindValue(1, $idRequest);
-      $req->bindValue(2, $idTag);
-      $req->execute();
-      $rowAffected = $req->rowcount();
-      } catch (PDOException $e) {
-      $rowAffected = -1;
-      //echo $e->getMessage();
-      }
-      return $rowAffected;
-      } */
-
-    ////////////////////////////////////////////////////////////////////////
-
     public function updateTagRequest(TagRequest $objet) {
         //  print_r($objet);
         $liAffectes = 1;
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('UPDATE request_tags SET request_tag_sign=?, request_tag_value=?,request_tag_numeric=? WHERE request_tag_id=?');
             $req->bindValue(1, $objet->getRequest_tag_sign(), \PDO::PARAM_STR);
             $req->bindValue(2, $objet->getRequest_tag_value(), \PDO::PARAM_STR);
@@ -442,7 +386,8 @@ class QuizDAO extends DAOManager {
         //  print_r($objet);
         $liAffectes = 0;
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('DELETE FROM request_tags WHERE request_tag_id=?');
             $req->bindValue(1, $objet->getRequest_tag_id(), \PDO::PARAM_INT);
             $req->execute();
@@ -453,10 +398,11 @@ class QuizDAO extends DAOManager {
         return $liAffectes;
     }
 
-        public function deleteQuestion(Header $objet) {
+    public function deleteQuestion(Header $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            //  $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('DELETE FROM headers WHERE header_id = ?');
             $req->bindValue(1, $objet->getHeader_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -467,11 +413,12 @@ class QuizDAO extends DAOManager {
         }
         return $affectedRows;
     }
-    
+
     public function addQuestion(Header $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('INSERT INTO headers (header_bu, header_form, header_position, header_designation,header_name) VALUES(?,?,?,?,?)');
             $req->bindValue(1, $objet->getHeader_bu());
             $req->bindValue(2, $objet->getHeader_form());
@@ -487,4 +434,5 @@ class QuizDAO extends DAOManager {
 
         return $affectedRows;
     }
+
 }

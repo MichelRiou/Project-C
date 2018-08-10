@@ -2,12 +2,11 @@
 
 // CLASSES CHARGEES PAR AUTOLOAD.
 
-
 namespace controller;
 
 use PHPExcel_IOFactory;
 
-class ProductController {
+class ProductController extends Controller {
 
     private static $_instance = null;
 
@@ -30,10 +29,11 @@ class ProductController {
     }
 
     public function manageProduct() {
-        // Supprimer la bu
-        //$FormDAO = new \model\FormDAO();
-        //$form = $FormDAO->selectOneForm($id);
-        require('view/frontend/manageProduct.php');
+        $productDAO = new \model\ProductDAO();
+        $categories = $productDAO->selectAllCategory();
+        $this->getViewContent('manageProduct', array(
+            'categories' => $categories), 'template');
+        //require('view/frontend/manageProduct.php');
     }
 
     public function manageProductImport() {
@@ -69,6 +69,24 @@ class ProductController {
         $lastInsert = $ProductDAO->createProduct($productImport, $product);
         return $lastInsert;
     }
+    
+     public function addProduct($userId, $bu, $builderref, $ref, $model, $builder, $designation, $ean, $category) {
+         
+        $ProductDAO = new \model\ProductDAO();
+        $product = new \model\Product();
+        $product->setProduct_bu($bu);
+        $product->setProduct_builder_ref($builderref);
+        $product->setProduct_ref($ref);
+        $product->setProduct_model($model);
+        $product->setProduct_builder($builder);
+        $product->setProduct_designation($designation);
+        $product->setProduct_ean($ean);
+        $product->setProduct_category($category);
+        $product->setProduct_user_create($userId);
+        $result = $ProductDAO->addProduct($product);
+        // Pour requête AJAX
+        echo $result;
+    }
 
     public function manageProductTag($id, $bu) {
 
@@ -91,8 +109,8 @@ class ProductController {
         $productTags = $productDAO->selectAllTagsFromProduct($id);
         require('view/frontend/listProductTag.php');
     }
-    
-        public function addProductTag($idProduct, $idTag, $addApha, $addNumeric) {  
+
+    public function addProductTag($idProduct, $idTag, $addApha, $addNumeric) {
         $ProductDAO = new \model\ProductDAO();
         $objet = new \model\TagProduct();
         $objet->setProduct_id($idProduct);
@@ -103,18 +121,30 @@ class ProductController {
 // Pour requête AJAX
         echo $result;
     }
+
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
     }
 
-    function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error) {
+    /**
+     * 
+     * @param int $maxsize
+     * @param string $name
+     * @param type $type
+     * @param int $size
+     * @param string $tmp_name
+     * @param int $error
+     * @param string $reseller
+     */
+    function majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error, $reseller) {
         require_once("PHPExcel/PHPExcel/Classes/PHPExcel/IOFactory.php");
         $extensions_valides = array('txt', 'csv', 'xls', 'xlsx');
         $extensions_XLS = array('xls', 'xlsx');
         $extensions_TXT = array('txt');
         $extension_upload = strtolower(substr(strrchr($_FILES['fichier']['name'], '.'), 1));
         $message = "";
+        $records = 0;
         if ($error > 0)
             $message += 'Erreur lors du transfert. ';
         if ($size > $maxsize)
@@ -128,7 +158,6 @@ class ProductController {
         if (!$resultat)
             $message += 'Erreur d\'importation. ';
 
-        $reseller = 'INGRAM';
 //PHPExcel
         if (in_array($extension_upload, $extensions_XLS)) {
             $headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 'Devise', 'Qté', '(heure)'));
@@ -207,22 +236,16 @@ class ProductController {
                 } else {
                     $message += 'Fichier TXT illisible.';
                 }
-                echo ('Traitement TXT ' . $nom);
             }
             if (in_array($extension_upload, $extensions_TXT) && $reseller == 'INGRAM') {
-                // echo ('texte');
-                $ligne = 1; // compteur de ligne
-                $row = 1;
                 if (($handle = fopen($nom, "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 4096, ',', '"')) !== FALSE) {
-                        $num = count($data);
-                        //  echo "<p> $num champs à la ligne $row: <br /></p>\n";
-                        $row++;
-                        // for ($c = 0; $c < $num; $c++) {
-                        //   echo $data[$c] . "<br />\n";
-                        // }
+                        $size = count($data);
+                        if ($size < 15) {
+                            $message = 'Erreur dans le fichier.';
+                        }
+                        break;
                         $ref = trim($data[7]);
-                        //echo $ref;
                         $ProductDAO = new \model\ProductDAO();
                         $exist = $ProductDAO->isExistBUILDER_REF($ref);
                         if (!$exist) {
@@ -238,25 +261,20 @@ class ProductController {
                                 $productImp->setProduct_imp_designation(trim($data[4]) . " " . trim($data[5]));
                                 $productImp->setProduct_imp_category(trim($data[14]));
                                 $productImp->setProduct_imp_bu("");
-                                // print_r($productImp);
                                 $result = $ProductDAO->insertProductImp($productImp);
-                                // echo ($result);
+                                $records ++;
                             }
-                            //  echo ('le :' . $ean . ' existe<br>');
                         }
                     }
                     fclose($handle);
-                    header('Location: /routes.php');
+                    $message = 'Import terminé. ' . $records . ' enregistement(s) ajouté(s)';
                 } else {
-                    $message += 'Fichier TXT illisible.';
+                    $message = 'Fichier TXT illisible.';
                 }
-                echo ('Traitement TXT ' . $nom);
             }
             set_time_limit(30);
-            //header('Location: routes.php?action=listProducts_import');
-        } else {
-            header('Location: /routes.php?action=getProductsFile&msg=' . $message);
         }
+        header('Location: /routes.php?action=getProductsFile&msg=' . $message);
     }
 
     public function listProductByCat($bu, $category) {

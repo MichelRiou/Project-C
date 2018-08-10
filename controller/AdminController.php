@@ -4,7 +4,7 @@
 
 namespace controller;
 
-class AdminController {
+class AdminController extends Controller {
 
     private static $_instance = null;
 
@@ -21,15 +21,13 @@ class AdminController {
 
     public function mainMenu() {
 
-
-        require('view/frontend/mainMenu.php');
+        $this->getViewContent('mainMenu', array(), 'template');
     }
 
     public function controlSession() {
-        if (filter_has_var(INPUT_POST, 'username') 
-        && filter_has_var(INPUT_POST, 'password')) {
-    $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
-    $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
+        if (filter_has_var(INPUT_POST, 'username') && filter_has_var(INPUT_POST, 'password')) {
+            $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+            $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
             try {
                 $adminDAO = new \model\AdminDAO();
 
@@ -41,22 +39,21 @@ class AdminController {
                     if ($bu != 0)
                         $_SESSION["bu"] = $bu;
                     if (filter_has_var(INPUT_POST, 'rememberme')) {
-                    setcookie('CAL1', $user->getUser_pseudo(), 
-                            time() + 365 * 24 * 3600, null, null, false, true);
-                    setcookie('CAL2', $user->getUser_password(), 
-                            time() + 365 * 24 * 3600, null, null, false, true);
+                        setcookie('CAL1', $user->getUser_pseudo(), 
+                                time() + 365 * 24 * 3600, null, null, false, true);
+                        setcookie('CAL2', $user->getUser_password(), 
+                                time() + 365 * 24 * 3600, null, null, false, true);
                     }
                 }
             } catch (Exception $e) {
-                echo '<h1>Erreur : ' . $e->getMessage() . '</h1>';
+                echo $e->getMessage();
             }
         }
         if (!isset($_SESSION['user'])) {
             if (isset($_COOKIE['CAL1']) && isset($_COOKIE['CAL2'])) {
                 try {
                     $adminDAO = new \model\AdminDAO();
-                    $user = $adminDAO->selectUser($_COOKIE['CAL1'], 
-                            $_COOKIE['CAL2'], '');
+                    $user = $adminDAO->selectUser($_COOKIE['CAL1'], $_COOKIE['CAL2'], '');
                     if ($user != null) {
                         $_SESSION["user"] = serialize($user);
                         $bu = $user->getUser_default_bu();
@@ -89,8 +86,9 @@ class AdminController {
     }
 
     function manageUserSession() {
-
-        require('view/frontend/login.php');
+        $this->getViewContent('login', 
+                 array(),
+                 'template');
     }
 
     public function changeBU($bu) {

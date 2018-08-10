@@ -2,10 +2,13 @@
 
 namespace model;
 
-class ProductDAO extends DAOManager {
+class ProductDAO extends DBAccess {
+
+    //class ProductDAO extends DAOManager {
 
     public function isExistEAN($ean) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM products WHERE product_ean = ?');
         $req->bindValue(1, $ean, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -14,16 +17,23 @@ class ProductDAO extends DAOManager {
     }
 
     public function isExistBUILDER_REF($builder_ref) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        // $db = $this->dbConnect();
         $req = $db->prepare('CALL isExistBuilderRef (?)');
         $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
-        return ($enr = $req->fetch());
+        if ($enr = $req->fetch()) {
+            return true;
+        } else {
+            return false;
+        }
+        //return ($enr = $req->fetch());
     }
 
     public function isExistBUILDER_REF_IMP($builder_ref) {
-        $db = $this->dbConnect();
+        $db = $this::getDBInstance();
+        //$db = $this->dbConnect();
         $req = $db->prepare('CALL isExistBuilderRefImp (?)');
         $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -34,10 +44,9 @@ class ProductDAO extends DAOManager {
     public function insertProduct(Product $objet) {
         $lastInsert = 0;
         try {
-            //print_r($objet);
-            $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $db->beginTransaction();
-            $req = $db->prepare('INSERT INTO products (product_ean, product_ref, product_builder_ref, product_bu, product_category, product_builder, product_model, product_designation) VALUES(?,?,?,?,?,?,?,?)');
+            $req = $db->prepare('INSERT INTO products (product_ean, product_ref, product_builder_ref, product_bu, product_category, product_builder, product_model, product_designation, product_user_create) VALUES(?,?,?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getProduct_ean());
             $req->bindValue(2, $objet->getProduct_ref());
             $req->bindValue(3, $objet->getProduct_builder_ref());
@@ -46,6 +55,7 @@ class ProductDAO extends DAOManager {
             $req->bindValue(6, $objet->getProduct_builder());
             $req->bindValue(7, $objet->getProduct_model());
             $req->bindValue(8, $objet->getProduct_designation());
+            $req->bindValue(9, $objet->getProduct_user_create());
             $req->execute();
             $lastInsert = $db->lastInsertId();
             $db->commit();
@@ -56,11 +66,34 @@ class ProductDAO extends DAOManager {
         return $lastInsert;
     }
 
+    public function addProduct(Product $objet) {
+        $affectedRows = 0;
+        try {
+            $db = $this::getDBInstance();
+            $req = $db->prepare('INSERT INTO products (product_ean, product_ref, product_builder_ref, product_bu, product_category, product_builder, product_model, product_designation,product_user_create) VALUES(?,?,?,?,?,?,?,?,?)');
+            $req->bindValue(1, $objet->getProduct_ean());
+            $req->bindValue(2, $objet->getProduct_ref());
+            $req->bindValue(3, $objet->getProduct_builder_ref());
+            $req->bindValue(4, $objet->getProduct_bu());
+            $req->bindValue(5, $objet->getProduct_category());
+            $req->bindValue(6, $objet->getProduct_builder());
+            $req->bindValue(7, $objet->getProduct_model());
+            $req->bindValue(8, $objet->getProduct_designation());
+            $req->bindValue(9, $objet->getProduct_user_create());
+            $req->execute();
+            $affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
+    }
+
     public function insertProductImp(ProductImport $objet) {
         $rowAffected = 0;
         try {
             //print_r($objet);
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             //$req = $db->prepare('INSERT INTO products_import (product_imp_builder_ref, product_imp_ref, product_imp_four, product_imp_ean, product_imp_builder, product_imp_model, product_imp_designation, product_imp_category, product_imp_bu) VALUES(?,?,?,?,?,?,?,?,?)');
             $req = $db->prepare('CALL InsertProductImp (?,?,?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getProduct_imp_builder_ref());
@@ -82,7 +115,8 @@ class ProductDAO extends DAOManager {
 
     public function listProductSelectionSort($category, $params) {
         if (count($params) > 0) {
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $requests = implode(", ", $params);
             $products = $db->query('SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
             LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
@@ -101,7 +135,8 @@ class ProductDAO extends DAOManager {
 
     public function listProductSelectionExclusif($category, $params) {
         if (count($params) > 0) {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $requests = implode(", ", $params);
             $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
             LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
@@ -120,7 +155,8 @@ class ProductDAO extends DAOManager {
 
     public function listProductSelectionMandatory($category, $params) {
         if (count($params) > 0) {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $requests = implode(", ", $params);
             $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
             LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
@@ -140,7 +176,8 @@ class ProductDAO extends DAOManager {
     public function selectAllTagsFromProduct($id) {
         $productTags = array();
         try {
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('CALL SelectAllProductTagFromProduct (?)');
             $req->bindValue(1, $id, \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -164,7 +201,8 @@ class ProductDAO extends DAOManager {
     public function selectAllProductByCat($bu, $category) {
         $products = array();
         try {
-            $db = $this->dbConnect();
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
             if ($category != 0) {
                 $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
                 $req->bindValue(1, $bu);
@@ -199,7 +237,8 @@ class ProductDAO extends DAOManager {
         $lastInsert = -1;
         $affectedRows = -1;
         try {
-            $db = $this->dbConnect();
+            //  $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $db->beginTransaction();
             $req = $db->prepare('INSERT INTO products (product_ean, product_ref, product_builder_ref, product_bu, product_category, product_builder, product_model, product_designation,product_user_create) VALUES(?,?,?,?,?,?,?,?,?)');
             $req->bindValue(1, $objet->getProduct_ean());
@@ -230,13 +269,13 @@ class ProductDAO extends DAOManager {
             $return = 0;
         }
         return $return;
-       
     }
 
     public function deleteProductImport(ProductImport $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('Call DeleteProductImport(?)');
             $req->bindValue(1, $objet->getProduct_imp_id(), \PDO::PARAM_INT);
             $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -251,8 +290,9 @@ class ProductDAO extends DAOManager {
     public function selectAllProductImport() {
         $products = array();
         try {
-            $db = $this->dbConnect();
-            $req = $db->prepare('SELECT * FROM products_import  ORDER BY product_imp_id LIMIT 100');
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            $req = $db->prepare('SELECT * FROM products_import  ORDER BY product_imp_id DESC LIMIT 100');
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             while ($enr = $req->fetch()) {
@@ -279,7 +319,8 @@ class ProductDAO extends DAOManager {
     public function addProductTag(TagProduct $objet) {
         $affectedRows = 0;
         try {
-            $db = $this->dbConnect();
+            // $db = $this->dbConnect();
+            $db = $this::getDBInstance();
             $req = $db->prepare('INSERT INTO product_tags (product_id,tag_id,product_tag_value, product_tag_numeric) VALUES(?,?,?,?)');
             $req->bindValue(1, $objet->getProduct_id(), \PDO::PARAM_INT);
             $req->bindValue(2, $objet->getTag_id(), \PDO::PARAM_INT);
@@ -297,7 +338,8 @@ class ProductDAO extends DAOManager {
     public function selectAllCategory() {
         //$categories = array();
         try {
-            $db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            //$db = $this->dbConnect();
             $req = $db->prepare('SELECT * FROM categories');
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
@@ -318,7 +360,8 @@ class ProductDAO extends DAOManager {
 
     public function selectOneCategory($id) {
 
-        $db = $this->dbConnect();
+        //$db = $this->dbConnect();
+        $db = $this::getDBInstance();
         $req = $db->prepare('SELECT * FROM categories  WHERE category_id= ? ');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -337,7 +380,8 @@ class ProductDAO extends DAOManager {
 
     public function selectOneProductImport($id) {
 
-        $db = $this->dbConnect();
+        //$db = $this->dbConnect();
+        $db = $this::getDBInstance();
         $req = $db->prepare('SELECT * FROM products_import  WHERE product_imp_id= ?');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
@@ -363,7 +407,8 @@ class ProductDAO extends DAOManager {
 
     public function selectOneProduct($id) {
 
-        $db = $this->dbConnect();
+        //$db = $this->dbConnect();
+        $db = $this::getDBInstance();
         $req = $db->prepare('SELECT * FROM products  WHERE product_id= ?');
         $req->bindValue(1, $id);
         $req->setFetchMode(\PDO::FETCH_ASSOC);

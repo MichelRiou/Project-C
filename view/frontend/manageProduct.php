@@ -2,37 +2,60 @@
 ob_start();
 ?>
 <script type="text/javascript">
+    var idDelete;
+    var idEdit;
+    function ctrlEditProduct() {
+        var msg = "";
+        if ($("#editCategory").val() == '0')
+            msg += 'La catégorie est obligatoire.<br>';
+        // Monitoring des erreurs
+        $("#editMessage").html(msg);
+        $result = (msg != "" ? false : true);
+        return $result;
+    }
+    function ctrlAddProduct() {
+        var msg = "";
+        if ($("#addRefBuilder").val() == '')
+            msg += 'La référence constructeur est obligatoire.<br>';
+        if ($("#addCategory").val() == '0')
+            msg += 'La catégorie est obligatoire.';
+        // Monitoring des erreurs
+        $("#addMessage").html(msg);
+        $result = (msg != "" ? false : true);
+        return $result;
+    }
+
     function refresh() {
         $.ajax({
             type: 'POST',
             url: '/routes.php?action=listProductByCat',
-             data:
-                            {
-                                "category" : 0,
-                            },
+            data:
+                    {
+                        "category": 0,
+                    },
             success: function (data) {
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
-                $("#okbutton").click(function () {
-                    var s = $('table tbody input:checked');
-                    if (s.length !== 0) {
-                        console.log(checkbox);
-                        $("#message").html('');
-                        $("#addResponseModal").modal('show');
-                    } else {
-                        $("#messageModal").modal('show');
-                    }
+                $("#addButton").click(function () {
+                    //       var s = $('table tbody input:checked');
+                    //     if (s.length !== 0) {
+                   // console.log(checkbox);
+                    $("#message").html('');
+                    $("#addProductModal").modal('show');
+                    //   } else {
+                    //     $("#messageModal").modal('show');
+                    // }
                 });
-                var checkbox = $('table tbody input[type="checkbox"]');
-
-                checkbox.click(function () {
-                    var s = this.checked;
-                    console.log(s)
-                    checkbox.each(function () {
-                        this.checked = false;
-                    });
-                    this.checked = s;
-                });
+                /*   var checkbox = $('table tbody input[type="checkbox"]');
+                 
+                 checkbox.click(function () {
+                 var s = this.checked;
+                 console.log(s)
+                 checkbox.each(function () {
+                 this.checked = false;
+                 });
+                 this.checked = s;
+                 });*/
 
 
                 $('a[class="delete"]').click(function () {
@@ -61,37 +84,61 @@ ob_start();
     }
     $(document).ready(function () {
         refresh();
-         $("#back").click(function () {
+        $("#back").click(function () {
             window.history.back();
         });
         // Activate tooltip
         // $('[data-toggle="tooltip"]').tooltip();
         // Validation de la modal AJOUTER UNE REPONSE
-        $("#okbutton").click(function () {
-            var s = $('table tbody input:checked');
-            if (s.length !== 0) {
-                console.log(checkbox);
-                $("#message").html('');
-                $("#addResponseModal").modal('show');
-            } else {
-                $("#messageModal").modal('show');
-            }
+        $("#addButton").click(function () {
+            // var s = $('table tbody input:checked');
+            //  if (s.length !== 0) {
+            console.log(checkbox);
+            $("#message").html('');
+            $("#addProductModal").modal('show');
+            // } else {
+            //   $("#messageModal").modal('show');
+            // }
         });
         // Validation de la modal SUPPRIMER UNE QUESTION
         $("#deletebutton").click(function () {
             var s = $('table tbody input:checked');
             if (s.length !== 0) {
-               /// console.log(s[0]);
-               // console.log(s[0].value);
-                var deleteHeader= s[0].value;
+                /// console.log(s[0]);
+                // console.log(s[0].value);
+                var deleteHeader = s[0].value;
                 $("#message").html('');
                 $("#deleteQuestionModal").modal('show');
             } else {
                 $("#messageModal").modal('show');
             }
         });
-                // AJAX 
-        $("#deleteHeader").on('click', (function () {
+        // Requête AJAX pour validation
+        $("#addProduct").on('click', (function () {
+            if (ctrlAddProduct()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=addProduct&builderref=' + $("#addBuilderRef").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val(),
+                   // url: '/routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val(),
+                    success: function (data) {
+                        console.log(data + '/routes.php?action=addProduct&builderref=' + $("#addBuilderRef").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val());
+                        if (data != 1) {
+                            $("#addMessage").html("Erreur d\'ajout" + data);
+                        } else {
+                            $('#addCancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+                });
+                return false;
+            }
+        }));
+        // AJAX 
+        $("#deleteProduct").on('click', (function () {
             //alert();
             // console.log(obj);
             $.ajax({
@@ -123,12 +170,12 @@ ob_start();
             });
             this.checked = s;
         });
-        $("#addResponse").click(function () {
-            // alert();
-            var checkbox = $('table tbody input[type="checkbox"]');
-            //alert(checkbox);
-            console.log(checkbox);
-        });
+        /* $("#addResponse").click(function () {
+         // alert();
+         var checkbox = $('table tbody input[type="checkbox"]');
+         //alert(checkbox);
+         console.log(checkbox);
+         });*/
     });
 
 </script>
@@ -142,11 +189,11 @@ ob_start();
                 </div>
                 <div class="col-sm-4">		
                     <button id="back" class="btn btn-default" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
-                    <button id="addbutton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
+                    <button id="addButton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
 
                 </div>
-                  <div class="col-sm-4">
-                        
+                <div class="col-sm-4">
+
                     <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
                     <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
                 </div>
@@ -154,95 +201,136 @@ ob_start();
         </div>
         <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
         <div id='requete' class="scrollDiv2">
-            
+
         </div>
     </div>
     <!-- MODAL ADD RESPONSE -->
-    <div id="addResponseModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form>
-                    <div class="modal-header">						
-                        <h4 class="modal-title">Ajouter une réponse</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">					
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div>					
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- MODAL EDIT QUESTION -->
     <div id="editProductModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>
                     <div class="modal-header">						
-                        <h4 class="modal-title">Edit Employee</h4>
+                        <h4 class="modal-title">Modification Produit</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">					
                         <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" required>
+                            <label>Ref. constructeur</label>
+                            <input type="text" class="form-control" readonly="readonly" id ="editBuilderRef" >
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
+                            <label>Ref. grossiste</label>
+                            <input type="text" class="form-control"  id ="editRef" >
                         </div>
                         <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
+                            <label>Modèle</label>
+                            <input type="text" class="form-control"  id ="editModel" >
+                        </div>  
+
+
                         <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div>					
+                            <label>Constructeur</label>
+                            <input type="text" class="form-control"  id ="editBuilder" >
+                        </div>  
+                        <div class="form-group">
+                            <label>Désignation</label>
+                            <textarea class="form-control"  id ="editDesignation" rows="3"></textarea>
+                        </div>  
+                        <div class="form-group">
+                            <label>EAN</label>
+                            <input type="text" class="form-control"  id ="editEan" >
+                        </div> 
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <select class="form-control" name="editCategory" id="editCategory">
+                                <option value="0">--</option>
+                                <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                    <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                                <?php } ?>
+                            </select>
+                        </div> 
                     </div>
+                    <div id="editMessage" class="text-warning align-items-center"></div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-info" value="Save">
+                        <input type="button" class="btn btn-success edit" value="Valid + Tag" id="editFormSuite">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
+                        <input type="button" class="btn btn-success edit" value="Validation" id="editForm">
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- MODAL DELETE QUESTION -->
-    <div id="deleteQuestionModal" class="modal fade">
+    <!-- MODAL EDIT RESPONSE -->
+    <div id="addProductModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>
                     <div class="modal-header">						
-                        <h4 class="modal-title">Supprimer une question</h4>
+                        <h4 class="modal-title">Ajouter Produit</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">					
-                        <p>Are you sure you want to delete these Records?</p>
-                        <p class="text-warning"><small>This action cannot be undone.</small></p>
+                        <div class="form-group">
+                            <label>Ref. constructeur</label>
+                            <input type="text" class="form-control"  id ="addRefBuilder" >
+                        </div>
+                        <div class="form-group">
+                            <label>Ref. grossiste</label>
+                            <input type="text" class="form-control"  id ="addRef" >
+                        </div>
+                        <div class="form-group">
+                            <label>Modèle</label>
+                            <input type="text" class="form-control"  id ="addModel" >
+                        </div>  
+
+
+                        <div class="form-group">
+                            <label>Constructeur</label>
+                            <input type="text" class="form-control"  id ="addBuilder" >
+                        </div>  
+                        <div class="form-group">
+                            <label>Désignation</label>
+                            <textarea class="form-control"  id ="addDesignation" rows="3"></textarea>
+                        </div>  
+                        <div class="form-group">
+                            <label>EAN</label>
+                            <input type="text" class="form-control"  id ="addEan" >
+                        </div> 
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <select class="form-control" name="editCategory" id="addCategory">
+                                <option value="0">--</option>
+                                <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                    <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
+                                <?php } ?>
+                            </select>
+                        </div> 
                     </div>
+                    <div id="addMessage" class="text-warning align-items-center"></div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="button" id="deleteHeader" class="btn btn-danger" value="Delete">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Abandon" id="addCancel">
+                        <input type="button" class="btn btn-success edit" value="Ajouter" id="addProduct">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Modal HTML -->
+    <div id="deleteProductModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">						
+                        <h4 class="modal-title">Supprimer un produit</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">					
+                        <h6 class="text-warning">Etes-vous sur ?</h6>
+                    </div>
+                    <div id="deleteMessage" class="text-warning align-center"></div>
+                    <div class="modal-footer">
+                        <input type="button" id="deleteCancel" class="btn btn-default" data-dismiss="modal" value="Abandon">
+                        <input type="button"  class="btn btn-danger" value="Suppr." id="deleteProduct">
                     </div>
                 </form>
             </div>
