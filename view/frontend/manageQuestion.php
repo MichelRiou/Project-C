@@ -258,8 +258,6 @@ ob_start();
                         <i class="material-icons">&#xE15C;</i> <span>Supprimer une question</span></button>						
                     <button id="addQuestionButton" class="btn btn-info btn-sm" data-toggle="modal">
                         <i class="material-icons">&#xE147;</i> <span>Ajouter une question</span></button>
-
-
                 </div>
             </div>
             <div id='errorMessage'></div>

@@ -4,11 +4,11 @@
         <div class="table-title ">
             <div class="row">
                 <div class="col-sm-10">
-                    <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?>&nbsp&nbsp Mode :<?= $searchtype->getSearchtype_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category">
+                    <h5>AFFICHAGE DU FORMULAIRE : <?= $form->getForm_name() ?>&nbsp&nbsp Mode :<?= $searchtype->getSearchtype_name() ?></h5><input type="hidden" value="<?= $form->getForm_category() ?>" id="category"><input type="hidden" value="<?= $form->getForm_bu() ?>" id="bu">
                     <input type="hidden" value="<?= $form->getForm_searchtype() ?>" id="searchtype">
                 </div>
                 <div class="col-sm-2">
-                    <button class="pull-right">Envoi Email</button>
+                    <!--<button class="pull-right">Envoi Email</button>-->
                 </div>
 
             </div>
@@ -23,7 +23,7 @@
                     <?php
                     if (!isset($headerRequest))
                         $headerRequest = array();
-                   // print_r($headerRequest);
+                  // print_r($headerRequest);
                     foreach ($headerRequest as $t) {
                         $class = explode('#', $t['header']);
                        // print_r($class);
@@ -62,6 +62,8 @@
                     }
                 });
                 lsparams = lsparams.substring(0, lsparams.lastIndexOf("-"));
+                bu = $('#bu').val();
+                console.log(bu);
                 category = $('#category').val();
                 searchtype = $('#searchtype').val();
                 $.ajax({
@@ -69,6 +71,7 @@
                     url: '/routes.php?action=listProductSelection',
                     data:
                             {
+                                "bu": bu,
                                 "category": category,
                                 "params": lsparams,
                                 "searchtype": searchtype
@@ -78,7 +81,7 @@
                         $("#requete").html(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert(textStatus);
+                        alert('Erreur interne: ' + xtStatus);
                     }
                 });
                 return false;

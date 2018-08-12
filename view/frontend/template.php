@@ -10,9 +10,11 @@ if (isset($_SESSION['user'])) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>CALESTOR-PERIWAY</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" 
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" 
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="../../public/css/extended.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
@@ -35,15 +37,14 @@ if (isset($_SESSION['user'])) {
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           role="button" data-toggle="dropdown" 
+                           aria-haspopup="true" aria-expanded="false">
                             Business Unit
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=2">Audiovisuel</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=2">AUDIOVISUEL</a>
                             <a class="dropdown-item" href="routes.php?action=changeBU&bu=3">IT</a>
-                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=1">Print</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Nouvelle BU</a>
+                            <a class="dropdown-item" href="routes.php?action=changeBU&bu=1">PRINT</a>
                         </div>
                     </li>
                     <ul class="navbar-nav mr-auto">
@@ -75,7 +76,7 @@ if (isset($_SESSION['user'])) {
                            href="routes.php?action=manageForm">LISTE DES FORMULAIRES</a>
                         <div class="dropdown-divider"></div>
                                  <?php } ?>
-                                <a class="dropdown-item" href="#">UTILISER UN FORMULAIRE</a>
+                                <a class="dropdown-item" href="routes.php?action=manageFormValid">UTILISER UN FORMULAIRE</a>
                             </div>
                         </li>
                             <?php if (isset($user) 

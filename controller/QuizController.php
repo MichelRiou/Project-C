@@ -1,7 +1,5 @@
 <?php
 
-// CLASSES CHARGEES PAR AUTOLOAD.
-
 namespace controller;
 
 class QuizController extends Controller {
@@ -20,49 +18,6 @@ class QuizController extends Controller {
     }
 
     /**
-     * UTILISATION DU FORMULAIRE
-     * @param int $id
-     */
-    public function manageQuiz($id) {
-
-        $quizDAO = new \model\QuizDAO();
-        $form = $quizDAO->selectOneForm($id);
-        $searchtype = $quizDAO->selectOneSearchType($form->getForm_searchtype());
-        $headerRequest = $quizDAO->getQuiz($id);
-       $this->getViewContent('displayQuiz', array(
-            'form' => $form,
-            'searchtype' => $searchtype,
-            'headerRequest' => $headerRequest), 'template');
-        //require('view/frontend/displayQuiz.php');
-    }
-
-    /**
-     * AFFICHAGE DES QUESTIONS - MAIN
-     * @param int $id
-     */
-    public function manageQuestion($id) {
-        $quizDAO = new \model\QuizDAO();
-        $form = $quizDAO->selectOneForm($id);
-        $this->getViewContent('manageQuestion', array(
-            'form' => $form), 'template');
-        // require('view/frontend/manageQuestion.php');
-    }
-
-    /**
-     * AFFICHAGE DES QUESTIONS - DETAILS
-     * @param int $bu
-     * @param int $form
-     */
-    public function listQuestion($bu, $form) {
-
-        $quizDAO = new \model\QuizDAO();
-        $questions = $quizDAO->selectAllQuestionsFromForm($bu, $form);
-        $this->getViewContent('listQuestion', array(
-            'questions' => $questions), null);
-        //require('view/frontend/listQuestion.php');
-    }
-
-    /**
      * AFFICHAGE DES FORMULAIRES - MAIN
      * @param int $bu
      */
@@ -77,7 +32,6 @@ class QuizController extends Controller {
             'categories' => $categories,
             'searchtypes' => $searchtypes,
             'bu' => $bu), 'template');
-        //require('view/frontend/manageForm.php');
     }
 
     /**
@@ -87,10 +41,103 @@ class QuizController extends Controller {
     public function listForm($bu) {
 
         $quizDAO = new \model\QuizDAO();
-        $forms = $quizDAO->selectAllFormFromBu($bu);
+        $forms = $quizDAO->selectAllFormFromBu($bu,'');
         $this->getViewContent('listForm', array(
             'forms' => $forms), null);
-        //require('view/frontend/listForm.php');
+    }
+
+     /**
+     * 
+     * @param int $bu
+     * @param string $name
+     * @param string $designation
+     * @param int $category
+     * @param int $searchtype
+     * @param int $userId
+     */
+    public function addForm($bu, $name, $designation, $category, $searchtype, $userId) {
+
+        $quizDAO = new \model\QuizDAO();
+        $objet = new \model\Form();
+        $objet->setForm_bu($bu);
+        $objet->setForm_name($name);
+        $objet->setForm_designation($designation);
+        $objet->setForm_category($category);
+        $objet->setForm_searchtype($searchtype);
+        $objet->setForm_user_create($userId);
+        $result = $quizDAO->addForm($objet);
+        // Pour requête AJAX
+        echo $result;
+    }
+    /**
+     * UTILISATION DU FORMULAIRE
+     * @param int $id
+     */
+    public function manageQuiz($id) {
+
+        $quizDAO = new \model\QuizDAO();
+        $form = $quizDAO->selectOneForm($id);
+        $searchtype = $quizDAO->selectOneSearchType($form->getForm_searchtype());
+        $headerRequest = $quizDAO->getQuiz($id);
+       $this->getViewContent('displayQuiz', array(
+            'form' => $form,
+            'searchtype' => $searchtype,
+            'headerRequest' => $headerRequest), 'template');
+    }
+
+    /**
+     * AFFICHAGE DES QUESTIONS - MAIN
+     * @param int $id
+     */
+    public function manageQuestion($id) {
+        $quizDAO = new \model\QuizDAO();
+        $form = $quizDAO->selectOneForm($id);
+        $this->getViewContent('manageQuestion', array(
+            'form' => $form), 'template');
+    }
+
+    /**
+     * AFFICHAGE DES QUESTIONS - DETAILS
+     * @param int $bu
+     * @param int $form
+     */
+    public function listQuestion($bu, $form) {
+
+        $quizDAO = new \model\QuizDAO();
+        $questions = $quizDAO->selectAllQuestionsFromForm($bu, $form);
+        $this->getViewContent('listQuestion', array(
+            'questions' => $questions), null);
+    }
+
+    
+    /**
+     * AFFICHAGE DES FORMULAIRES VALIDES - MAIN
+     * @param int $bu
+     */
+    public function manageFormValid($bu) {
+        $productDAO = new \model\ProductDAO();
+        $categories = $productDAO->selectAllCategory();
+        $quizDAO = new \model\QuizDAO();
+        $searchtypes = $quizDAO->selectAllSearchType();
+        $BusinessDAO = new \model\AdminDAO();
+        $bu = $BusinessDAO->selectOneBu($bu);
+        $this->getViewContent('manageFormValid', array(
+            'categories' => $categories,
+            'searchtypes' => $searchtypes,
+            'bu' => $bu), 'template');
+        //require('view/frontend/manageForm.php');
+    }
+
+    /**
+     * AFFICHAGE DES FORMULAIRES VALIDES - DETAILS
+     * @param int $bu
+     */
+    public function listFormValid($bu) {
+
+        $quizDAO = new \model\QuizDAO();
+        $forms = $quizDAO->selectAllFormFromBu($bu,'1');
+        $this->getViewContent('listFormValid', array(
+            'forms' => $forms), null);
     }
 
     /**
@@ -149,29 +196,7 @@ class QuizController extends Controller {
         echo $result;
     }
 
-    /**
-     * 
-     * @param int $bu
-     * @param string $name
-     * @param string $designation
-     * @param int $category
-     * @param int $searchtype
-     * @param int $userId
-     */
-    public function addForm($bu, $name, $designation, $category, $searchtype, $userId) {
-
-        $quizDAO = new \model\QuizDAO();
-        $objet = new \model\Form();
-        $objet->setForm_bu($bu);
-        $objet->setForm_name($name);
-        $objet->setForm_designation($designation);
-        $objet->setForm_category($category);
-        $objet->setForm_searchtype($searchtype);
-        $objet->setForm_user_create($userId);
-        $result = $quizDAO->addForm($objet);
-        // Pour requête AJAX
-        echo $result;
-    }
+   
 
     /**
      * 

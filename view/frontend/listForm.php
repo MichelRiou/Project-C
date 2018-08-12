@@ -11,7 +11,7 @@
     </tr>        
     <?php foreach ($forms as $form) {
         ?>
-        <tr><td width="300"><?= $form->getForm_name() ?></td><td ><?= $form->getForm_designation() ?></td><td ><?= $form->getForm_category_name()?></td><td ><?= $form->getForm_searchtype_name()?></td><td ><?php echo $validated = ($form->getForm_validated()?"OUI":"NON")?></td>
+        <tr><td class="full"><?= $form->getForm_name() ?></td><td ><?= $form->getForm_designation() ?></td><td ><?= $form->getForm_category_name()?></td><td ><?= $form->getForm_searchtype_name()?></td><td ><?php echo $validated = ($form->getForm_validated()?"OUI":"NON")?></td>
 
             <td class="row">
                 <a href="routes.php?action=manageQuestion&form=<?= $form->getForm_id() ?>" class="view"><i class="material-icons" data-toggle="tooltip" title="Liste">&#xE242;</i></a>

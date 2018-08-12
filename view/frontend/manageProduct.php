@@ -1,6 +1,3 @@
-<?php
-ob_start();
-?>
 <script type="text/javascript">
     var idDelete;
     var idEdit;
@@ -33,7 +30,11 @@ ob_start();
                     {
                         "category": 0,
                     },
+           /* beforeSend: function(){
+              $("#loader").show();  
+            },*/
             success: function (data) {
+                /* $("#loader").hide(); */
                 $("#requete").html(data);
                 $('[data-toggle="tooltip"]').tooltip();
                 $("#addButton").click(function () {
@@ -63,16 +64,24 @@ ob_start();
                     console.log(idDelete);
                 });
                 $('a[class="edit"]').click(function () {
-                    //MISE A JOUR DES CHAMPS POUR L'UPDATE 
-                    //value a qualifier
-                    idEdit = this.getAttribute('value');
-                    $('#editName').val(this.getAttribute('tagname'));
-                    signEdit = this.getAttribute('sign');
-                    $('#editSign').val(signEdit);
-                    alphaEdit = this.getAttribute('alpha');
-                    $('#editAlpha').val(alphaEdit);
-                    numericEdit = this.getAttribute('numeric');
-                    $('#editNumeric').val(numericEdit);
+                   idEdit = this.getAttribute('value');
+                    console.log(idEdit);
+                    $('#editBuilderRef').val(this.getAttribute('builder_ref'));
+
+                    //$('#editRef').val(this.getAttribute('ref'));
+                    $('#editModel').val(this.getAttribute('model'));
+                    $('#editRef').val(this.getAttribute('ref'));
+                    $('#editBuilder').val(this.getAttribute('builder'));
+                    $('#editEan').val(this.getAttribute('ean'));
+                     $('#editCategory').val(this.getAttribute('cat'));
+                    $('#editDesignation').val(this.getAttribute('designation'));
+                    /* console.log('cat' + this.getAttribute('category'));
+                     var cat =this.getAttribute('category');
+                     console.log('cat' + cat);
+                       console.log( cat);
+                    $('#editCategory').val(this.getAttribute('category')).prop('selected', true);*/
+                   //  $('#editCategory').val('1').prop('selected', true);
+
                     console.log(idEdit);
                 });
             },
@@ -102,23 +111,47 @@ ob_start();
         });
         // Validation de la modal SUPPRIMER UNE QUESTION
         $("#deletebutton").click(function () {
-            var s = $('table tbody input:checked');
+           /* var s = $('table tbody input:checked');
             if (s.length !== 0) {
                 /// console.log(s[0]);
                 // console.log(s[0].value);
-                var deleteHeader = s[0].value;
+                var deleteHeader = s[0].value;*/
                 $("#message").html('');
                 $("#deleteQuestionModal").modal('show');
-            } else {
+           /* } else {
                 $("#messageModal").modal('show');
-            }
+            }*/
         });
         // Requête AJAX pour validation
         $("#addProduct").on('click', (function () {
             if (ctrlAddProduct()) {
                 $.ajax({
                     type: 'POST',
-                    url: '/routes.php?action=addProduct&builderref=' + $("#addBuilderRef").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val(),
+                    url: '/routes.php?action=addProduct&builderref=' + $("#addRefBuilder").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val(),
+                   // url: '/routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val(),
+                    success: function (data) {
+                        console.log(data + '/routes.php?action=addProduct&builderref=' + $("#addBuilderRef").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val());
+                        if (data != 1) {
+                            $("#addMessage").html("Erreur d\'ajout" + data);
+                        } else {
+                            $('#addCancel').trigger('click');
+                            refresh();
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $("#retour").html("Erreur d\'envoi de la requête");
+                    }
+                });
+                return false;
+            }
+        }));
+         // Requête AJAX pour validation
+        $("#deleteProduct").on('click', (function () {
+            if (ctrlAddProduct()) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/routes.php?action=deleteProduct&builderref=' + $("#addRefBuilder").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val(),
                    // url: '/routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val(),
                     success: function (data) {
                         console.log(data + '/routes.php?action=addProduct&builderref=' + $("#addBuilderRef").val() + '&ref=' + $("#addRef").val() + '&model=' + $("#addModel").val() + '&builder=' + $("#addBuilder").val() + '&designation=' + $("#addDesignation").val() + '&ean=' + $("#addEan").val() + '&category=' + $("#addCategory").val());
@@ -138,19 +171,21 @@ ob_start();
             }
         }));
         // AJAX 
-        $("#deleteProduct").on('click', (function () {
-            //alert();
-            // console.log(obj);
+        $("#editProduct").on('click', (function () {
+       // var next = this.getAttribute('id');
+       // console.log(next);
+        if (ctrlEditProduct()) {
             $.ajax({
                 type: 'POST',
-                url: '/routes.php?action=deleteTagOnRequest&idRequest=' + $("#idRequest").val() + '&idTag=' + idDelete,
+                url: '/routes.php?action=updateProduct&id=' + idEdit + '&builderref=' + $("#editBuilderRef").val() + '&ref=' + $("#editRef").val() + '&model=' + $("#editModel").val() + '&builder=' + $("#editBuilder").val() + '&designation=' + $("#editDesignation").val() + '&ean=' + $("#editEan").val() + '&category=' + $("#editCategory").val(),
                 success: function (data) {
-                    console.log('retour delete' + data + $("#idRequest").val() + idDelete);
-                    if (data != 1) {
-                        $("#messageDelete").html("Erreur de suppression");
+                    console.log(data);
+                    if (data == 0) {
+                        $("#editMessage").html("Erreur d'insert".data);
                     } else {
-                        $('#cancelDelete').trigger('click');
-                        refresh();
+                     $('#editCancel').trigger('click');
+                            refresh(); 
+
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -159,7 +194,10 @@ ob_start();
                 }
             });
             return false;
-        }));
+            }
+        }
+        ));
+                // AJAX
         // Select/Deselect checkboxes
         var checkbox = $('table tbody input[type="checkbox"]');
 
@@ -187,12 +225,12 @@ ob_start();
                 <div class="col-sm-4">
                     <h5>LISTE DES PRODUITS</h5><input type="hidden" value="" id="idForm">
                 </div>
-                <div class="col-sm-4">		
+                <div class="col-sm-3">		
                     <button id="back" class="btn btn-default" data-toggle="modal"><i class="material-icons">&#xE314;</i> <span class="black-write">Retour</span></button>
                     <button id="addButton" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter un produit</span></button>
 
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
 
                     <input class=" pull-right" type="submit" value="Rechercher" onclick="searchString()" />
                     <input class="pull-right" id="search" name="search" type="text" value="" onfocus="clearSearch()" />
@@ -200,7 +238,8 @@ ob_start();
             </div>
         </div>
         <!-- RAFRAICHISSEMENT DU DETAIL VIA AJAX -->
-        <div id='requete' class="scrollDiv2">
+       <!-- <div id="loader" class="offset-md-5 col-md-1 mx-auto"><img src="public/images/ajax-loader.gif"/></div> -->
+        <div id="requete" class="scrollDiv2">
 
         </div>
     </div>
@@ -241,20 +280,19 @@ ob_start();
                             <input type="text" class="form-control"  id ="editEan" >
                         </div> 
                         <div class="form-group">
-                            <label>Catégorie</label>
-                            <select class="form-control" name="editCategory" id="editCategory">
-                                <option value="0">--</option>
-                                <?php for ($i = 0; $i < count($categories); $i++) { ?>
-                                    <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
-                                <?php } ?>
-                            </select>
-                        </div> 
+                        <label>Catégorie</label>
+                        <select class="form-control" name="editCategory" id="editCategory">
+                            <?php for ($i = 0; $i < count($categories); $i++) { ?>
+                                <option value="<?= $categories[$i]->getCategory_id() ?>">
+                                    <?= $categories[$i]->getCategory_name() ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>  
                     </div>
                     <div id="editMessage" class="text-warning align-items-center"></div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-success edit" value="Valid + Tag" id="editFormSuite">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="editCancel">
-                        <input type="button" class="btn btn-success edit" value="Validation" id="editForm">
+                        <input type="button" class="btn btn-success edit" value="Validation" id="editProduct">
                     </div>
                 </form>
             </div>
@@ -298,7 +336,7 @@ ob_start();
                         </div> 
                         <div class="form-group">
                             <label>Catégorie</label>
-                            <select class="form-control" name="editCategory" id="addCategory">
+                            <select class="form-control" name="addCategory" id="addCategory">
                                 <option value="0">--</option>
                                 <?php for ($i = 0; $i < count($categories); $i++) { ?>
                                     <option value="<?= $categories[$i]->getCategory_id() ?>"><?= $categories[$i]->getCategory_name() ?></option>
@@ -357,5 +395,3 @@ ob_start();
         </div>
     </div>
 
-    <?php $content = ob_get_clean(); ?>
-    <?php require('template.php'); ?>

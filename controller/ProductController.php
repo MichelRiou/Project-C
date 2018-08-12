@@ -21,9 +21,9 @@ class ProductController extends Controller {
         return self::$_instance;
     }
 
-    public function listProductSelection($category, $params, $searchtype) {
+    public function listProductSelection($bu, $category, $params, $searchtype) {
         $ProductDAO = new \model\ProductDAO();
-        $products = $ProductDAO->listProductSelectionMandatory($category, $params);
+        $products = $ProductDAO->listProductSelection($bu, $category, $params,$searchtype);
 
         require('view/frontend/listProductSelection.php');
     }
@@ -32,10 +32,19 @@ class ProductController extends Controller {
         $productDAO = new \model\ProductDAO();
         $categories = $productDAO->selectAllCategory();
         $this->getViewContent('manageProduct', array(
-            'categories' => $categories), 'template');
+           'categories' => $categories), 'template');
         //require('view/frontend/manageProduct.php');
     }
 
+        public function listProductByCat($bu, $category) {
+        $ProductDAO = new \model\ProductDAO();
+        $products = $ProductDAO->selectAllProductByCat($bu, $category);
+        $this->getViewContent('listProduct', array(
+           'products' => $products), 'template');
+
+        //require('view/frontend/listProduct.php');
+    }
+    
     public function manageProductImport() {
         $productDAO = new \model\ProductDAO();
         $categories = $productDAO->selectAllCategory();
@@ -88,6 +97,25 @@ class ProductController extends Controller {
         echo $result;
     }
 
+    
+    public function updateProduct($userId, $bu, $id,$builderref, $ref, $model, $builder, $designation, $ean, $category) {
+         
+        $ProductDAO = new \model\ProductDAO();
+        $product = new \model\Product();
+        $product->setProduct_id($id);
+        $product->setProduct_bu($bu);
+        $product->setProduct_builder_ref($builderref);
+        $product->setProduct_ref($ref);
+        $product->setProduct_model($model);
+        $product->setProduct_builder($builder);
+        $product->setProduct_designation($designation);
+        $product->setProduct_ean($ean);
+        $product->setProduct_category($category);
+        $product->setProduct_user_create($userId);
+        $result = $ProductDAO->updateProduct($product);
+        // Pour requête AJAX
+        echo $result;
+    }
     public function manageProductTag($id, $bu) {
 
         $QuizDAO = new \model\QuizDAO();
@@ -121,7 +149,24 @@ class ProductController extends Controller {
 // Pour requête AJAX
         echo $result;
     }
-
+    
+        /**
+     * 
+     * @param int $id
+     * @param int $editSign
+     * @param string $editValue
+     * @param int $editNumeric
+     */
+    function updateTagProduct($idProduct, $editValue, $editNumeric) {
+        $productDAO = new \model\ProductDAO();
+        $objet = new \model\TagProduct();
+        $objet->setProduct_tag_id($idProduct);
+        $objet->setProduct_tag_value($editValue);
+        $objet->setProduct_tag_numeric($editNumeric);
+        $result = $productDAO->updateTagProduct($objet);
+        // Pour requête AJAX
+        echo $result;
+    }
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
@@ -208,7 +253,7 @@ class ProductController extends Controller {
                             $product->setProduct_builder($enr[4]);
                             $product->setProduct_model('');
                             $product->setProduct_designation($enr[3]);
-                            print_r($product);
+                           // print_r($product);
                             $result = $ProductDAO->insertProduct($product);
                             echo('erreur' . $result . '<br>');
                             $texte = ($result == 1 ? 'OK' : 'KO');
@@ -277,12 +322,6 @@ class ProductController extends Controller {
         header('Location: /routes.php?action=getProductsFile&msg=' . $message);
     }
 
-    public function listProductByCat($bu, $category) {
-        $ProductDAO = new \model\ProductDAO();
-        $products = $ProductDAO->selectAllProductByCat($bu, $category);
-
-        require('view/frontend/listProduct.php');
-    }
 
     public function listProductImport() {
         $ProductDAO = new \model\ProductDAO();

@@ -87,6 +87,29 @@ class ProductDAO extends DBAccess {
         }
         return $affectedRows;
     }
+    
+        public function updateProduct(Product $objet) {
+        $affectedRows = 1;
+        try {
+            $db = $this::getDBInstance();
+            $req = $db->prepare('UPDATE products set product_ean=?, product_ref=?, product_builder_ref=?, product_bu=?, product_category=?, product_builder=?, product_model=?, product_designation=?,product_user_create=? WHERE product_id=?');
+            $req->bindValue(1, $objet->getProduct_ean());
+            $req->bindValue(2, $objet->getProduct_ref());
+            $req->bindValue(3, $objet->getProduct_builder_ref());
+            $req->bindValue(4, $objet->getProduct_bu());
+            $req->bindValue(5, $objet->getProduct_category());
+            $req->bindValue(6, $objet->getProduct_builder());
+            $req->bindValue(7, $objet->getProduct_model());
+            $req->bindValue(8, $objet->getProduct_designation());
+            $req->bindValue(9, $objet->getProduct_user_create());
+            $req->bindValue(10, $objet->getProduct_id());
+            $req->execute();
+            //$affectedRows = $req->rowcount();
+        } catch (PDOException $e) {
+            $affectedRows = -1;
+        }
+        return $affectedRows;
+    }
 
     public function insertProductImp(ProductImport $objet) {
         $rowAffected = 0;
@@ -113,32 +136,17 @@ class ProductDAO extends DBAccess {
         return $rowAffected;
     }
 
-    public function listProductSelectionSort($category, $params) {
+    
+   
+    public function listProductSelection($bu,$category, $params,$typesearch) {
         if (count($params) > 0) {
-            // $db = $this->dbConnect();
             $db = $this::getDBInstance();
             $requests = implode(", ", $params);
-            $products = $db->query('SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
-            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
-            WHERE `request_id` IN (' . $requests . ') 
-            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
-            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
-            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
-            ORDER BY t.hits DESC, products.product_builder ASC');
-        } else {
-            $products = array();
-        }
-        return $products;
-    }
+            switch ($typesearch) {
+        // MODE MANDATORY A REVOIR MAUVAIS RESUTAT DE LA REQUETE ///
+                case 1: 
 
-    public function listProductSelectionExclusif($category, $params) {
-        if (count($params) > 0) {
-            //$db = $this->dbConnect();
-            $db = $this::getDBInstance();
-            $requests = implode(", ", $params);
-            $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+                    $sql='SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
             LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
             WHERE `request_id` IN (' . $requests . ') 
             AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
@@ -146,19 +154,24 @@ class ProductDAO extends DBAccess {
             OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
             OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
             GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
-            ORDER BY t.hits DESC, products.product_builder ASC');
-        } else {
-            $products = array();
-        }
-        return $products;
-    }
+            AND products.product_bu = ' . $bu . ' ORDER BY t.hits DESC, products.product_builder ASC';
+                   
+                    break;
+                
+                case 2: 
+                    $sql='SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC';
 
-    public function listProductSelectionMandatory($category, $params) {
-        if (count($params) > 0) {
-            //$db = $this->dbConnect();
-            $db = $this::getDBInstance();
-            $requests = implode(", ", $params);
-            $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+                    break;
+                case 3: 
+                    $sql='SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
             LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
             WHERE `request_id` IN (' . $requests . ') 
             AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
@@ -166,7 +179,33 @@ class ProductDAO extends DBAccess {
             OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
             OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
             GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
-            ORDER BY t.hits DESC, products.product_builder ASC');
+            ORDER BY t.hits DESC, products.product_builder ASC';
+
+
+                    break;
+
+                default :
+                    $sql='SELECT * FROM products LEFT OUTER JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC';
+                    break;
+            }
+           /* $products = $db->query('SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
+            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            WHERE `request_id` IN (' . $requests . ') 
+            AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "=" AND product_tags.product_tag_numeric = request_tags.request_tag_numeric 
+            OR `request_tag_sign` = "EST" AND product_tags.product_tag_value = request_tags.request_tag_value)  
+            GROUP BY  product_tags.product_id) AS t ON products.product_id=t.product_id WHERE products.product_category = ' . $category . ' 
+            ORDER BY t.hits DESC, products.product_builder ASC');*/
+            $products = $db->query($sql);
         } else {
             $products = array();
         }
@@ -197,13 +236,32 @@ class ProductDAO extends DBAccess {
         }
         return $productTags;
     }
+    
+     public function updateTagProduct(TagProduct $objet) {
+       //  print_r($objet);
+        $liAffectes = 1;
+        try {
+            //$db = $this->dbConnect();
+            $db = $this::getDBInstance();
+            $req = $db->prepare('UPDATE product_tags SET product_tag_value=?, product_tag_numeric=? WHERE product_tag_id=?');
+            $req->bindValue(1, $objet->getProduct_tag_value(), \PDO::PARAM_STR);
+            $req->bindValue(2, $objet->getProduct_tag_numeric(), \PDO::PARAM_INT);
+            $req->bindValue(3, $objet->getProduct_tag_id(), \PDO::PARAM_INT);
+            $req->execute();
+            //$liAffectes = $req->rowcount();
+        } catch (PDOException $e) {
+            $liAffectes = 0;
+        }
+        return $liAffectes;
+    }
 
     public function selectAllProductByCat($bu, $category) {
+      
         $products = array();
         try {
             //$db = $this->dbConnect();
             $db = $this::getDBInstance();
-            if ($category != 0) {
+            if ($category != '0') {
                 $req = $db->prepare('SELECT * FROM products WHERE product_bu = ? AND product_category = ? ORDER BY product_category ASC');
                 $req->bindValue(1, $bu);
                 $req->bindValue(2, $category);

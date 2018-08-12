@@ -151,9 +151,14 @@
     <div class="table-wrapper">
         <div class="table-title">
             <div class="form-group row">
-                <div class="col-md-7">
+                <div class="col-md-4">
                     <h5>Gestion des Formulaires</h5>
                 </div >
+                 <div class="col-md-3 ">
+                <button id="addbutton" class="btn btn-success btn-sm pull-right" 
+                        data-toggle="modal"><i class="material-icons">&#xE147;
+                    </i><span>Création d'un formulaire</span></button>		
+            </div>
                 <div class="col-md-5">
                     <button id="back" class="btn btn-default btn-sm" data-toggle="modal">
                         <i class="material-icons">&#xE314;</i> 
@@ -171,11 +176,7 @@
 
             </div>
 
-            <div class="col-md-3 ">
-                <button id="addbutton" class="btn btn-success btn-sm pull-right" 
-                        data-toggle="modal"><i class="material-icons">&#xE147;
-                    </i><span>Création d'un formulaire</span></button>		
-            </div>
+           
         </div>
         <div class="scrollDiv2" id="requete">
         </div>
@@ -187,7 +188,7 @@
         <div class="modal-content">
             <form>
                 <div class="modal-header">						
-                    <h4 class="modal-title">Edit formulaire</h4>
+                    <h4 class="modal-title">Modif. formulaire</h4>
                     <button type="button" class="close" data-dismiss="modal" 
                             aria-hidden="true">&times;</button>
                 </div>
@@ -229,8 +230,8 @@
                 <div id="editMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" 
-                           value="Cancel" id="editCancel">
-                    <input type="button" class="btn btn-success" value="edit" id="editForm">
+                           value="Abandon" id="editCancel">
+                    <input type="button" class="btn btn-success" value="Modifier" id="editForm">
                 </div>
             </form>
         </div>
@@ -273,8 +274,8 @@
                 </div>
                 <div id="addMessage" class="text-warning align-center"></div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" id="addCancel">
-                    <input type="button" class="btn btn-info" value="add" id="addForm" >
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Abandon" id="addCancel">
+                    <input type="button" class="btn btn-info" value="Ajouter" id="addForm" >
                 </div>
             </form>
         </div>

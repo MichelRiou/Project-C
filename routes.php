@@ -7,9 +7,9 @@ define('ROOT_PATH', dirname(__DIR__));
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+//$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
-  // $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
+    $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
         include_once $classPath;
     } else {
@@ -49,15 +49,14 @@ if ($manageAdmin->controlSession()) {
                  * ROUTE : Affichage résultat du formulaire de recherche
                  */
                 case 'listProductSelection':
+                    $bu = filter_input(INPUT_POST, "bu");
                     $category = filter_input(INPUT_POST, "category");
                     $listParams = filter_input(INPUT_POST, "params");
                     $searchtype = filter_input(INPUT_POST, "searchtype");
-                    if (filter_var($category, FILTER_VALIDATE_INT) !== false 
-                   && filter_var($listParams, FILTER_DEFAULT) !== false 
-                   && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
-                   $params = explode('-', $listParams);
-                   $manageProduct = controller\ProductController::getInstance();
-                   $manageProduct->listProductSelection($category, $params, $searchtype);
+                    if (filter_var($bu, FILTER_VALIDATE_INT) !== false && filter_var($category, FILTER_VALIDATE_INT) !== false && filter_var($listParams, FILTER_DEFAULT) !== false && filter_var($searchtype, FILTER_VALIDATE_INT) !== false) {
+                        $params = explode('-', $listParams);
+                        $manageProduct = controller\ProductController::getInstance();
+                        $manageProduct->listProductSelection($bu, $category, $params, $searchtype);
                     } else {
                         throw new Exception('Erreur dans la requête');
                     }
@@ -68,8 +67,7 @@ if ($manageAdmin->controlSession()) {
                 case 'listProductByCat':
                     $bu = $_SESSION['bu'];
                     $category = filter_input(INPUT_POST, "category");
-                    if (isset($bu) 
-                    && filter_var($category, FILTER_VALIDATE_INT) !== false) {
+                    if (isset($bu) && filter_var($category, FILTER_VALIDATE_INT) !== false) {
                         $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->listProductByCat($bu, $category);
                     } else {
@@ -113,72 +111,69 @@ if ($manageAdmin->controlSession()) {
                     break;
 
                 case 'createProduct':
-            $bu = $_SESSION['bu'];
-            $user = unserialize($_SESSION['user']);
-            $userId = $user->getUser_id();
-            $id = filter_input(INPUT_GET, "id");
-            $builderref = filter_input(INPUT_GET, "builderref", 
-                    FILTER_SANITIZE_STRING);
-            $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
-            $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
-            $builder = filter_input(INPUT_GET, "builder", 
-                    FILTER_SANITIZE_STRING);
-            $designation = filter_input(INPUT_GET, "designation", 
-                    FILTER_SANITIZE_STRING);
-            $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
-            $category = filter_input(INPUT_GET, "category");
-            $tag = filter_input(INPUT_GET, "tag", FILTER_SANITIZE_STRING);
-                    if (isset($bu) && isset($userId) && (filter_var($id, 
-            FILTER_VALIDATE_INT) !== false 
-            && filter_var($builderref, FILTER_DEFAULT) !== false 
-            && filter_var($ref, FILTER_DEFAULT) !== false 
-            && filter_var($model, FILTER_DEFAULT) !== false 
-            && filter_var($builder, FILTER_DEFAULT) !== false 
-            && filter_var($designation, FILTER_DEFAULT) !== false 
-            && filter_var($ean, FILTER_DEFAULT) !== false 
-            && filter_var($category, FILTER_VALIDATE_INT) !== false 
-            && filter_var($tag, FILTER_DEFAULT) !== false)) {
-                    $manageProduct = controller\ProductController::getInstance();
-                    $result = $manageProduct->createProduct($userId, $bu, $id, 
-                    $builderref, $ref, $model, $builder, $designation, $ean, 
-                    $category, $tag);
+                    $bu = $_SESSION['bu'];
+                    $user = unserialize($_SESSION['user']);
+                    $userId = $user->getUser_id();
+                    $id = filter_input(INPUT_GET, "id");
+                    $builderref = filter_input(INPUT_GET, "builderref", FILTER_SANITIZE_STRING);
+                    $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
+                    $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
+                    $builder = filter_input(INPUT_GET, "builder", FILTER_SANITIZE_STRING);
+                    $designation = filter_input(INPUT_GET, "designation", FILTER_SANITIZE_STRING);
+                    $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
+                    $category = filter_input(INPUT_GET, "category");
+                    $tag = filter_input(INPUT_GET, "tag", FILTER_SANITIZE_STRING);
+                    if (isset($bu) && isset($userId) && (filter_var($id, FILTER_VALIDATE_INT) !== false && filter_var($builderref, FILTER_DEFAULT) !== false && filter_var($ref, FILTER_DEFAULT) !== false && filter_var($model, FILTER_DEFAULT) !== false && filter_var($builder, FILTER_DEFAULT) !== false && filter_var($designation, FILTER_DEFAULT) !== false && filter_var($ean, FILTER_DEFAULT) !== false && filter_var($category, FILTER_VALIDATE_INT) !== false && filter_var($tag, FILTER_DEFAULT) !== false)) {
+                        $manageProduct = controller\ProductController::getInstance();
+                        $result = $manageProduct->createProduct($userId, $bu, $id, $builderref, $ref, $model, $builder, $designation, $ean, $category, $tag);
+                        echo $result;
+                    } else {
+                        throw new Exception('Erreur dans la rêquete');
+                    }
+                    break;
+
+                case 'addProduct':
+                    $bu = $_SESSION['bu'];
+                    $user = unserialize($_SESSION['user']);
+                    $userId = $user->getUser_id();
+                    $builderref = filter_input(INPUT_GET, "builderref", FILTER_SANITIZE_STRING);
+                    $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
+                    $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
+                    $builder = filter_input(INPUT_GET, "builder", FILTER_SANITIZE_STRING);
+                    $designation = filter_input(INPUT_GET, "designation", FILTER_SANITIZE_STRING);
+                    $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
+                    $category = filter_input(INPUT_GET, "category");
+                    if (isset($bu) && isset($userId) && (
+                            filter_var($builderref, FILTER_DEFAULT) !== false && filter_var($ref, FILTER_DEFAULT) !== false && filter_var($model, FILTER_DEFAULT) !== false && filter_var($builder, FILTER_DEFAULT) !== false && filter_var($designation, FILTER_DEFAULT) !== false && filter_var($ean, FILTER_DEFAULT) !== false && filter_var($category, FILTER_VALIDATE_INT) !== false )) {
+                        $manageProduct = controller\ProductController::getInstance();
+                        $result = $manageProduct->addProduct($userId, $bu, $builderref, $ref, $model, $builder, $designation, $ean, $category);
                         echo $result;
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
                     break;
                     
-                case 'addProduct':
-            $bu = $_SESSION['bu'];
-            $user = unserialize($_SESSION['user']);
-            $userId = $user->getUser_id();
-            $builderref = filter_input(INPUT_GET, "builderref", 
-                    FILTER_SANITIZE_STRING);
-            $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
-            $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
-            $builder = filter_input(INPUT_GET, "builder", 
-                    FILTER_SANITIZE_STRING);
-            $designation = filter_input(INPUT_GET, "designation", 
-                    FILTER_SANITIZE_STRING);
-            $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
-            $category = filter_input(INPUT_GET, "category");
+                 case 'updateProduct':
+                    $bu = $_SESSION['bu'];
+                    $user = unserialize($_SESSION['user']);
+                    $userId = $user->getUser_id();
+                    $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+                    $builderref = filter_input(INPUT_GET, "builderref", FILTER_SANITIZE_STRING);
+                    $ref = filter_input(INPUT_GET, "ref", FILTER_SANITIZE_STRING);
+                    $model = filter_input(INPUT_GET, "model", FILTER_SANITIZE_STRING);
+                    $builder = filter_input(INPUT_GET, "builder", FILTER_SANITIZE_STRING);
+                    $designation = filter_input(INPUT_GET, "designation", FILTER_SANITIZE_STRING);
+                    $ean = filter_input(INPUT_GET, "ean", FILTER_SANITIZE_STRING);
+                    $category = filter_input(INPUT_GET, "category");
                     if (isset($bu) && isset($userId) && (
-            filter_var($builderref, FILTER_DEFAULT) !== false 
-            && filter_var($ref, FILTER_DEFAULT) !== false 
-            && filter_var($model, FILTER_DEFAULT) !== false 
-            && filter_var($builder, FILTER_DEFAULT) !== false 
-            && filter_var($designation, FILTER_DEFAULT) !== false 
-            && filter_var($ean, FILTER_DEFAULT) !== false 
-            && filter_var($category, FILTER_VALIDATE_INT) !== false )) {
-                    $manageProduct = controller\ProductController::getInstance();
-                    $result = $manageProduct->addProduct($userId, $bu, 
-                    $builderref, $ref, $model, $builder, $designation, $ean, 
-                    $category);
+                           filter_var($id, FILTER_VALIDATE_INT) !== false && filter_var($builderref, FILTER_DEFAULT) !== false && filter_var($ref, FILTER_DEFAULT) !== false && filter_var($model, FILTER_DEFAULT) !== false && filter_var($builder, FILTER_DEFAULT) !== false && filter_var($designation, FILTER_DEFAULT) !== false && filter_var($ean, FILTER_DEFAULT) !== false && filter_var($category, FILTER_VALIDATE_INT) !== false )) {
+                        $manageProduct = controller\ProductController::getInstance();
+                        $result = $manageProduct->updateProduct($userId, $bu,$id, $builderref, $ref, $model, $builder, $designation, $ean, $category);
                         echo $result;
                     } else {
                         throw new Exception('Erreur dans la rêquete');
                     }
-                    break;    
+                    break;
 
                 case 'deleteProductImport':
                     $id = filter_input(INPUT_POST, "id");
@@ -194,8 +189,7 @@ if ($manageAdmin->controlSession()) {
                 case 'manageProductTag':
                     $bu = $_SESSION['bu'];
                     $id = filter_input(INPUT_GET, "id");
-                    if (isset($bu) && filter_var($id, 
-                            FILTER_VALIDATE_INT) !== false) {
+                    if (isset($bu) && filter_var($id, FILTER_VALIDATE_INT) !== false) {
                         $manageProduct = controller\ProductController::getInstance();
                         $manageProduct->manageProductTag($id, $bu);
                     } else {
@@ -213,17 +207,17 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur dans la requête');
                     }
                     break;
-                    
-                    
-                    
-                    /// COUPURE ////
-                    
-                    
-                    
+
+
+
+                /// COUPURE ////
+
+
+
                 case 'addProductTag':
                     $idProduct = filter_input(INPUT_GET, "idProduct");
                     $idTag = filter_input(INPUT_GET, "idTag");
-                    $addAlpha = filter_input(INPUT_GET, "addAlpha",FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_HIGH);
+                    $addAlpha = filter_input(INPUT_GET, "addAlpha", FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                     $addNumeric = filter_input(INPUT_GET, "addNumeric");
                     if (filter_var($idProduct, FILTER_VALIDATE_INT) !== false && filter_var($idTag, FILTER_VALIDATE_INT) !== false && filter_var($addAlpha, FILTER_DEFAULT) !== false && filter_var($addNumeric, FILTER_DEFAULT) !== false) {
                         $manageProduct = controller\ProductController::getInstance();
@@ -307,10 +301,10 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur de paramètre');
                     }
                     break;
-                  case 'addResponse':
+                case 'addResponse':
                     $idQuestion = filter_input(INPUT_GET, "idQuestion");
-                    $addName = filter_input(INPUT_GET, "addName",FILTER_SANITIZE_STRING);
-                    $addLibelle = filter_input(INPUT_GET, "addLibelle",FILTER_SANITIZE_STRING);
+                    $addName = filter_input(INPUT_GET, "addName", FILTER_SANITIZE_STRING);
+                    $addLibelle = filter_input(INPUT_GET, "addLibelle", FILTER_SANITIZE_STRING);
                     $addOrder = filter_input(INPUT_GET, "addOrder");
                     if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
                         $manageQuiz = controller\QuizController::getInstance();
@@ -319,7 +313,7 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur de paramètre');
                     }
                     break;
-                    
+
                 case 'deleteQuestion':
                     $idQuestion = filter_input(INPUT_GET, "idQuestion");
                     if (filter_var($idQuestion, FILTER_VALIDATE_INT) !== false) {
@@ -329,12 +323,12 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur de paramètre');
                     }
                     break;
-                    
+
                 case 'addQuestion':
                     $bu = $_SESSION['bu'];
                     $idForm = filter_input(INPUT_POST, "idForm");
-                    $addName = filter_input(INPUT_POST, "addName",FILTER_SANITIZE_STRING);
-                    $addLibelle = filter_input(INPUT_POST, "addLibelle",FILTER_SANITIZE_STRING);
+                    $addName = filter_input(INPUT_POST, "addName", FILTER_SANITIZE_STRING);
+                    $addLibelle = filter_input(INPUT_POST, "addLibelle", FILTER_SANITIZE_STRING);
                     $addOrder = filter_input(INPUT_POST, "addOrder");
                     if (isset($bu) && filter_var($idForm, FILTER_VALIDATE_INT) !== false && filter_var($addName, FILTER_DEFAULT) !== false && filter_var($addLibelle, FILTER_DEFAULT) !== false && filter_var($addOrder, FILTER_VALIDATE_INT) !== false) {
                         $manageQuiz = controller\QuizController::getInstance();
@@ -343,7 +337,7 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur de paramètre');
                     }
                     break;
-                    
+
                 case 'addTagRequest':
                     $idRequest = filter_input(INPUT_GET, "idRequest");
                     $idTag = filter_input(INPUT_GET, "idTag");
@@ -378,6 +372,19 @@ if ($manageAdmin->controlSession()) {
                         throw new Exception('Erreur d\'appel du controleur deleteTagRequest');
                     }
                     break;
+                    
+                    case 'updateTagProduct':
+                    $id = filter_input(INPUT_GET, "id");
+                    $editAlpha = filter_input(INPUT_GET, "editAlpha");
+                    $editNumeric = filter_input(INPUT_GET, "editNumeric");
+                    if (isset($id) && (isset($editAlpha) || isset($editNumeric)) ) {
+                        $manageProduct = controller\ProductController::getInstance();
+                        $manageProduct->updateTagProduct($id, $editAlpha, $editNumeric);
+                    } else {
+                        throw new Exception('Erreur d\'appel du controleur updateTagProduct');
+                    }
+                    break;
+                    
                 case 'getProductsFile':
                     $msg = filter_input(INPUT_GET, "msg");
                     if (!isset($msg))
@@ -396,7 +403,7 @@ if ($manageAdmin->controlSession()) {
                     $error = $_FILES['fichier']['error'];  //Le code d'erreur.
                     if (isset($maxsize) && isset($reseller) && isset($name) && isset($type) && isset($size) && isset($tmp_name) && isset($error)) {
                         $manageProduct = controller\ProductController::getInstance();
-                        $manageProduct->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error,$reseller);
+                        $manageProduct->majProductsFile($maxsize, $name, $type, $size, $tmp_name, $error, $reseller);
                     } else {
                         throw new Exception('Erreur d\'appel du controleur majProductsFile');
                     }
@@ -418,16 +425,38 @@ if ($manageAdmin->controlSession()) {
                         $manageQuiz = controller\QuizController::getInstance();
                         $manageQuiz->manageForm($bu);
                     } else {
-                        throw new Exception('Aucune BU spécifiée');
+                        throw new Exception('Erreur requête');
                     }
                     break;
+                    
                 case 'listForm':
                     $bu = $_SESSION['bu'];
                     if (isset($bu)) {
                         $manageQuiz = controller\QuizController::getInstance();
-                        $manageQuiz->listForm($bu);
+                        $manageQuiz->listForm($bu,'');
                     } else {
-                        throw new Exception('Aucune BU spécifiée');
+                        throw new Exception('Erreur requête');
+                    }
+                    break;
+
+
+                case 'manageFormValid':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageQuiz = controller\QuizController::getInstance();
+                        $manageQuiz->manageFormValid($bu);
+                    } else {
+                        throw new Exception('Erreur requête');
+                    }
+                    break;
+                    
+                case 'listFormValid':
+                    $bu = $_SESSION['bu'];
+                    if (isset($bu)) {
+                        $manageQuiz = controller\QuizController::getInstance();
+                        $manageQuiz->listFormValid($bu,'0');
+                    } else {
+                        throw new Exception('Erreur requête');
                     }
                     break;
                 case 'deleteForm':
@@ -491,7 +520,7 @@ if ($manageAdmin->controlSession()) {
                     $manageAdmin->connectUser();
 
                     break;
-              
+
                 /**
                  *  Traitement des routes non reconnues
                  */

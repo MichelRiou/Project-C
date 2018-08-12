@@ -132,7 +132,7 @@ ob_start();
     });
 </script>
 
-<div class="container">
+<div class="container-fluid">
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">

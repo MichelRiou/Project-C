@@ -32,10 +32,13 @@
                         <?= $data['hits'] ?>   
                     </td>
                     <td>
-                    <a href="#deleteEmployeeModal" class="<?php $colorHit =($data['hits']>=2?'delete':'info'); ?><?=$colorHit?>" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe01d</i></a>
+                        <?php if($data['hits']>=1){ ?>
+                    <a href="#" class="<?php $colorHit =($data['hits']<3?'success':'delete'); ?><?=$colorHit?>" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xe01d</i></a>
+                    
+                        <?php } ?>
                     </td>
                 </tr>
-            <?php } ?>
+               <?php } ?>
         </tbody>
     </table>
 </DIV>

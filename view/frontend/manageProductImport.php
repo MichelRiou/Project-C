@@ -105,7 +105,7 @@ ob_start();
         }
         ));
                 // AJAX
-                $("#editFormSuited").on('click', (function () {
+           /*     $("#editFormSuited").on('click', (function () {
             if (ctrlEditProduct()) {
                 $.ajax({
                     type: 'POST',
@@ -126,7 +126,7 @@ ob_start();
                 });
                 return false;
             }
-        }));
+        }));*/
         // AJAX
     });
 </script>

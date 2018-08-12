@@ -13,8 +13,8 @@
                         ?>
                         <tr><td><?= $productTag->getProduct_tag_name() ?></td><td><?= $productTag->getProduct_tag_designation() ?></td><td><?= $productTag->getProduct_tag_value() ?></td><td><?= $productTag->getProduct_tag_numeric() ?></td>
                             <td>
-                                <a href="#editProductTagModal" producttagid="<?=$productTag->getProduct_tag_id() ?>" producttagname="<?=$productTag->getProduct_tag_name() ?>" producttagdesignation="<?=$productTag->getProduct_tag_designation() ?>" producttagvalue="<?= $productTag->getProduct_tag_value() ?>" producttagnumeric="<?= $productTag->getProduct_tag_numeric() ?>" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                <a href="#deletePRoductTagModal" producttagid="<?=$productTag->getProduct_tag_id() ?>"  class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                <a href="#editTagModal" producttagid="<?=$productTag->getProduct_tag_id() ?>" producttagname="<?=$productTag->getProduct_tag_name() ?>" producttagdesignation="<?=$productTag->getProduct_tag_designation() ?>" producttagvalue="<?= $productTag->getProduct_tag_value() ?>" producttagnumeric="<?= $productTag->getProduct_tag_numeric() ?>" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a href="#deleteTagModal" producttagid="<?=$productTag->getProduct_tag_id() ?>"  class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                             </td>
                         </tr>
                     <?php } ?> 

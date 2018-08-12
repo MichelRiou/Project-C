@@ -230,13 +230,21 @@ class QuizDAO extends DBAccess {
      * @param int $bu
      * @return Array Form
      */
-    public function selectAllFormFromBu($bu) {
+    public function selectAllFormFromBu($bu, $validated='0') {
         $forms = array();
         try {
             $db = $this::getDBInstance();
-            //$db = $this->dbConnect();
-            $req = $db->prepare('SELECT * FROM forms WHERE form_bu = ? ORDER BY form_category ASC, form_name ASC');
-            $req->bindValue(1, $bu);
+            if ($validated == '') {
+                $sql = 'SELECT * FROM forms WHERE form_bu = ? ORDER BY form_category ASC, form_name ASC';
+                $req = $db->prepare($sql);
+                $req->bindValue(1, $bu);
+            } else {
+                $sql = 'SELECT * FROM forms WHERE form_bu = ? and form_validated = ? ORDER BY form_category ASC, form_name ASC';
+                $req = $db->prepare($sql);
+                $req->bindValue(1, $bu);
+                $req->bindValue(2, $validated);
+            }
+
             $req->setFetchMode(\PDO::FETCH_ASSOC);
             $req->execute();
             while ($enr = $req->fetch()) {
