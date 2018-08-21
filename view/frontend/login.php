@@ -1,6 +1,4 @@
-<?php
-ob_start();
-?>
+
 <div class="container py-5 extra">
     <div class="row">
         <div class="col-md-12">
@@ -32,16 +30,17 @@ ob_start();
                                             Se souvenir de moi</span>
                                     </label>
                                 </div>
-                                <div><?php if (isset($messageErreur)) echo $messageErreur; ?><div>
+                                <div><?php if (isset($messageErreur))
+                                echo ('<h5 class="text-warning text-center">' . $messageErreur . '</h5>');
+                              ?><div>
                                         <button type="submit" class="btn btn-success btn-lg float-right" 
                                                 id="btnLogin" name='toto' >Login</button>
-                                        </form>
                                     </div>
                                 </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <?php $content = ob_get_clean(); ?>
-        <?php require('template.php'); ?>

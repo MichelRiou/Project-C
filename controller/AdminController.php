@@ -39,10 +39,8 @@ class AdminController extends Controller {
                     if ($bu != 0)
                         $_SESSION["bu"] = $bu;
                     if (filter_has_var(INPUT_POST, 'rememberme')) {
-                        setcookie('CAL1', $user->getUser_pseudo(), 
-                                time() + 365 * 24 * 3600, null, null, false, true);
-                        setcookie('CAL2', $user->getUser_password(), 
-                                time() + 365 * 24 * 3600, null, null, false, true);
+                        setcookie('CAL1', $user->getUser_pseudo(), time() + 365 * 24 * 3600, null, null, false, true);
+                        setcookie('CAL2', $user->getUser_password(), time() + 365 * 24 * 3600, null, null, false, true);
                     }
                 }
             } catch (Exception $e) {
@@ -62,14 +60,20 @@ class AdminController extends Controller {
                         return true;
                         header("location:/routes.php");
                     }else {
-                        require('view/frontend/login.php');
+                        // $messageErreur='Identifiant ou mot de passe erroné';
+                       // require('view/frontend/login.php');
+                         $this->getViewContent('login', array(), 'template');
                         return false;
                     }
                 } catch (Exception $e) {
                     echo '<h1>Erreur : ' . $e->getMessage() . '</h1>';
                 }
             } else {
-                require('view/frontend/login.php');
+                $messageErreur='';
+                if (filter_has_var(INPUT_POST, 'username') && filter_has_var(INPUT_POST, 'password')){
+                    $messageErreur = 'Identifiant ou mot de passe erroné';}
+                  $this->getViewContent('login', array('messageErreur'=>$messageErreur), 'template');
+               // require('view/frontend/login.php');
                 return false;
             }
         } else {
@@ -86,9 +90,7 @@ class AdminController extends Controller {
     }
 
     function manageUserSession() {
-        $this->getViewContent('login', 
-                 array(),
-                 'template');
+        $this->getViewContent('login', array(), 'template');
     }
 
     public function changeBU($bu) {

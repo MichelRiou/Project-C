@@ -172,7 +172,7 @@ class ProductDAO extends DBAccess {
                     break;
                 case 3: 
                     $sql='SELECT * FROM products  JOIN (SELECT product_tags.product_id, COUNT(*) as hits FROM `request_tags`
-            LEFT OUTER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
+            INNER JOIN product_tags ON request_tags.tag_id = product_tags.tag_id  
             WHERE `request_id` IN (' . $requests . ') 
             AND (`request_tag_sign` = ">" AND product_tags.product_tag_numeric > request_tags.request_tag_numeric 
             OR `request_tag_sign` = "<" AND product_tags.product_tag_numeric < request_tags.request_tag_numeric 
