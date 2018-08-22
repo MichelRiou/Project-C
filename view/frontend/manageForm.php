@@ -10,7 +10,7 @@
             msg += 'La désignation est obligatoire.';
 
         // Monitoring des erreurs
-        $("#addMessage").html(msg);
+        $("#addMessage").html('<h5 class="text-warning text-center">' + msg + '</h5>');
         $result = (msg != "" ? false : true);
         return $result;
     }
@@ -85,7 +85,7 @@
                     success: function (data) {
                         console.log('retour success' + data + 'routes.php?action=addForm&name=' + $("#addName").val() + '&designation=' + $("#addDesignation").val() + '&category=' + $("#addCategory").val() + '&searchtype=' + $("#addSearchType").val());
                         if (data != 1) {
-                            $("#addMessage").html("Erreur d\'ajout" + data);
+                            $("#addMessage").html('<h5 class="text-warning text-center">Nom de formulaire déjà existant !!</h5>');
                         } else {
                             $('#addCancel').trigger('click');
                             refresh();
