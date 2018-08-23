@@ -2,12 +2,15 @@
 
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
-
+define('REPERTORY_PATH', '\Projet-Calestor\\');
+echo ROOT_PATH;
+echo REPERTORY_PATH;
 /**
  * AUTOLOADER : Référencement de la fonction d'autochargement
  */
 function autoloader($class) {
-$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
+$classPath = ROOT_PATH . REPERTORY_PATH ."${class}.php"; //bureau
+//$classPath = ROOT_PATH . "\Projet-Calestor\\${class}.php"; //bureau
     //$classPath = ROOT_PATH . "\Project-C\\${class}.php"; //home
    // $classPath = ROOT_PATH . "\project-c\\${class}.php"; //defense
     if (file_exists($classPath)) {
