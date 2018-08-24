@@ -23,7 +23,7 @@ class ProductController extends Controller {
 
     public function listProductSelection($bu, $category, $params, $searchtype) {
         $ProductDAO = new \model\ProductDAO();
-        $products = $ProductDAO->listProductSelection($bu, $category, $params,$searchtype);
+        $products = $ProductDAO->listProductSelection($bu, $category, $params, $searchtype);
 
         require('view/frontend/listProductSelection.php');
     }
@@ -32,19 +32,19 @@ class ProductController extends Controller {
         $productDAO = new \model\ProductDAO();
         $categories = $productDAO->selectAllCategory();
         $this->getViewContent('manageProduct', array(
-           'categories' => $categories), 'template');
+            'categories' => $categories), 'template');
         //require('view/frontend/manageProduct.php');
     }
 
-        public function listProductByCat($bu, $category) {
+    public function listProductByCat($bu, $category) {
         $ProductDAO = new \model\ProductDAO();
         $products = $ProductDAO->selectAllProductByCat($bu, $category);
         $this->getViewContent('listProduct', array(
-           'products' => $products), 'template');
+            'products' => $products), 'template');
 
         //require('view/frontend/listProduct.php');
     }
-    
+
     public function manageProductImport() {
         $productDAO = new \model\ProductDAO();
         $categories = $productDAO->selectAllCategory();
@@ -78,9 +78,9 @@ class ProductController extends Controller {
         $lastInsert = $ProductDAO->createProduct($productImport, $product);
         return $lastInsert;
     }
-    
-     public function addProduct($userId, $bu, $builderref, $ref, $model, $builder, $designation, $ean, $category) {
-         
+
+    public function addProduct($userId, $bu, $builderref, $ref, $model, $builder, $designation, $ean, $category) {
+
         $ProductDAO = new \model\ProductDAO();
         $product = new \model\Product();
         $product->setProduct_bu($bu);
@@ -97,9 +97,8 @@ class ProductController extends Controller {
         echo $result;
     }
 
-    
-    public function updateProduct($userId, $bu, $id,$builderref, $ref, $model, $builder, $designation, $ean, $category) {
-         
+    public function updateProduct($userId, $bu, $id, $builderref, $ref, $model, $builder, $designation, $ean, $category) {
+
         $ProductDAO = new \model\ProductDAO();
         $product = new \model\Product();
         $product->setProduct_id($id);
@@ -116,6 +115,7 @@ class ProductController extends Controller {
         // Pour requête AJAX
         echo $result;
     }
+
     public function manageProductTag($id, $bu) {
 
         $QuizDAO = new \model\QuizDAO();
@@ -149,8 +149,8 @@ class ProductController extends Controller {
 // Pour requête AJAX
         echo $result;
     }
-    
-        /**
+
+    /**
      * 
      * @param int $id
      * @param int $editSign
@@ -167,6 +167,7 @@ class ProductController extends Controller {
         // Pour requête AJAX
         echo $result;
     }
+
     function getProductsFile($msg) {
         // $message = "";
         require('view/frontend/getProductsFile.php');
@@ -202,10 +203,12 @@ class ProductController extends Controller {
         $resultat = move_uploaded_file($tmp_name, $nom);
         if (!$resultat)
             $message += 'Erreur d\'importation. ';
-
+        $checkHeader = false;
 //PHPExcel
-        if (in_array($extension_upload, $extensions_XLS)) {
-            $headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 'Devise', 'Qté', '(heure)'));
+        if (in_array($extension_upload, $extensions_XLS) && $reseller == 'TECHDATA') {
+            $headerTECHDATA = implode('', array('Réf. TechData', 'Réf. Fabricant', 'EAN No.', 
+                'Désignation', 'Marque', 'Prix Tarif', 'Votre Prix', 'Taxes Gouv.', 
+                'Devise', 'Qté', '(heure)'));
             $document_excel = PHPExcel_IOFactory::load($nom);
             $worksheet = $document_excel->getSheet(0);
             $row = 1;
@@ -220,12 +223,17 @@ class ProductController extends Controller {
                 }
             }
             $headerReaded = implode('', $headerArray);
-            if ($headerTECHDATA != $headerReaded)
+            if ($headerTECHDATA != $headerReaded) {
                 $message += 'Fichier non reconnu. ';
+            } else {
+                $checkHeader = true;
+            }
         }
         if ($message == "" && $resultat) {
             set_time_limit(3000);
-            if (in_array($extension_upload, $extensions_XLS)) {
+            if (in_array($extension_upload, $extensions_XLS)  && $checkHeader) {
+                echo('ok');
+              // die();
                 $index = 0;
                 $ProductDAO = new \model\ProductDAO();
 
@@ -238,50 +246,65 @@ class ProductController extends Controller {
                             $enr[] = $cell->getValue();
                         }
                         $ean = str_pad($enr[2], 13, '0', STR_PAD_LEFT);
-                        $exist = $ProductDAO->isExistEAN($ean);
-                        //$exist = $ProductDAO->isExistBUILDER_REF($ean);
-                        if ($exist) {
-                            echo ('le :' . $ean . ' existe<br>');
-                        } else {
-                            echo ('le :' . $ean . ' existe pas.Insertion<br>');
-                            $product = new \model\Product();
-                            $product->setProduct_ean($ean);
-                            $product->setProduct_ref($enr[0]);
-                            $product->setProduct_builder_ref($enr[1]);
-                            $product->setProduct_bu(2);
-                            $product->setProduct_category(2);
-                            $product->setProduct_builder($enr[4]);
-                            $product->setProduct_model('');
-                            $product->setProduct_designation($enr[3]);
-                           // print_r($product);
-                            $result = $ProductDAO->insertProduct($product);
-                            echo('erreur' . $result . '<br>');
-                            $texte = ($result == 1 ? 'OK' : 'KO');
-                            echo $texte;
+                        $ref = trim($enr[1]);
+                      //  echo ('lecture'.$ref);
+                         $exist = $ProductDAO->isExistBUILDER_REF($ref);
+                        //$exist = $ProductDAO->isExistEAN($ref);
+                        if (!$exist) {
+                           $existImp = $ProductDAO->isExistBUILDER_REF_IMP($ref);
+                         //   echo ('existe pas produit'. $ref);
+                         //   print_r($existImp);
+                            if (!$existImp) {
+                                 echo ('existe pas produit import'. $ref.'<br>');
+                                $productImp = new \model\ProductImport();
+                                $productImp->setProduct_imp_builder_ref($ref);
+                                $productImp->setProduct_imp_ref(trim($enr[0]));
+                                $productImp->setProduct_imp_four(trim($reseller));
+                                $productImp->setProduct_imp_ean($ean);
+                                $productImp->setProduct_imp_builder(trim($enr[4]));
+                                $productImp->setProduct_imp_model("");
+                                $productImp->setProduct_imp_designation(trim($enr[3]));
+                                $productImp->setProduct_imp_category("");
+                                $productImp->setProduct_imp_bu("");
+                                $result = $ProductDAO->insertProductImp($productImp);
+                                //echo ('result'.$result);
+                                $records ++;
+                            }
                         }
+                        //$exist = $ProductDAO->isExistBUILDER_REF($ean);
+                        /*  if ($exist) {
+                          echo ('le :' . $ref . ' existe<br>');
+                          } else {
+                          echo ('le :' . $ref . ' existe pas.Insertion<br>');
+                          $product = new \model\Product();
+                          $product->setProduct_ean($ref);
+                          $product->setProduct_ref($enr[0]);
+                          $product->setProduct_builder_ref($ref);
+                          $product->setProduct_bu(2);
+                          $product->setProduct_category(2);
+                          $product->setProduct_builder($enr[4]);
+                          $product->setProduct_model('');
+                          $product->setProduct_designation($enr[3]);
+                          // print_r($product);
+                          $result = $ProductDAO->insertProduct($product);
+                          echo('erreur' . $result . '<br>');
+                          $texte = ($result == 1 ? 'OK' : 'KO');
+                          echo $texte;
+                          } */
                     }
                     $index++;
                 }
-                echo ('Traitement EXCEL ' . $nom);
+                  $message = 'Import EXCEL terminé. ' . $records . ' enregistement(s) ajouté(s)';
+             // echo ('Traitement EXCEL ' . $message);
+             //  die();
             }
+          //  echo('test');
+          //  die();
+            /*   if (in_array($extension_upload, $extensions_TXT) && $reseller == 'TECHDATA') {
+              // EN ATTENTE DEFINITION FICHIER TXT CSV POUR TECHDATA //
+              } */
 
-            if (in_array($extension_upload, $extensions_TXT) && $reseller == 'TECHDATA') {
-                echo ('texte');
-                $ligne = 1; // compteur de ligne
-                if (($handle = fopen($nom, "r")) !== FALSE) {
-                    while (($data = fgetcsv($handle, 2048, "\t")) !== FALSE) {
-                        $num = count($data);
-                        echo "<p> $num champs à la ligne $row: <br /></p>\n";
-                        $row++;
-                        for ($c = 0; $c < $num; $c++) {
-                            echo $data[$c] . "<br />\n";
-                        }
-                    }
-                    fclose($handle);
-                } else {
-                    $message += 'Fichier TXT illisible.';
-                }
-            }
+
             if (in_array($extension_upload, $extensions_TXT) && $reseller == 'INGRAM') {
                 if (($handle = fopen($nom, "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 4096, ',', '"')) !== FALSE) {
@@ -291,6 +314,7 @@ class ProductController extends Controller {
                         }
                         break;
                         $ref = trim($data[7]);
+                        echo ('ref'.$ref);
                         $ProductDAO = new \model\ProductDAO();
                         $exist = $ProductDAO->isExistBUILDER_REF($ref);
                         if (!$exist) {
@@ -307,21 +331,23 @@ class ProductController extends Controller {
                                 $productImp->setProduct_imp_category(trim($data[14]));
                                 $productImp->setProduct_imp_bu("");
                                 $result = $ProductDAO->insertProductImp($productImp);
+                                echo($result);
                                 $records ++;
                             }
                         }
                     }
                     fclose($handle);
-                    $message = 'Import terminé. ' . $records . ' enregistement(s) ajouté(s)';
+                    $message = 'Import TXT terminé. ' . $records . ' enregistement(s) ajouté(s)';
+                   // die();
                 } else {
                     $message = 'Fichier TXT illisible.';
                 }
             }
             set_time_limit(30);
         }
+        //die();
         header('Location: /routes.php?action=getProductsFile&msg=' . $message);
     }
-
 
     public function listProductImport() {
         $ProductDAO = new \model\ProductDAO();

@@ -23,12 +23,12 @@ class ProductDAO extends DBAccess {
         $req->bindValue(1, $builder_ref, \PDO::PARAM_STR);
         $req->setFetchMode(\PDO::FETCH_ASSOC);
         $req->execute();
-        if ($enr = $req->fetch()) {
+      /*  if ($enr = $req->fetch()) {
             return true;
         } else {
             return false;
-        }
-        //return ($enr = $req->fetch());
+        }*/
+        return ($enr = $req->fetch());
     }
 
     public function isExistBUILDER_REF_IMP($builder_ref) {
